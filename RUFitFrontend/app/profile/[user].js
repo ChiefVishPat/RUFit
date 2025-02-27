@@ -2,11 +2,11 @@ import { useLocalSearchParams } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
 export default function ProfilePage() {
-  const { param } = useLocalSearchParams(); // Access the dynamic route parameter
+  const { user } = useLocalSearchParams(); // Access the dynamic route parameter
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> Given parameter: {param} </Text>
+      <Text style={styles.title}> Given parameter: {user} </Text>
     </View>
   );
 }

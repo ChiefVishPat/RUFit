@@ -9,7 +9,7 @@ export default function Page() {
         <Text style={styles.subtitle}>Test Screen</Text>
         <Button 
             title="back to index screen"
-            onPress={() => {router.push("/index")}}>
+            onPress={() => {router.push("/")}}>
         </Button>
       </View>
     </View>
