@@ -1,51 +1,63 @@
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, TextInput } from "react-native";
-import { useFonts, OpenSans_600SemiBold, OpenSans_400Regular } from '@expo-google-fonts/open-sans';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { validate } from "../components/UserTokenValidation"
+//import HomeScreen from './postauth/HomeScreen';
+//import LoginScreen from './preauth/LoginScreen';
 
-export default function Page() {
-    // ensures that fonts load in before they are displayed
-    const [fontsLoaded] = useFonts({
-        OpenSans_600SemiBold,
-        OpenSans_400Regular
-      });
-    const router = useRouter();
-    const RutgersLogo = require("../assets/images/Rutgers_Scarlet_Knights_logo.svg.png")
-    
-    if (!fontsLoaded) {
-        return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" />
-          </View>
-        );
+const AppWrapper = () => {
+  const Stack = createStackNavigator();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  AsyncStorage.removeItem('accessToken');
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        if (validate(accessToken, refreshToken)){
+          setIsAuthenticated(true); // Set the token if it exists
+        }
+      } catch (error) {
+        console.error('Failed to fetch token:', error);
+      } finally {
+        setIsLoading(false); // Stop loading once the check is complete
       }
+    };
+    checkToken();
+  }, []);
 
+  // Show a loading indicator while checking the token
+  if (isLoading) {
     return (
-        <>
-            <View style={styles.topContainer}>
-                <Image
-                    source={RutgersLogo}
-                    style={styles.logo}>
-                </Image>
-                <Text style={styles.appName}>RUFit</Text>
-                <TouchableOpacity
-                        style={styles.testScreenBtn}
-                        onPress={() => {router.push("testScreen")}}
-                >
-                        <Text style={styles.testScreenBtnText}>Go to test screen</Text>
-                </TouchableOpacity>
-                
-            </View>
-            <View style={styles.inputContainer}>
-            <TextInput
-                style={styles.inputField}
-                placeholder="Enter your text"
-                value="Username"
-                // onChangeText={setText}
-            />
-            </View>
-        </>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  // Render the appropriate screen based on the token
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {isAuthenticated ? (
+          // If the token exists, show the HomeScreen
+          router.push("./postauth/HomeScreen")
+        ) : (
+          // If the token does not exist, show the Login screen
+          router.push("./preauth/LoginScreen")
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
+
+export default AppWrapper;
 
 const styles = StyleSheet.create({
   topContainer: {

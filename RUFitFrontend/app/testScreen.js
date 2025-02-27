@@ -8,8 +8,8 @@ export default function Page() {
       <View style={styles.main}>
         <Text style={styles.subtitle}>Test Screen</Text>
         <Button 
-            title="back to index screen"
-            onPress={() => {router.push("/")}}>
+            title="back to login screen"
+            onPress={() => {router.push("./tempLoginPage")}}>
         </Button>
       </View>
     </View>
