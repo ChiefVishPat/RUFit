@@ -25,6 +25,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.Text, nullable=False)
+    
+    def __init__(self, username, password_hash):
+        self.username = username
+        self.password_hash = password_hash
 
 db.init_app(app)
 
@@ -36,13 +40,15 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    print(username)
+    print(password)
 
     if User.query.filter_by(username=username).first():
         return jsonify({'message': 'User already exists'}), 400
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    new_user = User(username, hashed_password)
+    new_user = User(username=username, password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import axios from "axios";
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
@@ -13,7 +14,31 @@ const AppWrapper = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
- 
+  const apiClient = axios.create({
+    baseURL: "http://127.0.0.1:5000",
+    headers: { 'Content-Type': 'application/json' }
+  })
+
+  useEffect(() => {
+    const createTestUser = async () => {
+      AsyncStorage.setItem('accessToken', 'non-null');
+      data = {
+        username: "test_user3",
+        password: "test_password3"
+      }
+      apiClient.post("/register", data)
+      .then(response => {AsyncStorage.setItem('accessToken', response.data.accessToken)})
+      .catch(error => console.error(error));
+
+      console.log("acces token: " + AsyncStorage.getItem('accessToken'));
+    };
+    createTestUser();
+  }, []);
+
+  
+
+  // Testing /register endpoint for flask backend:
+
   /*
   AsyncStorage.setItem('accessToken', 'non-null');
   AsyncStorage.setItem('refreshToken', 'non-null');
