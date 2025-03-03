@@ -13,7 +13,13 @@ const AppWrapper = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+ 
+  /*
+  AsyncStorage.setItem('accessToken', 'non-null');
+  AsyncStorage.setItem('refreshToken', 'non-null');
   AsyncStorage.removeItem('accessToken');
+  AsyncStorage.removeItem('refreshToken');
+  */
 
   useEffect(() => {
     const checkToken = async () => {
