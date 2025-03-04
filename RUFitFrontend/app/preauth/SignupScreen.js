@@ -92,6 +92,8 @@ export default function Page() {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.button}
+                    // we need to fix this: once signed up, we should hit the Login endpoint
+                    // and authenticate the user, then routing to home screen
                     onPress={() => router.push('/signup')}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>

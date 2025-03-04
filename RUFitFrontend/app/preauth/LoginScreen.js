@@ -4,6 +4,8 @@ import { useFonts, BigShouldersDisplay_700Bold } from "@expo-google-fonts/big-sh
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { useState } from 'react';
 import { Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { AuthenticatedHomeScreen } from '../../components/AuthenticatedScreens';
 
 
 export default function Page() {
@@ -13,7 +15,7 @@ export default function Page() {
         Kanit_400Regular,
     });
 
-    const router = useRouter();
+    const navigation = useNavigation(); // React Navigation for navigating screens
     const RutgersLogo = require("../../assets/images/rufit_logo.png");
     const screenWidth = Dimensions.get("window").width;
     const logoWidth = screenWidth * 0.8
@@ -72,7 +74,8 @@ export default function Page() {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => router.push('/postauth/HomeScreen')}>
+                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
+                    onPress={() => navigation.navigate(AuthenticatedHomeScreen)}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
