@@ -15,6 +15,9 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo-google-fonts/big-shoulders-display": "^0.2.3",
+    "@expo-google-fonts/dangrek": "^0.2.3",
+    "@expo-google-fonts/kanit": "^0.2.3",
     "@expo-google-fonts/open-sans": "^0.2.3",
     "@expo-google-fonts/roboto": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",
