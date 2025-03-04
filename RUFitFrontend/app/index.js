@@ -92,7 +92,7 @@ const AppWrapper = () => {
           router.push("./postauth/HomeScreen")
         ) : (
           // If the token does not exist, show the Login screen
-          router.push("./preauth/LoginScreen")
+          router.push("./preauth/preauth_landing")
         )}
       </Stack.Navigator>
     </NavigationContainer>
