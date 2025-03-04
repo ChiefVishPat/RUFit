@@ -47,18 +47,18 @@ export default function Page() {
 
             {/* Input Fields */}
             <View style={styles.inputContainer}>
-                <View style={styles.inputContainer}>
-                    {/* Username Input */}
-                    <TextInput
+                {/* Username Input */}
+                <TextInput
                         style={styles.inputField}
                         placeholder="Username"
                         placeholderTextColor="#aaa"
                         value={username}
                         onChangeText={setUsername}
                     />
-
-                    {/* Password Input */}
-                    <TextInput
+            </View>
+            <View style={styles.inputContainer}>
+                {/* Password Input */}
+                <TextInput
                         style={styles.inputField}
                         placeholder="Password"
                         placeholderTextColor="#aaa"
@@ -66,14 +66,13 @@ export default function Page() {
                         value={password}
                         onChangeText={setPassword}
                     />
-                </View>
             </View>
 
             {/* Buttons */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={() => router.push('/home')}>
+                    onPress={() => router.push('/postauth/HomeScreen')}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
@@ -82,6 +81,7 @@ export default function Page() {
 }
 
 // Styles
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -105,12 +105,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     inputContainer: {
-        width: '80%',
-        marginBottom: 20,
+        width: Dimensions.get('window').width * 0.9,
+        marginBottom: 10,
     },
     inputField: {
         backgroundColor: '#fff',
         borderRadius: 8,
+        width: "80%",
+        alignSelf: "center",
         padding: 12,
         fontSize: 16,
         fontFamily: 'Kanit_400Regular', // Ensure correct font is used
@@ -120,12 +122,15 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         elevation: 3,
+        width: "80%"
     },
     buttonContainer: {
         width: '80%',
     },
     button: {
         backgroundColor: '#CC0033', // Scarlet red
+        width: "90%",
+        alignSelf: "center",
         paddingVertical: 15,
         borderRadius: 8,
         marginBottom: 10,

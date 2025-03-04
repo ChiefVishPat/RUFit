@@ -20,10 +20,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        padding: 24,
-        backgroundColor: 'black',
-        borderColor: "pink",
-        borderWidth: 2
       },
       title: {
         marginTop: 40,
