@@ -21,16 +21,27 @@ const AppWrapper = () => {
 
   useEffect(() => {
     const createTestUser = async () => {
-      AsyncStorage.setItem('accessToken', 'non-null');
-      data = {
-        username: "test_user3",
-        password: "test_password3"
-      }
-      apiClient.post("/register", data)
-      .then(response => {AsyncStorage.setItem('accessToken', response.data.accessToken)})
-      .catch(error => console.error(error));
+      try {
+        const userData = {
+          username: "test_user14",
+          password: "test_password14"
+        };
+        const response = await apiClient.post("/register", userData)
+        .then(response => {
+          console.log(response.data['message']);
+        });
+      
+        const loginResponse = await apiClient.post("/login", userData)
+        .then(response => {
+          console.log(response.data['access_token']);
+          AsyncStorage.setItem('accessToken', response.data['access_token']);
+        });
 
-      console.log("acces token: " + AsyncStorage.getItem('accessToken'));
+      } catch (error) {
+        console.error("Error creating test user:", error);
+      }
+      const aToken = await AsyncStorage.getItem('accessToken');
+      console.log("access token: " + aToken);
     };
     createTestUser();
   }, []);
