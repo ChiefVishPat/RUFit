@@ -1,6 +1,6 @@
 import React from 'react';
-import AuthenticationWrapper from '../components/AuthenticationWrapper';
-import HomeScreen from '../app/postauth/HomeScreen';
+import AuthenticationWrapper from './AuthenticationWrapper';
+import HomeScreen from '../../app/postauth/HomeScreen';
 
 // Example: Wrap HomeScreen with ProtectedScreen
 const AuthenticatedHomeScreen = () => (

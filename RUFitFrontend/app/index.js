@@ -74,8 +74,12 @@ const AppWrapper = () => {
   useEffect(() => {
     const checkToken = async () => {
       try {
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
         const accessToken = await AsyncStorage.getItem('accessToken');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
+        console.log(accessToken);
+        console.log(refreshToken);
         if (validate(accessToken, refreshToken)){
           setIsAuthenticated(true); // Set the token if it exists
         }

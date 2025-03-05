@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#84888C', // Gray background
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     logoContainer: {
         flexGrow: 1, // Pushes buttons downward
