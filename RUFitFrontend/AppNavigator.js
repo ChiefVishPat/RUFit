@@ -23,7 +23,7 @@ const AppNavigator = ({ isAuthenticated }) => {
 
             {/* Authenticated Screens */}
             <Stack.Screen name="AuthenticatedClientHomeScreen" component={AuthenticatedClientHomeScreen}
-                options={{ headerShown: true }}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );

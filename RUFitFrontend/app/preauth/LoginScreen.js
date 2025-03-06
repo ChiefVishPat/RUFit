@@ -5,7 +5,7 @@ import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
 import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
 import * as status_constants from '../../constants/StatusConstants';
 import SignupScreen from './SignupScreen';
@@ -87,7 +87,7 @@ export default function LoginScreen() {
                         if (username && password){
                             const loginResponse = await user_login({ username, password })
                             if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                navigation.navigate(AuthenticatedHomeScreen);
+                                navigation.navigate(AuthenticatedClientHomeScreen);
                             }
                             else{
                                 setSignUpError(loginResponse); // will be appropriate error message

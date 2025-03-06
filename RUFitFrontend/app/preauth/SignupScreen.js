@@ -19,7 +19,7 @@ import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { user_registration } from '../../components/authentication/user_auth/UserAuthActions';
 import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
-import { AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
 import * as status_constants from '../../constants/StatusConstants'
 import LoginScreen from './LoginScreen';
 
@@ -116,7 +116,7 @@ export default function SignupScreen() {
                             if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
                                 const loginResponse = await user_login({ username, password });
                                 if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                    navigation.navigate(AuthenticatedHomeScreen);
+                                    navigation.navigate(AuthenticatedClientHomeScreen);
                                 }
                             }
                             else{
