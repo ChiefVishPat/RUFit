@@ -4,16 +4,16 @@ import * as status_constants from '../../../constants/StatusConstants';
 function setAccessToken(a){ AsyncStorage.setItem('accessToken', a); }
 function setRefreshToken(r){ AsyncStorage.setItem('accessToken', a); }
 
-const user_registration = async ({username, password}) => {
+const user_registration = async ({email, username, password}) => {
     
-    console.log("username (UserSignup.js): " + username);
-    console.log("password (UserSignup.js): " + password);
     try {
-        const response = await APIClient.post('/register', { username, password });
+        const response = await APIClient.post('/register', { email, username, password });
         console.log(response.data.message); // This runs only if the Promise resolves
         return status_constants.API_REQUEST_SUCCESS;
     } catch (error) {
-        return error.response.status;
+        if (error.response){
+            return error.response.data.message;
+        }
     }
 }
 
@@ -24,7 +24,10 @@ const user_login = async ({username, password}) => {
         setAccessToken(response.data['access_token']);
         return status_constants.API_REQUEST_SUCCESS;
     } catch (error) {
-        return error.response.status;
+        if (error.response){
+            return error.response.data.message;
+        }
+        
     }
 }
 export { user_registration, user_login };

@@ -21,14 +21,28 @@ export default function LoginScreen() {
     const navigation = useNavigation(); // React Navigation for navigating screens
     const RutgersLogo = require("../../assets/images/rufit_logo.png");
     const screenWidth = Dimensions.get("window").width;
-    const logoWidth = screenWidth * 0.8
-    const logoHeight = (910 / 2503) * logoWidth
+    const logoWidth = screenWidth * 0.8;
+    const logoHeight = (910 / 2503) * logoWidth;
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
     const [signUpError, setSignUpError] = useState('');
-    
+
+    const handleLogin = async () => {
+        if (!username || !password) {
+            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
+            return;
+        }
+
+        const loginResponse = await user_login({ username, password });
+
+        if (loginResponse === status_constants.API_REQUEST_SUCCESS) {
+            navigation.navigate(AuthenticatedClientHomeScreen);
+        } else {
+            setSignUpError(loginResponse); // Will be the appropriate error message
+        }
+    };
+
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -54,62 +68,52 @@ export default function LoginScreen() {
 
             {/* Input Fields */}
             <View style={styles.inputFieldsContainer}>
-                {/* Username Input */}
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Username"
-                        placeholderTextColor="#aaa"
-                        value={username}
-                        onChangeText={setUsername}
-                    />
+                    style={styles.inputField}
+                    placeholder="Username"
+                    placeholderTextColor="#aaa"
+                    value={username}
+                    onChangeText={setUsername}
+                />
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Password"
-                        placeholderTextColor="#aaa"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
+                    style={styles.inputField}
+                    placeholder="Password"
+                    placeholderTextColor="#aaa"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
             </View>
 
-            <View style={styles.errorMessageContainer}>
-                <Text style={styles.errorMessage} >
-                    { signUpError }
-                </Text>
-            </View>
+            {/* Error Message */}
+            {signUpError ? (
+                <View style={styles.errorMessageContainer}>
+                    <Text style={styles.errorMessage}>{signUpError}</Text>
+                </View>
+            ) : null}
 
             {/* Buttons */}
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                     style={styles.loginButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={async () => {
-                        if (username && password){
-                            const loginResponse = await user_login({ username, password })
-                            if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                navigation.navigate(AuthenticatedClientHomeScreen);
-                            }
-                            else{
-                                setSignUpError(loginResponse); // will be appropriate error message
-                            }
-                        }
-                        else{
-                            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
-                        }
-                    }}>
+                    onPress={handleLogin}
+                >
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                     style={styles.regRedirectButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate(SignupScreen); }}>
-                    <Text style={styles.regDirectBtnText}>Don't have an account? Sign up here</Text>
+                    onPress={() => navigation.navigate(SignupScreen)}
+                >
+                    <Text style={styles.regDirectBtnText}>
+                        Don't have an account? Sign up here
+                    </Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 }
+
 
 // Styles
 

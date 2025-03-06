@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import {
     StyleSheet,
     Text,
@@ -23,25 +22,50 @@ import { AuthenticatedClientHomeScreen } from '../../components/authentication/A
 import * as status_constants from '../../constants/StatusConstants'
 import LoginScreen from './LoginScreen';
 
+
 export default function SignupScreen() {
-    // Ensure fonts load before display
+    // State variables
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [signUpError, setSignUpError] = useState("");
+
+    const navigation = useNavigation();
+
+    // Function to handle signup flow
+    const initiateSignupFlow = async () => {
+        if (!username || !password || !email) {
+            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
+            return;
+        }
+
+        try {
+            const signUpResponse = await user_registration({ email, username, password });
+            if (signUpResponse === status_constants.API_REQUEST_SUCCESS) {
+                const loginResponse = await user_login({ username, password });
+                if (loginResponse === status_constants.API_REQUEST_SUCCESS) {
+                    navigation.navigate(AuthenticatedClientHomeScreen);
+                } else {
+                    setSignUpError(status_constants.LOGIN_ERROR);
+                }
+            } else {
+                setSignUpError(signUpResponse);
+            }
+        } catch (error) {
+            setSignUpError("An error occurred. Please try again.");
+        }
+    };
+
+    // Ensure fonts load before displaying the UI
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const RutgersLogo = require('../../assets/images/rufit_logo.png');
-    const screenWidth = Dimensions.get('window').width;
+    const RutgersLogo = require("../../assets/images/rufit_logo.png");
+    const screenWidth = Dimensions.get("window").width;
     const logoWidth = screenWidth * 0.8;
     const logoHeight = (910 / 2503) * logoWidth;
-
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    
-    const [signUpError, setSignUpError] = useState('');
-
-    const navigation = useNavigation();
 
     if (!fontsLoaded) {
         return (
@@ -57,10 +81,7 @@ export default function SignupScreen() {
             <View style={styles.logoContainer}>
                 <Image
                     source={RutgersLogo}
-                    style={[
-                        styles.logo,
-                        { width: logoWidth, height: logoHeight },
-                    ]}
+                    style={[styles.logo, { width: logoWidth, height: logoHeight }]}
                     resizeMode="contain"
                 />
                 <Text style={styles.appName}>RUFit</Text>
@@ -68,75 +89,52 @@ export default function SignupScreen() {
 
             {/* Input Fields */}
             <View style={styles.inputFieldsContainer}>
-                {/* Email Input */}
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Email"
-                        placeholderTextColor="#aaa"
-                        value={email}
-                        onChangeText={setEmail}
-                        require={false}
-                    />
-                    {/* Username Input */}
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Username"
-                        placeholderTextColor="#aaa"
-                        value={username}
-                        onChangeText={setUsername}
-                    />
-
-                    {/* Password Input */}
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Password"
-                        placeholderTextColor="#aaa"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
+                    style={styles.inputField}
+                    placeholder="Email"
+                    placeholderTextColor="#aaa"
+                    value={email}
+                    onChangeText={setEmail}
+                />
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Username"
+                    placeholderTextColor="#aaa"
+                    value={username}
+                    onChangeText={setUsername}
+                />
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Password"
+                    placeholderTextColor="#aaa"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
             </View>
 
-            <View style={styles.errorMessageContainer}>
-                <Text style={styles.errorMessage} >
-                    { signUpError }
-                </Text>
-            </View>
+            {/* Error Message */}
+            {signUpError ? (
+                <View style={styles.errorMessageContainer}>
+                    <Text style={styles.errorMessage}>{signUpError}</Text>
+                </View>
+            ) : null}
 
             {/* Buttons */}
-
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                     style={styles.signUpButton}
-                    // we need to fix this: once signed up, we should hit the Login endpoint
-                    // and authenticate the user, then routing to home screen
-                    onPress={async () => {
-                        if (username && password){
-                            const signUpResponse = await user_registration({ username, password });
-                            if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
-                                const loginResponse = await user_login({ username, password });
-                                if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                    navigation.navigate(AuthenticatedClientHomeScreen);
-                                }
-                            }
-                            else{
-                                setSignUpError(signUpResponse); // will be appropriate error message
-                            }
-                        }
-                        else{
-                            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
-                        }
-                    }}>
+                    onPress={initiateSignupFlow} // No need for async inside onPress
+                >
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.regRedirectButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate(LoginScreen); }}>
+                    onPress={() => navigation.navigate(LoginScreen)}
+                >
                     <Text style={styles.regDirectBtnText}>Already have an account? Login here</Text>
                 </TouchableOpacity>
             </View>
-
         </View>
     );
 }
