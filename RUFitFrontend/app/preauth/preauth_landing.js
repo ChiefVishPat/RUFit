@@ -14,10 +14,7 @@ import {
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { Dimensions } from 'react-native';
 
-import LoginScreen from './LoginScreen';
-import SignupScreen from './SignupScreen';
-
-export default function Page() {
+export default function PreAuthLandingPage() {
     // Ensure fonts load before display
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,

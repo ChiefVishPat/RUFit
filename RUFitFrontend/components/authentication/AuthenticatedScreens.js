@@ -1,14 +1,14 @@
 import React from 'react';
 import AuthenticationWrapper from './AuthenticationWrapper';
-import HomeScreen from '../../app/postauth/HomeScreen';
+import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
 
 // Example: Wrap HomeScreen with ProtectedScreen
-const AuthenticatedHomeScreen = () => (
+const AuthenticatedClientHomeScreen = () => (
     <AuthenticationWrapper>
-        <HomeScreen />
+        <ClientHomeScreen/>
     </AuthenticationWrapper>
 );
 
 // We can write as many exports as we need for protected screens
 
-export { AuthenticatedHomeScreen };
+export { AuthenticatedClientHomeScreen };
