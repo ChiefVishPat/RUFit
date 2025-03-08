@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import {
     StyleSheet,
     Text,
@@ -8,6 +7,7 @@ import {
     ActivityIndicator,
     TextInput,
 } from 'react-native';
+import { global_styles, GradientScreen } from '../GlobalStyles';
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
@@ -52,7 +52,7 @@ export default function SignupScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <GradientScreen>
             {/* Logo & App Name */}
             <View style={styles.logoContainer}>
                 <Image
@@ -136,8 +136,7 @@ export default function SignupScreen() {
                     <Text style={styles.regDirectBtnText}>Already have an account? Login here</Text>
                 </TouchableOpacity>
             </View>
-
-        </View>
+        </GradientScreen>
     );
 }
 
@@ -185,6 +184,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         width: Dimensions.get('window').width * 0.7,
+        height: 55,
         alignSelf: "center",
         padding: 12,
         fontSize: 16,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     },
     regRedirectButton: {
         backgroundColor: 'white', // Scarlet red
-        opacity: 0.4,
+        opacity: 0.3,
         paddingVertical: 15,
         borderRadius: 8,
         marginTop: 10,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     },
     regDirectBtnText: {
         color: 'black',
-        fontSize: 16.5,
+        fontSize: 14.5,
         fontWeight: 'bold',
         fontFamily: 'Kanit_400Regular',
     },

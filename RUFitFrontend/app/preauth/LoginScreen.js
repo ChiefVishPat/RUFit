@@ -9,6 +9,7 @@ import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../co
 import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
 import * as status_constants from '../../constants/StatusConstants';
 import SignupScreen from './SignupScreen';
+import { global_styles, GradientScreen } from '../GlobalStyles';
 
 
 export default function LoginScreen() {
@@ -38,7 +39,7 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <GradientScreen>
             {/* Logo & App Name */}
             <View style={styles.logoContainer}>
                 <Image
@@ -107,7 +108,7 @@ export default function LoginScreen() {
                     <Text style={styles.regDirectBtnText}>Don't have an account? Sign up here</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </GradientScreen>
     );
 }
 
@@ -156,6 +157,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         width: Dimensions.get('window').width * 0.7,
+        height: 55,
         alignSelf: "center",
         padding: 12,
         fontSize: 16,
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     },
     regRedirectButton: {
         backgroundColor: 'white', // Scarlet red
-        opacity: 0.4,
+        opacity: 0.3,
         paddingVertical: 15,
         borderRadius: 8,
         marginTop: 10,
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
     },
     regDirectBtnText: {
         color: 'black',
-        fontSize: 16.5,
+        fontSize: 14.5,
         fontWeight: 'bold',
         fontFamily: 'Kanit_400Regular',
     },

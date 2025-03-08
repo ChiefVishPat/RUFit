@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native'; // Use React Navigation
+import { global_styles, GradientScreen } from '../GlobalStyles';
 import {
     StyleSheet,
     Text,
@@ -37,7 +38,7 @@ export default function PreAuthLandingPage() {
     }
 
     return (
-        <View style={styles.container}>
+        <GradientScreen>
             {/* Logo & App Name */}
             <View style={styles.logoContainer}>
                 <Image
@@ -68,7 +69,13 @@ export default function PreAuthLandingPage() {
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
+        </GradientScreen>
+
+        /*
+        <View style={global_styles.screenContainer}>
+            
         </View>
+        */
     );
 }
 
