@@ -5,12 +5,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 export const global_styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
+        flexDirection: "column",
         backgroundColor: '#1a1717', // Gray background
         //backgroundColor: '#282424', // Gray background
         //backgroundColor: '#84888C', // Gray background
         alignItems: 'center',
         justifyContent: 'center'
     },
+    centeredContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });
 
 export const GradientScreen = ({children}) => (

@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
 import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
 import * as status_constants from '../../constants/StatusConstants';
-import SignupScreen from './SignupScreen';
+import SignupScreen from './signup_flow/SignupScreen';
 import { global_styles, GradientScreen } from '../GlobalStyles';
 
 

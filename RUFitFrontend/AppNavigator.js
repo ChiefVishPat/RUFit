@@ -2,7 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedClientHomeScreen } from './components/authentication/AuthenticatedScreens';
 import LoginScreen from './app/preauth/LoginScreen';
-import SignupScreen from './app/preauth/SignupScreen';
+import SignupScreen from './app/preauth/signup_flow/SignupScreen';
+import UserProfileSetup from './app/preauth/signup_flow/UserProfileSetup';
 import PreAuthLanding from './app/preauth/preauth_landing';
 
 const Stack = createStackNavigator();
@@ -18,6 +19,10 @@ const AppNavigator = ({ isAuthenticated }) => {
                 options={{ headerShown: false }}
             />
             <Stack.Screen name="SignupScreen" component={SignupScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen name="UserProfileSetup" component={UserProfileSetup}
                 options={{ headerShown: false }}
             />
 
