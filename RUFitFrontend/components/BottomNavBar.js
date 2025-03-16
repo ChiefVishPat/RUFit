@@ -10,15 +10,21 @@ export default function BottomNavBar() {
         <View style={styles.bottomTab}>
             <TouchableOpacity
                 style={styles.tabButton}
-                onPress={() => navigation.navigate('ClientHomeScreen')}>
+                onPress={() => navigation.navigate('AuthenticatedClientHomeScreen')}>
                 <Ionicons name="home" size={24} color="white" />
                 <Text style={styles.tabLabel}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.tabButton}
                 onPress={() => navigation.navigate('Activity')}>
-                <Ionicons name="barbell" size={24} color="white" />
+                <Ionicons name="stats-chart" size={24} color="white" />
                 <Text style={styles.tabLabel}>Activity</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.tabButton}
+                onPress={() => navigation.navigate('AuthenticatedSavedWorkoutsScreen')}>
+                <Ionicons name="barbell" size={24} color="white" />
+                <Text style={styles.tabLabel}>Workouts</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.tabButton}
