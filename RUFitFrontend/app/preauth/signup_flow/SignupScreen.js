@@ -7,7 +7,7 @@ import {
     ActivityIndicator,
     TextInput,
 } from 'react-native';
-import { global_styles, GradientScreen } from '../../GlobalStyles';
+import { global_styles, GradientScreen, ScarletPressable } from '../../GlobalStyles';
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
@@ -125,8 +125,8 @@ export default function SignupScreen() {
             {/* Buttons */}
 
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity
-                    style={styles.signUpButton}
+                <ScarletPressable
+                    btnText="Sign Up"
                     // we need to fix this: once signed up, we should hit the Login endpoint
                     // and authenticate the user, then routing to home screen
                     onPress={ () => {
@@ -136,8 +136,7 @@ export default function SignupScreen() {
                             password: password
                         })
                     } }>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </TouchableOpacity>
+                </ScarletPressable>
                 <TouchableOpacity
                     style={styles.regRedirectButton}
                     // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
@@ -208,8 +207,6 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         width: Dimensions.get('window').width * 0.7,
         marginTop: 20,
-        //borderColor: "white",
-        //borderWidth: 2,
     },
     signUpButton: {
         backgroundColor: '#CC0033', // Scarlet red
