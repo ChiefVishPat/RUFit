@@ -17,8 +17,6 @@ export default function ScarletPressable({ onPress, btnText }) {
         <View>
             <TouchableOpacity
                 style={styles.scarletPressableBtn}
-                // we need to fix this: once signed up, we should hit the Login endpoint
-                // and authenticate the user, then routing to home screen
                 onPress={handlePress}>
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.scarletPressableBtnText}>{btnText}</Text>}
                 

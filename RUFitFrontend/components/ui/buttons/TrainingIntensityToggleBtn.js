@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, Dimensions, Pressable, ActivityIndicator } from "react-native";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
@@ -12,13 +12,6 @@ export default function TrainingIntensityToggleBtn({onIntensityChange}) {
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
-
-    /*
-    To get currently chosen level:
-
-    const activeLevel = intensityLevels.find(level => level.value === true);
-
-     */
 
     const [intensityLevels, setIntensityLevels] = useState([
         { label: "Amateur", value: true },
@@ -37,12 +30,8 @@ export default function TrainingIntensityToggleBtn({onIntensityChange}) {
                 value: option.label === selectedLabel, // Set selected level to true, others to false
             }))
         );
-        onIntensityChange(selectedLabel);
+        onIntensityChange(selectedLabel); // sets intensity level for parent (IntensityLevelScreen.js)
     };
-
-    useEffect(() => {
-        console.log(intensityLevels);
-    }, [intensityLevels]);
 
     if (!fontsLoaded) {
         return (

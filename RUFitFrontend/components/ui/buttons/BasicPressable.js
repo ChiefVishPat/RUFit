@@ -9,8 +9,6 @@ export default function BasicPressable({ onPress, btnText, disabled }) {
             <TouchableOpacity
                 disabled={disabled}
                 style={[styles.btn, { opacity: disabled ? 0.3 : 1 }]}
-                // we need to fix this: once signed up, we should hit the Login endpoint
-                // and authenticate the user, then routing to home screen
                 onPress={onPress}>
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>{btnText}</Text>}
                 
