@@ -7,34 +7,18 @@ import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
 
-import IntensityLevelScreen from "./IntensityLevelScreen";
-
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-/*
-
-onPress={ () => {
-                        navigation.navigate('UserProfileSetup', {
-                            email: email,
-                            username: username,
-                            password: password
-                        })
-                    } }
-
- */
 
 const BodyDataScreen = ({ navigation, route }) => {
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
-
-    const [LBSelected, setLBSelected] = useState(true);
-    const [KGSelected, setKGSelected] = useState(false);
 
     const [open, setOpen] = useState(false);
     const [genderSelection, setGenderSelection] = useState("");
@@ -119,7 +103,8 @@ const BodyDataScreen = ({ navigation, route }) => {
                         </View>
 
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.heightInputField}
+
+                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
                                 placeholder={heightUnit == "US" ? "ft" : "m"}
                                 placeholderTextColor="gray"
                                 keyboardType="numeric"
@@ -131,7 +116,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
                             >
                             </TextInput>
-                            <TextInput style={styles.heightInputField}
+                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
                                 placeholder={heightUnit == "US" ? "in" : "cm"}
                                 placeholderTextColor="gray"
                                 keyboardType="numeric"
@@ -160,11 +145,11 @@ const BodyDataScreen = ({ navigation, route }) => {
                 </View>
             </KeyboardAvoidingView>
             <View style={styles.navigationBtnContainer}>
-                
+
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={true} btnText="Back" onPress={() => {navigation.goBack()}}></BasicPressable>
+                    <BasicPressable disabled={true} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
                 </View>
-                
+
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
                         navigation.navigate('IntensityLevel', {
@@ -214,18 +199,6 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
-        //borderColor: 'blue',
-        //borderWidth: 2,
-    },
-    topTextContainer: {
-        flex: 0.8,
-        //flexDirection: 'column',
-        width: Dimensions.get('screen').width * 0.9,
-        height: 'fit-content',
-        margin: 40,
-        marginTop: 40,
-        marginBottom: 0,
-        padding: 10,
         //borderColor: 'blue',
         //borderWidth: 2,
     },
@@ -279,83 +252,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         elevation: 3,
-    },
-    heightInputField: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        width: Dimensions.get('screen').width * 0.213,
-        height: 55,
-        padding: 12,
-        fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
-        marginRight: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        elevation: 3,
-    },
-    pressedButtonLB: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 55,
-        width: 40,
-        backgroundColor: "white",
-        borderColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderBottomRightRadius: 0,
-        borderTopRightRadius: 0,
-    },
-    unPressedButtonLB: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 55,
-        width: 40,
-        backgroundColor: "transparent",
-        borderColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderBottomRightRadius: 0,
-        borderTopRightRadius: 0,
-    },
-    pressedButtonKG: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 55,
-        width: 40,
-        backgroundColor: "white",
-        borderColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderBottomLeftRadius: 0,
-        borderTopLeftRadius: 0,
-    },
-    unPressedButtonKG: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 55,
-        width: 40,
-        backgroundColor: "transparent",
-        borderColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderBottomLeftRadius: 0,
-        borderTopLeftRadius: 0,
-    },
-    pressedButtonLabel: {
-        color: global_styles.background_color,
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    unPressedButtonLabel: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
     },
     navigationBtnContainer: {
         flexDirection: 'row',
