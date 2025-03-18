@@ -42,17 +42,20 @@ const UserProfileSetup = ({ navigation, route }) => {
                 name="BodyData"
                 component={BodyDataScreen}
                 initialParams={{ email, username, password }}
-                options={{ headerShown: false }}
+                options={{ headerShown: false,
+                           gestureEnabled: false}}
             />
             <Stack.Screen
                 name="IntensityLevel"
                 component={IntensityLevelScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false,
+                           gestureEnabled: false }}
             />
             <Stack.Screen
                 name="SetGoals"
                 component={SetGoalsScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false,
+                           gestureEnabled: false }}
             />
         </Stack.Navigator>
     );

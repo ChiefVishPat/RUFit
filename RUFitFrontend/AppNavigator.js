@@ -13,22 +13,22 @@ const AppNavigator = ({ isAuthenticated }) => {
         <Stack.Navigator initialRouteName={isAuthenticated ? 'AuthenticatedClientHomeScreen' : 'PreAuthLanding'}>
             {/* Non-authenticated Screens */}
             <Stack.Screen name="PreAuthLanding" component={PreAuthLanding}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen name="LoginScreen" component={LoginScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen name="SignupScreen" component={SignupScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
 
             <Stack.Screen name="UserProfileSetup" component={UserProfileSetup}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
 
             {/* Authenticated Screens */}
             <Stack.Screen name="AuthenticatedClientHomeScreen" component={AuthenticatedClientHomeScreen}
-                options={{ headerShown: false }}
+                options={{ headerShown: false, gestureEnabled: false }}
             />
         </Stack.Navigator>
     );

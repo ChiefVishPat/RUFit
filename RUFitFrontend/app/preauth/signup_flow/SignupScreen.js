@@ -7,7 +7,8 @@ import {
     ActivityIndicator,
     TextInput,
 } from 'react-native';
-import { global_styles, GradientScreen, ScarletPressable } from '../../GlobalStyles';
+import { global_styles, GradientScreen } from '../../GlobalStyles';
+import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import {
     useFonts,
     BigShouldersDisplay_700Bold,

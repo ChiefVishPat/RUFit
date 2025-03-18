@@ -1,6 +1,6 @@
 import { StyleSheet, View, Pressable, Text } from "react-native";
 import { useState } from "react";
-import { global_styles } from "../app/GlobalStyles";
+import { global_styles } from "../../app/GlobalStyles";
 
 export default function ToggleButton({
     leftButtonLabel,

@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
 import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import DropDownPicker from "react-native-dropdown-picker";
-import ToggleButton from '../../../components/ToggleButton';
+import ToggleButton from "../../../components/ui/ToggleButton";
 import { useState, useEffect } from "react";
-import { global_styles, GradientScreen, ScarletPressable } from "../../GlobalStyles";
+import { global_styles, GradientScreen } from "../../GlobalStyles";
+import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
+import BasicPressable from '../../../components/ui/buttons/BasicPressable';
 
 import IntensityLevelScreen from "./IntensityLevelScreen";
 
@@ -30,7 +32,6 @@ const BodyDataScreen = ({ navigation, route }) => {
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
-    const { email, username, password } = route.params;
 
     const [LBSelected, setLBSelected] = useState(true);
     const [KGSelected, setKGSelected] = useState(false);
@@ -61,13 +62,15 @@ const BodyDataScreen = ({ navigation, route }) => {
     return (
         <GradientScreen>
             <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjusts layout for keyboard
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.keyboardAvoidingContainer}
             >
                 <View style={styles.container}>
-                    <View style={styles.topText}>
-                        <Text style={fontStyles.screenTitle}>Welcome to RUFit!</Text>
-                        <Text style={fontStyles.subText}>In order to personalize your experience and help you with your fitness journey, we'll need to gather some information first:</Text>
+                    <View style={styles.screenTitleContainer}>
+                        <Text style={fontStyles.screenTitleText}>Welcome to RUFit!</Text>
+                    </View>
+                    <View style={styles.subTextContainer}>
+                        <Text style={fontStyles.subText}>In order to help personalize your fitness experience with us, we'll need to gather some information first:</Text>
                     </View>
 
                     <View style={styles.forms}>
@@ -126,7 +129,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 onChangeText={(text) => setHeightValue1(text.replace(/[^0-9]/g, ""))}
                                 returnKeyType="done" // Adds a "Done" button to the keyboard
                                 onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                                >
+                            >
                             </TextInput>
                             <TextInput style={styles.heightInputField}
                                 placeholder={heightUnit == "US" ? "in" : "cm"}
@@ -138,7 +141,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 onChangeText={(text) => setHeightValue2(text.replace(/[^0-9]/g, ""))}
                                 returnKeyType="done" // Adds a "Done" button to the keyboard
                                 onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                                >
+                            >
                             </TextInput>
                             <ToggleButton
                                 leftButtonLabel="US"
@@ -154,26 +157,30 @@ const BodyDataScreen = ({ navigation, route }) => {
                             />
                         </View>
                     </View>
-                    <View style={styles.navigationBtnContainer}>
-                        <ScarletPressable btnText="Next" onPress={() => {
-                            navigation.navigate('IntensityLevel', {
-                                email: email,
-                                username: username,
-                                password: password,
-                                gender: genderSelection,
-                                weight: weightValue,
-                                weightUnit: weightUnit,
-                                heightValue1: heightValue1,
-                                heightValue2: heightValue2,
-                                heightUnit: heightUnit,
-                            })
-                        }}>
-                        </ScarletPressable>
-                    </View>
+                </View>
+            </KeyboardAvoidingView>
+            <View style={styles.navigationBtnContainer}>
+                
+                <View style={styles.backBtnContainer}>
+                    <BasicPressable disabled={true} btnText="Back" onPress={() => {navigation.goBack()}}></BasicPressable>
+                </View>
+                
+                <View style={styles.nextBtnContainer}>
+                    <ScarletPressable btnText="Next" onPress={() => {
+                        navigation.navigate('IntensityLevel', {
+                            ...route.params,
+                            gender: genderSelection,
+                            weight: weightValue,
+                            weightUnit: weightUnit,
+                            heightValue1: heightValue1,
+                            heightValue2: heightValue2,
+                            heightUnit: heightUnit,
+                        })
+                    }}>
+                    </ScarletPressable>
                 </View>
 
-            </KeyboardAvoidingView>
-
+            </View>
         </GradientScreen>
     );
 };
@@ -186,27 +193,51 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     container: {
-        flex: 1,
-        flexDirection: 'column',
+        //flex: 1,
+        //flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 50,
+        backgroundColor: 'transparent',
+        //borderColor: 'pink',
+        //borderWidth: 2,
     },
-    topText: {
-        flex: 1,
-        flexDirection: 'column',
+    screenTitleContainer: {
         width: Dimensions.get('screen').width * 0.9,
-        margin: 70,
-        marginTop: 100,
+        height: 'fit-content',
         padding: 10,
+        marginBottom: 20,
+        //borderColor: 'blue',
+        //borderWidth: 2,
+    },
+    subTextContainer: {
+        width: Dimensions.get('screen').width * 0.9,
+        height: 'fit-content',
+        paddingHorizontal: 10,
+        //borderColor: 'blue',
+        //borderWidth: 2,
+    },
+    topTextContainer: {
+        flex: 0.8,
+        //flexDirection: 'column',
+        width: Dimensions.get('screen').width * 0.9,
+        height: 'fit-content',
+        margin: 40,
+        marginTop: 40,
+        marginBottom: 0,
+        padding: 10,
+        //borderColor: 'blue',
+        //borderWidth: 2,
     },
     forms: {
-        flex: 1.8,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignSelf: 'center',
         width: Dimensions.get('screen').width * 0.9,
         margin: 30,
-        marginTop: 0,
+        marginTop: 20,
+        //borderColor: 'blue',
+        //borderWidth: 2,
     },
     dropdown: {
         width: Dimensions.get('screen').width * 0.45,
@@ -327,18 +358,29 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     navigationBtnContainer: {
-        flex: 1,
-        width: 'fit-content',
+        flexDirection: 'row',
+        width: Dimensions.get('window').width * 0.85,
+        height: 'fit-content',
         margin: 20,
         alignItems: 'center',
-        justifyContent: 'center',
-        //borderColor: 'pink',
-        //borderWidth: 2,
+        justifyContent: 'stretch',
+    },
+    backBtnContainer: {
+        flex: 1,
+        width: '50%',
+        height: 'fit-content',
+        marginRight: 10,
+    },
+    nextBtnContainer: {
+        flex: 1,
+        width: '50%',
+        height: 'fit-content',
+        marginLeft: 10,
     },
 });
 
 const fontStyles = ScaledSheet.create({
-    screenTitle: {
+    screenTitleText: {
         //transform: [{ translateY: Dimensions.get('screen').height * -0.32 }],
         fontSize: '35@s',
         fontFamily: 'Kanit_400Regular',

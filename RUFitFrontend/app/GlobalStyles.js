@@ -1,34 +1,9 @@
-import { StyleSheet, Text, Dimensions, TouchableOpacity, View, ActivityIndicator } from "react-native";
-import { useState } from "react";
+import { StyleSheet, Text, Dimensions, TouchableOpacity, View, ActivityIndicator, Animated } from "react-native";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 
 // style={global_styles.screenContainer}
 export const background_color = '#1a1717';
-
-export function ScarletPressable({ onPress, btnText }) {
-    const [loading, setLoading] = useState(false);
-    const handlePress = () => {
-        setLoading(true);
-        setTimeout(() => {
-          setLoading(false);
-          onPress(); // Execute actual action
-        }, 1200); // 1.5s artificial delay
-      };
-
-    return (
-        <View style={global_styles.btnContainer}>
-            <TouchableOpacity
-                style={global_styles.scarletPressableBtn}
-                // we need to fix this: once signed up, we should hit the Login endpoint
-                // and authenticate the user, then routing to home screen
-                onPress={handlePress}>
-                {loading ? <ActivityIndicator color="#fff" /> : <Text style={global_styles.scarletPressableBtnText}>{btnText}</Text>}
-                
-            </TouchableOpacity>
-        </View>
-    );
-}
-
 
 /*
 --------------------------------------------------------------------------------------------
@@ -74,37 +49,18 @@ export const global_styles = StyleSheet.create({
         shadowOpacity: 0.1,
         elevation: 3,
     },
-    btnContainer: {
-        width: Dimensions.get('window').width * 0.7,
-        marginTop: 20,
-    },
-    scarletPressableBtn: {
-        backgroundColor: '#CC0033', // Scarlet red
-        paddingVertical: 15,
-        borderRadius: 8,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.3,
-        elevation: 5,
-        alignItems: 'center',
-    },
-    scarletPressableBtnText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-        fontFamily: 'Kanit_400Regular',
-    },
 });
 
-export const GradientScreen = ({children}) => (
-    <LinearGradient
-        colors={['#1a1717', '#610d00']} // Adjust colors as needed
-        //colors={['#1a1717', '#610d00']} // Adjust colors as needed
-        style={global_styles.screenContainer}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-    >
-        {children}
-    </LinearGradient>
-);
+export const GradientScreen = ({ children }) => {
+    
+    return (
+        <LinearGradient
+                colors={[background_color, 'darkred']} // Adjust colors as needed
+                style={global_styles.screenContainer}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            >
+                {children}
+        </LinearGradient>
+    );
+}
