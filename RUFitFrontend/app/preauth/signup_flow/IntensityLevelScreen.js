@@ -50,7 +50,10 @@ const IntensityLevelScreen = ({ navigation, route }) => {
 
                     <View style={styles.forms}>
                         <TrainingIntensityToggleBtn
-                            onIntensityChange={handleIntensityChange}>                                
+                            onValueChange={handleIntensityChange}
+                            Label1="Amateur"                                
+                            Label2="Experienced"                                
+                            Label3="Professional">                                
                         </TrainingIntensityToggleBtn>
                     </View>
                 </View>

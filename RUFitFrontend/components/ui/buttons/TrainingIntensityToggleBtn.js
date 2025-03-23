@@ -6,31 +6,31 @@ import {
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-export default function TrainingIntensityToggleBtn({onIntensityChange}) {
+export default function TrainingIntensityToggleBtn({ onValueChange, Label1, Label2, Label3 }) {
 
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const [intensityLevels, setIntensityLevels] = useState([
-        { label: "Amateur", value: true },
-        { label: "Experienced", value: false },
-        { label: "Professional", value: false },
+    const [levels, setLevels] = useState([
+        { label: Label1, value: true },
+        { label: Label2, value: false },
+        { label: Label3, value: false },
     ]);
 
     const getValueByLabel = (labelName) => {
-        return intensityLevels.find(level => level.label === labelName)?.value;
+        return levels.find(level => level.label === labelName)?.value;
     };
 
     const handlePress = (selectedLabel) => {
-        setIntensityLevels(prevOptions =>
+        setLevels(prevOptions =>
             prevOptions.map(option => ({
                 ...option,
                 value: option.label === selectedLabel, // Set selected level to true, others to false
             }))
         );
-        onIntensityChange(selectedLabel); // sets intensity level for parent (IntensityLevelScreen.js)
+        onValueChange(selectedLabel); // sets intensity level for parent (IntensityLevelScreen.js)
     };
 
     if (!fontsLoaded) {
@@ -43,22 +43,22 @@ export default function TrainingIntensityToggleBtn({onIntensityChange}) {
 
     return (
         <View style={styles.container}>
-            <Pressable style={getValueByLabel("Amateur") ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress("Amateur")}
+            <Pressable style={getValueByLabel(Label1) ? styles.filledPressable : styles.unfilledPressable}
+                onPress={() => handlePress(Label1)}
             >
-                <Text style={getValueByLabel("Amateur") ? styles.pressableLabelText1 : styles.pressableLabelText2}>Amateur</Text>
+                <Text style={getValueByLabel(Label1) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label1}</Text>
             </Pressable>
 
-            <Pressable style={getValueByLabel("Experienced") ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress("Experienced")}
+            <Pressable style={getValueByLabel(Label2) ? styles.filledPressable : styles.unfilledPressable}
+                onPress={() => handlePress(Label2)}
             >
-                <Text style={getValueByLabel("Experienced") ? styles.pressableLabelText1 : styles.pressableLabelText2}>Experienced</Text>
+                <Text style={getValueByLabel(Label2) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label2}</Text>
             </Pressable>
 
-            <Pressable style={getValueByLabel("Professional") ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress("Professional")}
+            <Pressable style={getValueByLabel(Label3) ? styles.filledPressable : styles.unfilledPressable}
+                onPress={() => handlePress(Label3)}
             >
-                <Text style={getValueByLabel("Professional") ? styles.pressableLabelText1 : styles.pressableLabelText2}>Professional</Text>
+                <Text style={getValueByLabel(Label3) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label3}</Text>
             </Pressable>
         </View>
     );

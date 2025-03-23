@@ -10,7 +10,7 @@ export default function ScarletPressable({ onPress, btnText }) {
         setTimeout(() => {
             setLoading(false);
             onPress(); // Execute actual action
-        }, randomDelay);
+        }, 0);
     };
 
     return (
