@@ -51,6 +51,7 @@ class Userinfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     experience = db.Column(db.Enum('Beginner', 'Intermediate', 'Advanced', name ='experience_level'), nullable=False)
+    goal = db.Column(db.Enum('Deficit', 'Surplus', 'Maintain', name ='training_goal'), nullable=False)
     age = db.Column(db.Integer, nullable= False)
     weight = db.Column(db.Integer, nullable = False)
     height_ft = db.Column(db.Integer, nullable= False)#height will be handled in two parts, ft and in
@@ -177,10 +178,12 @@ def userpref():
     age = data.get('age')
     weight = data.get('weight')
     height_ft = data.get('height_ft')
-    gender = dat.get('gender')
-    expereince = data.get('expereience')
+    height_in = data.get('height_in')
+    gender = data.get('gender')
+    experience = data.get('expereience')
+    goal = data.get('goal')
 
-    if height_ft is not None and (height_ft < 0 or height_ft > 11):
+    if height_in is not None and (height_in < 0 or height_in > 11):
         return jsonify({'message': 'Height in inches must remain between 0 and 11'}), 400
 
     
@@ -189,14 +192,14 @@ def userpref():
     if not userinfo:
         userinfo = Userinfo(user_id=user_id)
 
-    if Userinfo.query.filter_by(userid=userid, id=userinof_id).first():
+    if Userinfo.query.filter_by(userid=user_id, id=userinof_id).first():
         return jsonify({'message': 'User info already exists'}), 400
     
-    if not weight or not age or not expereience or not height_ft or not height_in or not gender:
+    if not weight or not age or not experience or not height_ft or not height_in or not gender or not goal:
         return jsonify({'message':'you must enter a value for all fields' }), 400
 
-    new_userinfo = Userinfo(user_id=user_id, age= age, weight=weight, height_ft=height_ft, height_in=height_in, gender= gender,experience= experience)
-    db.session.add(new_workout)
+    new_userinfo = Userinfo(user_id=user_id, age= age, weight=weight, height_ft=height_ft, height_in=height_in, gender= gender,experience=experience, goal=goal)
+    db.session.add(new_userinfo)
     db.session.commit()
 
     return jsonify({'message': 'New user data set!'}), 201
