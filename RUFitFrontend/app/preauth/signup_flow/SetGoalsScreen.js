@@ -70,7 +70,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
                 
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
-                        navigation.navigate('SetGoals', {
+                        navigation.navigate('AuthenticatedClientHomeScreen', {
                             ...route.params,
                             goal: chosenGoal
                         });
