@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform } from "react-native"
 import { ScaledSheet, } from 'react-native-size-matters';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
@@ -23,8 +23,9 @@ const SetGoalsScreen = ({ navigation, route }) => {
 
     const handleGoalChange = (goal) => {
         setChosenGoal(goal);
+        console.log(goal);
     };
-    
+
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -44,33 +45,38 @@ const SetGoalsScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.screenTitleText}>Your Goals</Text>
                     </View>
                     <View style={styles.subTextContainer}>
-                        <Text style={fontStyles.subText}>What is your diet goal? You may opt out of answering this if you'd like</Text>
+                        <Text style={fontStyles.subText}>What is your diet goal?</Text>
                     </View>
                     <View style={styles.forms}>
                         <TrainingIntensityToggleBtn
                             onValueChange={handleGoalChange}
-                            Label1="Deficit"                                
-                            Label2="Maintain"                                
-                            Label3="Surplus">                                
+                            Label1="Deficit"
+                            Label2="Maintain"
+                            Label3="Surplus">
                         </TrainingIntensityToggleBtn>
                     </View>
 
+                    {/*
                     <View style={styles.subTextContainer}>
-                        <Text style={fontStyles.subText}>({getValueByLabel(setGoalsPrompts, chosenGoal)})</Text>
+                        <Text style={fontStyles.subText}>
+                            {chosenGoal ? getValueByLabel(setGoalsPrompts, chosenGoal) : ""}
+                        </Text>
+
                     </View>
-                    
+                    */}
+
                 </View>
             </KeyboardAvoidingView>
-            
+
             <View style={styles.navigationBtnContainer}>
-                
+
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => {navigation.goBack()}}></BasicPressable>
+                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
                 </View>
-                
+
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
-                        navigation.navigate('SetGoals', {
+                        navigation.navigate('AuthenticatedClientHomeScreen', {
                             ...route.params,
                             goal: chosenGoal
                         });
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         padding: 10,
-        marginTop: 100,
+        marginTop: -50,
         borderColor: 'blue',
         //borderWidth: 2,
     },
@@ -114,6 +120,7 @@ const styles = StyleSheet.create({
         height: 'fit-content',
         paddingHorizontal: 10,
         borderColor: 'blue',
+        marginBottom: 80,
         //borderWidth: 2,
     },
     forms: {
