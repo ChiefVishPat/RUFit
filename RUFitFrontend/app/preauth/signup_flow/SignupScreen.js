@@ -1,38 +1,71 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, TextInput } from "react-native";
-import { useFonts, BigShouldersDisplay_700Bold } from "@expo-google-fonts/big-shoulders-display";
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    Image,
+    ActivityIndicator,
+    TextInput,
+} from 'react-native';
+import { global_styles, GradientScreen } from '../../GlobalStyles';
+import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
+import {
+    useFonts,
+    BigShouldersDisplay_700Bold,
+} from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { useState } from 'react';
 import { Dimensions } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
-import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
-import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
-import * as status_constants from '../../constants/StatusConstants';
-import SignupScreen from './signup_flow/SignupScreen';
-import { global_styles, GradientScreen } from '../GlobalStyles';
+import { user_registration } from '../../../components/authentication/user_auth/UserAuthActions';
+import { user_login } from '../../../components/authentication/user_auth/UserAuthActions';
+import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../../components/authentication/AuthenticatedScreens';
+import * as status_constants from '../../../constants/StatusConstants'
+import LoginScreen from '../LoginScreen';
+import { UserProfileSetup } from './UserProfileSetup';
 
-
-export default function LoginScreen() {
+export default function SignupScreen() {
     // Ensure fonts load before display
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const navigation = useNavigation(); // React Navigation for navigating screens
-    const RutgersLogo = require("../../assets/images/rufit_logo.png");
-    const screenWidth = Dimensions.get("window").width;
-    const logoWidth = screenWidth * 0.8
-    const logoHeight = (910 / 2503) * logoWidth
+    const RutgersLogo = require('../../../assets/images/rufit_logo.png');
+    const screenWidth = Dimensions.get('window').width;
+    const logoWidth = screenWidth * 0.8;
+    const logoHeight = (910 / 2503) * logoWidth;
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
-    const [signUpError, setSignUpError] = useState('');
+    const [email, setEmail] = useState('');
     
+    const [signUpError, setSignUpError] = useState('');
+
+    const navigation = useNavigation();
+
+    const initiateUserRegistration = async() => {
+        if (username && password){
+            const signUpResponse = await user_registration({ username, password });
+            if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
+                const loginResponse = await user_login({ username, password });
+                if (loginResponse == status_constants.API_REQUEST_SUCCESS){
+                    navigation.navigate(AuthenticatedClientHomeScreen);
+                }
+            }
+            else{
+                setSignUpError(signUpResponse); // will be appropriate error message
+            }
+        }
+        else{
+            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
+        }
+    }
+
     if (!fontsLoaded) {
         return (
-            <View style={styles.centeredContainer}>
+            <View style={global_styles.centeredContainer}>
                 <ActivityIndicator size="large" />
             </View>
         );
@@ -55,15 +88,26 @@ export default function LoginScreen() {
 
             {/* Input Fields */}
             <View style={styles.inputFieldsContainer}>
-                {/* Username Input */}
+                {/* Email Input */}
                 <TextInput
+                        style={styles.inputField}
+                        placeholder="Email"
+                        placeholderTextColor="#aaa"
+                        value={email}
+                        onChangeText={setEmail}
+                        require={false}
+                    />
+                    {/* Username Input */}
+                    <TextInput
                         style={styles.inputField}
                         placeholder="Username"
                         placeholderTextColor="#aaa"
                         value={username}
                         onChangeText={setUsername}
                     />
-                <TextInput
+
+                    {/* Password Input */}
+                    <TextInput
                         style={styles.inputField}
                         placeholder="Password"
                         placeholderTextColor="#aaa"
@@ -80,32 +124,25 @@ export default function LoginScreen() {
             </View>
 
             {/* Buttons */}
+
             <View style={styles.buttonsContainer}>
-                <TouchableOpacity
-                    style={styles.loginButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={async () => {
-                        if (username && password){
-                            const loginResponse = await user_login({ username, password })
-                            if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                navigation.navigate(AuthenticatedClientHomeScreen);
-                            }
-                            else{
-                                setSignUpError(loginResponse); // will be appropriate error message
-                            }
-                        }
-                        else{
-                            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
-                        }
-                    }}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                
+                <ScarletPressable
+                    btnText="Sign Up"
+                    // we need to fix this: once signed up, we should hit the Login endpoint
+                    // and authenticate the user, then routing to home screen
+                    onPress={ () => {
+                        navigation.navigate('UserProfileSetup', {
+                            email: email,
+                            username: username,
+                            password: password
+                        })
+                    } }>
+                </ScarletPressable>
                 <TouchableOpacity
                     style={styles.regRedirectButton}
                     // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate(SignupScreen); }}>
-                    <Text style={styles.regDirectBtnText}>Don't have an account? Sign up here</Text>
+                    onPress={() => { navigation.navigate(LoginScreen); }}>
+                    <Text style={styles.regDirectBtnText}>Already have an account? Login here</Text>
                 </TouchableOpacity>
             </View>
         </GradientScreen>
@@ -113,7 +150,6 @@ export default function LoginScreen() {
 }
 
 // Styles
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -129,7 +165,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.7,
         height: 'fit-content',
         paddingLeft: 12,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     errorMessage: {
         fontSize: 16,
@@ -151,7 +187,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.7,
         marginBottom: 10,
         //borderColor: "white",
-        //borderWidth: 2,
+        // borderWidth: 2,
     },
     inputField: {
         backgroundColor: '#fff',
@@ -172,10 +208,8 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         width: Dimensions.get('window').width * 0.7,
         marginTop: 20,
-        //borderColor: "white",
-        //borderWidth: 2,
     },
-    loginButton: {
+    signUpButton: {
         backgroundColor: '#CC0033', // Scarlet red
         paddingVertical: 15,
         borderRadius: 8,
@@ -209,10 +243,5 @@ const styles = StyleSheet.create({
         fontSize: 14.5,
         fontWeight: 'bold',
         fontFamily: 'Kanit_400Regular',
-    },
-    centeredContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });

@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native'; // Use React Navigation
+import { global_styles, GradientScreen } from '../GlobalStyles';
 import {
     StyleSheet,
     Text,
@@ -14,7 +15,7 @@ import {
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { Dimensions } from 'react-native';
 
-export default function Page() {
+export default function PreAuthLandingPage() {
     // Ensure fonts load before display
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
@@ -37,7 +38,7 @@ export default function Page() {
     }
 
     return (
-        <View style={styles.container}>
+        <GradientScreen>
             {/* Logo & App Name */}
             <View style={styles.logoContainer}>
                 <Image
@@ -68,7 +69,13 @@ export default function Page() {
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
+        </GradientScreen>
+
+        /*
+        <View style={global_styles.screenContainer}>
+            
         </View>
+        */
     );
 }
 
@@ -78,7 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#84888C', // Gray background
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     logoContainer: {
         flexGrow: 1, // Pushes buttons downward

@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import axios from "axios";
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { validate } from "../components/UserTokenValidation"
-//import HomeScreen from './postauth/HomeScreen';
+import AppNavigator from '../AppNavigator';
 //import LoginScreen from './preauth/LoginScreen';
 
+import { AppRegistry } from 'react-native';
+import App from '../App'; // Import the App component
+import { name as appName } from '../app.json';
+
+// Register App.js, which contains AppNavigator, which registers all screens to navigation
+AppRegistry.registerComponent(appName, () => App);
+
+const Stack = createStackNavigator();
+
+
 const AppWrapper = () => {
-  const Stack = createStackNavigator();
-  const router = useRouter();
+  
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // initially set to false, before auth check
+
   const apiClient = axios.create({
     baseURL: "http://127.0.0.1:5000",
     headers: { 'Content-Type': 'application/json' }
   })
 
+  // testing user registration and login response:
+
+  /*
   useEffect(() => {
     const createTestUser = async () => {
       try {
@@ -45,6 +56,8 @@ const AppWrapper = () => {
     };
     createTestUser();
   }, []);
+  
+  */
 
   
 
@@ -57,11 +70,16 @@ const AppWrapper = () => {
   AsyncStorage.removeItem('refreshToken');
   */
 
+  // validates existing tokens. If they do not exist or refresh has expired, user is no longer authenticated
   useEffect(() => {
     const checkToken = async () => {
       try {
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
         const accessToken = await AsyncStorage.getItem('accessToken');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
+        console.log(accessToken);
+        console.log(refreshToken);
         if (validate(accessToken, refreshToken)){
           setIsAuthenticated(true); // Set the token if it exists
         }
@@ -85,22 +103,13 @@ const AppWrapper = () => {
 
   // Render the appropriate screen based on the token
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {isAuthenticated ? (
-          // If the token exists, show the HomeScreen
-          router.push("./postauth/HomeScreen")
-        ) : (
-          // If the token does not exist, show the Login screen
-          router.push("./preauth/preauth_landing")
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AppNavigator isAuthenticated={isAuthenticated} />
   );
 };
 
 export default AppWrapper;
 
+/*
 const styles = StyleSheet.create({
   topContainer: {
     flex: 1,
@@ -164,3 +173,4 @@ const styles = StyleSheet.create({
     //borderWidth: 2
   }
 });
+*/
