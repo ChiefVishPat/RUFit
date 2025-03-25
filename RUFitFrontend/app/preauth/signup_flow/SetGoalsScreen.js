@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform } from "react-native"
 import { ScaledSheet, } from 'react-native-size-matters';
 import { useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
@@ -14,6 +15,7 @@ import {
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
 const SetGoalsScreen = ({ navigation, route }) => {
+
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
@@ -24,6 +26,24 @@ const SetGoalsScreen = ({ navigation, route }) => {
     const handleGoalChange = (goal) => {
         setChosenGoal(goal);
     };
+
+    const setAuthStatus = async () => {
+        try {
+          await AsyncStorage.setItem('authenticated', JSON.stringify(true));
+          console.log('Authentication status saved successfully!');
+        } catch (error) {
+          console.error('Failed to save authentication status:', error);
+        }
+    };
+
+    function handlePress(){
+        setAuthStatus() 
+        navigation.navigate('AuthenticatedClientHomeScreen', {
+            ...route.params,
+            goal: chosenGoal
+        });
+        console.log(route.params);
+    }
     
     if (!fontsLoaded) {
         return (
@@ -69,13 +89,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
                 </View>
                 
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Next" onPress={() => {
-                        navigation.navigate('AuthenticatedClientHomeScreen', {
-                            ...route.params,
-                            goal: chosenGoal
-                        });
-                        console.log(route.params);
-                    }}>
+                    <ScarletPressable btnText="Next" onPress={() => handlePress()}>
                     </ScarletPressable>
                 </View>
 

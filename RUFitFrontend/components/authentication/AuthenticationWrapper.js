@@ -10,7 +10,7 @@ const AuthenticationWrapper = ({ children }) => {
         const checkAuthentication = async () => {
             const accessToken = await AsyncStorage.getItem('accessToken');
             const refreshToken = await AsyncStorage.getItem('refreshToken');
-            if (!validate(accessToken, refreshToken)) {
+            if (! await validate(accessToken, refreshToken)) {
                 // Redirect to login if not authenticated
                 // There should be more custom logic here, such as informing the user
                 // with a pop-up that they have been logged out.
