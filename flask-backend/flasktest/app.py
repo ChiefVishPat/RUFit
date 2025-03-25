@@ -7,7 +7,6 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_sqlalchemy import SQLAlchemy
 
 
-<<<<<<< HEAD
 load_dotenv()
 
 app = Flask(__name__)
@@ -16,10 +15,6 @@ CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
-=======
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://flaskuser:password@cs431s25-13.cs.rutgers.edu/cs431'
-app.config['JWT_SECRET_KEY'] = 'sprint1rufit'
->>>>>>> spr3-completed-frontend
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] =False
 
@@ -51,7 +46,6 @@ class Workout(db.Model):
     date = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     user = db.relationship('User', backref=db.backref('workouts', lazy=True))
-<<<<<<< HEAD
 
 class Userinfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,8 +59,6 @@ class Userinfo(db.Model):
     gender = db.Column(db.Enum('Male', 'Female', 'Other', name = 'gender_choice'), nullable = False)
 
     user = db.relationship('User', backref=db.backref('userinfo', uselist=False))
-=======
->>>>>>> spr3-completed-frontend
 
 with app.app_context():
     db.create_all()
@@ -84,11 +76,7 @@ def register():
         if User.query.filter_by(username=username).first():
             return jsonify({'message': 'User already exists'}), 400
 
-<<<<<<< HEAD
         new_user = User(username=username, password=password) 
-=======
-        new_user = User(username=username, password=password)  # ✅ Fix here
->>>>>>> spr3-completed-frontend
         db.session.add(new_user)
         db.session.commit()
 
