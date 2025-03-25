@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
+import TrainingIntensityToggleBtn from "../../../components/ui/buttons/TrainingIntensityToggleBtn";
 
 import {
     useFonts,
@@ -14,7 +15,7 @@ import {
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
 
-const BodyDataScreen = ({ navigation, route }) => {
+const ChooseRoleScreen = ({ navigation, route }) => {
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
@@ -51,108 +52,29 @@ const BodyDataScreen = ({ navigation, route }) => {
             >
                 <View style={styles.container}>
                     <View style={styles.screenTitleContainer}>
-                        <Text style={fontStyles.screenTitleText}>Body Data</Text>
+                        <Text style={fontStyles.screenTitleText}>Welcome to RUFit!</Text>
                     </View>
                     <View style={styles.subTextContainer}>
-                        <Text style={fontStyles.subText}>In order to help personalize your fitness experience with us, we'll need to gather some information first:</Text>
+                        <Text style={fontStyles.subText}>How will you be using this app?</Text>
                     </View>
 
-                    <View style={styles.forms}>
-                        <View style={styles.inputFieldContainer}>
-                            <DropDownPicker
-                                open={open}
-                                value={genderSelection}
-                                items={genderOptions}
-                                setOpen={setOpen}
-                                setValue={setGenderSelection}
-                                setItems={setGenderOptions}
-                                listMode="FLATLIST"
-                                placeholder="Gender"
-                                style={styles.textInputField}
-                                dropDownContainerStyle={styles.dropdown}
-                                textStyle={styles.dropdownText}
-                                placeholderStyle={styles.placeholderText}
-                            />
-                        </View>
-
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.textInputField}
-                                placeholder="Body Weight"
-                                placeholderTextColor="gray"
-                                keyboardType="numeric"
-                                inputMode="numeric"
-                                value={weightValue}
-                                // prevents non-numeric values from being entered:
-                                onChangeText={(text) => setWeightValue(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
-                            <ToggleButton
-                                leftButtonLabel="lb"
-                                rightButtonLabel="kg"
-                                onPress={(button) => {
-                                    if (button == "left") {
-                                        setWeightUnit("lb");
-                                    }
-                                    else {
-                                        setWeightUnit("kg");
-                                    }
-                                }}
-                            />
-                        </View>
-
-                        <View style={styles.inputFieldContainer}>
-
-                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
-                                placeholder={heightUnit == "US" ? "ft" : "m"}
-                                placeholderTextColor="gray"
-                                keyboardType="numeric"
-                                inputMode="numeric"
-                                value={heightValue1}
-                                // prevents non-numeric values from being entered:
-                                onChangeText={(text) => setHeightValue1(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
-                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
-                                placeholder={heightUnit == "US" ? "in" : "cm"}
-                                placeholderTextColor="gray"
-                                keyboardType="numeric"
-                                inputMode="numeric"
-                                value={heightValue2}
-                                // prevents non-numeric values from being entered:
-                                onChangeText={(text) => setHeightValue2(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
-                            <ToggleButton
-                                leftButtonLabel="US"
-                                rightButtonLabel="SI"
-                                onPress={(button) => {
-                                    if (button == "left") {
-                                        setHeightUnit("US");
-                                    }
-                                    else {
-                                        setHeightUnit("SI");
-                                    }
-                                }}
-                            />
-                        </View>
-                    </View>
+                    <TrainingIntensityToggleBtn
+                        Label1="Coach"
+                        Label2="Client"
+                        onValueChange={() => {console.log("hi");}}>
+                        
+                    </TrainingIntensityToggleBtn>
                 </View>
             </KeyboardAvoidingView>
             <View style={styles.navigationBtnContainer}>
 
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
+                    <BasicPressable disabled={true} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
                 </View>
 
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
-                        navigation.navigate('IntensityLevel', {
+                        navigation.navigate('BodyData', {
                             ...route.params,
                             gender: genderSelection,
                             weight: weightValue,
@@ -293,4 +215,4 @@ const fontStyles = ScaledSheet.create({
     },
 });
 
-export default BodyDataScreen;
+export default ChooseRoleScreen;

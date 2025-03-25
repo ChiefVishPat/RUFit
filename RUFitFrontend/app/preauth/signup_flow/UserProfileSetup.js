@@ -29,6 +29,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BodyDataScreen from './BodyDataScreen'
 import IntensityLevelScreen from './IntensityLevelScreen'
 import SetGoalsScreen from './SetGoalsScreen'
+import ChooseRoleScreen from './ChooseRoleScreen'
 
 import { global_styles } from '../../GlobalStyles';
 
@@ -37,11 +38,17 @@ const UserProfileSetup = ({ navigation, route }) => {
     const Stack = createStackNavigator();
     const { email, username, password } = route.params;
     return (
-        <Stack.Navigator initialRouteName="BodyData">
+        <Stack.Navigator initialRouteName="ChooseRole">
+            <Stack.Screen
+                name="ChooseRole"
+                component={ChooseRoleScreen}
+                initialParams={{ email, username, password }}
+                options={{ headerShown: false,
+                           gestureEnabled: false}}
+            />
             <Stack.Screen
                 name="BodyData"
                 component={BodyDataScreen}
-                initialParams={{ email, username, password }}
                 options={{ headerShown: false,
                            gestureEnabled: false}}
             />

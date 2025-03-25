@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useEffect } from 'react';
 import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from './components/authentication/AuthenticatedScreens';
 import LoginScreen from './app/preauth/LoginScreen';
 import SignupScreen from './app/preauth/signup_flow/SignupScreen';
@@ -21,7 +22,6 @@ const AppNavigator = ({ isAuthenticated }) => {
         };
         setAuthStatus();
     }, []);
-    setAuthStatus();
     return (
         <Stack.Navigator
             initialRouteName={
