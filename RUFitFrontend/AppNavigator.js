@@ -5,10 +5,20 @@ import LoginScreen from './app/preauth/LoginScreen';
 import SignupScreen from './app/preauth/signup_flow/SignupScreen';
 import UserProfileSetup from './app/preauth/signup_flow/UserProfileSetup';
 import PreAuthLanding from './app/preauth/preauth_landing';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = ({ isAuthenticated }) => {
+    const setAuthStatus = async () => {
+        try {
+          await AsyncStorage.setItem('authenticated', JSON.stringify(false));
+          console.log('Authentication status saved successfully!');
+        } catch (error) {
+          console.error('Failed to save authentication status:', error);
+        }
+    };
+    setAuthStatus();
     return (
         <Stack.Navigator
             initialRouteName={

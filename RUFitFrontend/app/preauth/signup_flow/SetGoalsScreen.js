@@ -13,6 +13,7 @@ import {
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
+import { user_registration } from "../../../components/authentication/user_auth/UserAuthActions";
 
 const SetGoalsScreen = ({ navigation, route }) => {
 
@@ -36,13 +37,17 @@ const SetGoalsScreen = ({ navigation, route }) => {
         }
     };
 
-    function handlePress(){
+    const handlePress = async () => {
+
         setAuthStatus() 
-        navigation.navigate('AuthenticatedClientHomeScreen', {
+        const user_data = {
             ...route.params,
             goal: chosenGoal
-        });
-        console.log(route.params);
+        };
+        
+        console.log(user_data);
+        const result = await user_registration(user_data);
+        navigation.navigate('AuthenticatedClientHomeScreen', );
     }
     
     if (!fontsLoaded) {
