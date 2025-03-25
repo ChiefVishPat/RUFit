@@ -12,7 +12,11 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../../../components/BottomNavBar';
 import TopHeader from '../../../components/TopHeader';
 
-export default function SaveWorkoutScreen({ navigation }) {
+import { useNavigation } from '@react-navigation/native';
+
+export default function SaveWorkoutScreen() {
+    const navigation = useNavigation();
+
     const [workoutName, setWorkoutName] = useState('');
     const [exercises, setExercises] = useState([
         { name: '', sets: '', reps: '', weight: '' },
