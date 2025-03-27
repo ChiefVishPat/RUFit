@@ -11,6 +11,8 @@ def create_app():
     load_dotenv()
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config['JWT_SECRET_KEY'] = Config.JWT_SECRET_KEY
+    app.config["JWT_ALGORITHM"] = "HS256"
 
     db.init_app(app)
     bcrypt.init_app(app)

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.users import User  # Ensure file name matches (users.py)
 from app.extensions import db, bcrypt
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from app.logging_config import logger  # Import our logger
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -40,6 +40,9 @@ def login():
         logger.warning("Login failed for user: %s", username)
         return jsonify({'message': 'Invalid credentials'}), 401
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
+    
     logger.info("User %s logged in successfully", username)
-    return jsonify({'access_token': access_token}), 200
+    return jsonify({'access_token': access_token, 'refresh_token':refresh_token}), 200
+
