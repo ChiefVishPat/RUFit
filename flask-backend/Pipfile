@@ -11,6 +11,8 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 python-dotenv = "*"
+pymysql = "*"
+rich = "*"
 
 [dev-packages]
 
