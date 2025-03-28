@@ -47,14 +47,18 @@ export default function SignupScreen() {
 
     const initiateUserRegistration = async() => {
         if (username && password){
-            const signUpResponse = await user_registration({ username, password });
+            const signUpResponse = await user_registration({ username:username, password:password, email:email});
             if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
-                const loginResponse = await user_login({ username, password });
-                if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                    navigation.navigate(AuthenticatedClientHomeScreen);
-                }
+                console.log("sign up success");
+                navigation.navigate('UserProfileSetup', {
+                    username: username,
+                    password: password
+                    // ^^ these will be sent through so user can be logged in once done filling user info
+                    // we won't need email
+                })
             }
             else{
+                console.log("sign up failure");
                 setSignUpError(signUpResponse); // will be appropriate error message
             }
         }
@@ -130,13 +134,7 @@ export default function SignupScreen() {
                     btnText="Sign Up"
                     // we need to fix this: once signed up, we should hit the Login endpoint
                     // and authenticate the user, then routing to home screen
-                    onPress={ () => {
-                        navigation.navigate('UserProfileSetup', {
-                            email: email,
-                            username: username,
-                            password: password
-                        })
-                    } }>
+                    onPress={initiateUserRegistration}>
                 </ScarletPressable>
                 <TouchableOpacity
                     style={styles.regRedirectButton}

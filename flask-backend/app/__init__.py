@@ -20,8 +20,10 @@ def create_app():
 
     with app.app_context():
         from .models import workout, users, userinfo
+        db.drop_all()
         db.create_all()
 
+    #app.register_blueprint(user)
     app.register_blueprint(auth_bp)
     app.register_blueprint(workouts_bp)
     app.register_blueprint(userinfo_bp)

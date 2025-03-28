@@ -11,6 +11,7 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    email = data.get('email')
 
     logger.info("Attempting registration for user: %s", username)
 
@@ -20,9 +21,13 @@ def register():
 
     if User.query.filter_by(username=username).first():
         logger.warning("Registration failed: User %s already exists", username)
-        return jsonify({'message': 'User already exists'}), 400
+        return jsonify({'message': 'Username already exists'}), 400
+    
+    if User.query.filter_by(email=email).first():
+        logger.warning("Registration failed: User %s already exists", username)
+        return jsonify({'message': 'Email is already registered'}), 400
 
-    new_user = User(username=username, password=password)
+    new_user = User(username=username, password=password, email=email)
     db.session.add(new_user)
     db.session.commit()
 
