@@ -49,7 +49,6 @@ export default function SignupScreen() {
         if (username && password){
             const signUpResponse = await user_registration({ username:username, password:password, email:email});
             if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
-                console.log("sign up success");
                 navigation.navigate('UserProfileSetup', {
                     username: username,
                     password: password
@@ -58,7 +57,6 @@ export default function SignupScreen() {
                 })
             }
             else{
-                console.log("sign up failure");
                 setSignUpError(signUpResponse); // will be appropriate error message
             }
         }

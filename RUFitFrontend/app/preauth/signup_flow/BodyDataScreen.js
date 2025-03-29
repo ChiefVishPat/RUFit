@@ -23,9 +23,9 @@ const BodyDataScreen = ({ navigation, route }) => {
     const [open, setOpen] = useState(false);
     const [genderSelection, setGenderSelection] = useState("");
     const [genderOptions, setGenderOptions] = useState([
-        { label: "Male", value: "male" },
-        { label: "Female", value: "female" },
-        { label: "Prefer not to say", value: "other" },
+        { label: "Male", value: "Male" },
+        { label: "Female", value: "Female" },
+        { label: "Prefer not to say", value: "Other" },
     ]);
 
     const [weightValue, setWeightValue] = useState(null);

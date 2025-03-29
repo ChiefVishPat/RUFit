@@ -3,7 +3,7 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
-import { validate } from "../components/UserTokenValidation"
+import { validate } from "../components/authentication/user_auth/UserTokenValidation"
 import AppNavigator from '../AppNavigator';
 //import LoginScreen from './preauth/LoginScreen';
 
@@ -74,10 +74,10 @@ const AppWrapper = () => {
   useEffect(() => {
     const checkToken = async () => {
       try {
-        await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.removeItem('refreshToken');
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        await AsyncStorage.removeItem('access_token');
+        await AsyncStorage.removeItem('refresh_token');
+        const accessToken = await AsyncStorage.getItem('access_token');
+        const refreshToken = await AsyncStorage.getItem('refresh_token');
         console.log(accessToken);
         console.log(refreshToken);
         if (validate(accessToken, refreshToken)){

@@ -7,13 +7,15 @@ import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
 import TrainingIntensityToggleBtn from "../../../components/ui/buttons/TrainingIntensityToggleBtn";
 import { setGoalsPrompts, getValueByLabel } from "../../../components/ui/text_prompts/text_prompts";
+import ModalAlert from '../../../components/ui/alerts/ModalAlert'
+import * as status_constants from '../../../constants/StatusConstants';
 
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
-import { user_registration } from "../../../components/authentication/user_auth/UserAuthActions";
+import { user_login, set_user_pref} from "../../../components/authentication/user_auth/UserAuthActions";
 
 const SetGoalsScreen = ({ navigation, route }) => {
 
@@ -22,7 +24,12 @@ const SetGoalsScreen = ({ navigation, route }) => {
         Kanit_400Regular,
     });
 
-    const [chosenGoal, setChosenGoal] = useState(null);
+    const [ isAlertVisible, setIsAlertVisible ] = useState(false);
+    const [ registrationError, setRegistrationError ] = useState(false);
+
+    const { username, password, ...filteredUserData } = route.params;
+
+    const [chosenGoal, setChosenGoal] = useState('Deficit');
 
     const handleGoalChange = (goal) => {
         setChosenGoal(goal);
@@ -31,7 +38,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
     const setAuthStatus = async () => {
         try {
           await AsyncStorage.setItem('authenticated', JSON.stringify(true));
-          console.log('Authentication status saved successfully!');
+          // console.log('Authentication status saved successfully!');
         } catch (error) {
           console.error('Failed to save authentication status:', error);
         }
@@ -41,12 +48,34 @@ const SetGoalsScreen = ({ navigation, route }) => {
 
         setAuthStatus() 
         const user_data = {
-            ...route.params,
+            ...filteredUserData,
             goal: chosenGoal
         };
         
-        console.log(user_data);
-        const result = await user_registration(user_data);
+        try {
+            const loginResult = await user_login({username:username, password:password});
+            // if no errors, access and refresh tokens should be set
+            const result = await set_user_pref({user_data});
+            if (result == status_constants.API_REQUEST_SUCCESS){
+                console.log("user info saved to DB succesfully");
+            }
+            if (loginResult == status_constants.API_REQUEST_SUCCESS){
+                navigation.navigate("AuthenticatedClientHomeScreen");
+                // ^^
+                // probably have to send some data, but most likely not
+                // should be able to access info when needed from backend using access_token
+            }
+        }
+        catch(error){
+            setIsAlertVisible(true);
+            setRegistrationError(error);
+            console.log(error);
+        }
+        
+        
+        // ^ needs to be sent to a frontend func that handles userpref set
+
+        // before navigating, log in User. user login should handle access and refresh token setting
         navigation.navigate('AuthenticatedClientHomeScreen', );
     }
     
@@ -58,8 +87,17 @@ const SetGoalsScreen = ({ navigation, route }) => {
         );
     }
 
+
     return (
         <GradientScreen>
+
+            <ModalAlert
+                isVisible={isAlertVisible}
+                title="Issue registering"
+                message={registrationError}
+                onClose={() => setIsAlertVisible(false)}
+            />
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.keyboardAvoidingContainer}
@@ -94,7 +132,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
                 </View>
                 
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Next" onPress={() => handlePress()}>
+                    <ScarletPressable btnText="Finish" onPress={() => handlePress()}>
                     </ScarletPressable>
                 </View>
 

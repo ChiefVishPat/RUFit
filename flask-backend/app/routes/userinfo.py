@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
 from app.models.userinfo import Userinfo
+from app.models.users import User
 from app.extensions import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.logging_config import logger
+from ..tools.unit_conversion import SI_to_US_height, SI_to_US_weight
 
 userinfo_bp = Blueprint('userinfo', __name__, url_prefix='/userinfo')
 
@@ -10,14 +12,27 @@ userinfo_bp = Blueprint('userinfo', __name__, url_prefix='/userinfo')
 @jwt_required()
 def create_userinfo():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.get_json().get('user_data')
+    logger.info(request)
+    logger.info(data)
 
-    age = data.get('age')
-    weight = data.get('weight')
-    height_ft = data.get('height_ft')
-    height_in = data.get('height_in')
+    #age = data.get('age')
     gender = data.get('gender')
-    experience = data.get('experience')
+    weight = int(data.get('weight'))
+    weight_unit = data.get('weightUnit')
+
+    # convert weight to pounds if necessary:
+    if weight_unit == "kg":
+        weight = SI_to_US_weight(weight)
+
+    height_ft = int(data.get('heightValue1'))
+    height_in = int(data.get('heightValue2'))
+    height_unit = data.get('heightUnit')
+
+    if height_unit == "SI":
+        height_ft, height_in = SI_to_US_height(height_ft, height_in)
+    
+    training_intensity = data.get('trainingIntensity')
     goal = data.get('goal')
 
     logger.info("User %s is submitting userinfo", user_id)
@@ -26,14 +41,14 @@ def create_userinfo():
         logger.warning("User %s provided invalid height_in: %s", user_id, height_in)
         return jsonify({'message': 'Height in inches must be between 0 and 11'}), 400
 
-    if not all([weight, age, experience, height_ft, height_in, gender, goal]):
+    if not all([weight, weight_unit, training_intensity, height_ft, height_in, height_unit, gender, goal]):
         logger.warning("User %s failed to provide all required fields", user_id)
         return jsonify({'message': 'You must enter a value for all fields'}), 400
 
     new_userinfo = Userinfo(
-        user_id=user_id, age=age, weight=weight,
-        height_ft=height_ft, height_in=height_in,
-        gender=gender, experience=experience, goal=goal
+        user_id=user_id, weight=weight, weight_unit=weight_unit,
+        height_ft=height_ft, height_in=height_in, height_unit=height_unit,
+        gender=gender, training_intensity=training_intensity, goal=goal
     )
     db.session.add(new_userinfo)
     db.session.commit()
@@ -45,6 +60,7 @@ def create_userinfo():
 @jwt_required()
 def get_userinfo():
     user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
     userinfo = Userinfo.query.filter_by(user_id=user_id).first()
 
     if not userinfo:
@@ -53,11 +69,15 @@ def get_userinfo():
 
     logger.info("User info retrieved for user %s", user_id)
     return jsonify({
-        'experience': userinfo.experience,
-        'age': userinfo.age,
+        'username':user.username,
+        'email':user.email,
+        'gender': userinfo.gender.value,
+        #'age': userinfo.age,
         'weight': userinfo.weight,
+        'weight_unit': userinfo.weight_unit.value,
         'height_ft': userinfo.height_ft,
         'height_in': userinfo.height_in,
-        'gender': userinfo.gender,
-        'goal': userinfo.goal
+        'height_unit': userinfo.height_unit.value,
+        'training_intensity': userinfo.training_intensity.value,
+        'goal': userinfo.goal.value
     }), 200

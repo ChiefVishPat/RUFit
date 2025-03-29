@@ -42,7 +42,7 @@ const UserProfileSetup = ({ navigation, route }) => {
             <Stack.Screen
                 name="ChooseRole"
                 component={ChooseRoleScreen}
-                initialParams={{ email, username, password }}
+                initialParams={{ username, password }}
                 options={{ headerShown: false,
                            gestureEnabled: false}}
             />

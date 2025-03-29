@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3a5316ff595316e309c0027332e40b691f1a50f72ef518b38eab4d55a1818bb2"
+            "sha256": "f40d749708e5b6cc8b486952101ec8e842e966a993f6831c9f75f29f14ac1e3c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -242,6 +242,10 @@
             "index": "pypi",
             "markers": "python_version >= '3.9'",
             "version": "==3.1.0"
+        },
+        "flask-backend": {
+            "editable": true,
+            "file": "."
         },
         "flask-bcrypt": {
             "hashes": [
