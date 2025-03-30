@@ -16,7 +16,7 @@ APIClient.interceptors.request.use(
     }
 
     // Check if this request requires authentication
-    if (config.sendAuth) {
+    if (config.sendAccess) {
       try {
         const accessToken = await AsyncStorage.getItem('access_token');
         
@@ -27,6 +27,20 @@ APIClient.interceptors.request.use(
         }
       } catch (error) {
         console.error('Failed to retrieve access token:', error);
+      }
+    }
+
+    if (config.sendRefresh) {
+      try {
+        const refreshToken = await AsyncStorage.getItem('refresh_token');
+        
+        if (refreshToken) {
+          config.headers.Authorization = `Bearer ${refreshToken}`;
+        } else {
+          console.warn('No refresh token found in AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Failed to retrieve refresh token:', error);
       }
     }
 

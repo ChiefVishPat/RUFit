@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Stack = createStackNavigator();
 
 const AppNavigator = ({ isAuthenticated }) => {
+    console.log(`AppNavigator: ${isAuthenticated}`);
+    /*
     useEffect(() => {
         const setAuthStatus = async () => {
             try {
@@ -22,6 +24,7 @@ const AppNavigator = ({ isAuthenticated }) => {
         };
         setAuthStatus();
     }, []);
+    */
     return (
         <Stack.Navigator
             initialRouteName={

@@ -19,7 +19,7 @@ const IntensityLevelScreen = ({ navigation, route }) => {
         Kanit_400Regular,
     });
 
-    const [chosenIntensity, setChosenIntensity] = useState(null);
+    const [chosenIntensity, setChosenIntensity] = useState("Amateur");
 
     const handleIntensityChange = (intensityLevel) => {
         setChosenIntensity(intensityLevel);

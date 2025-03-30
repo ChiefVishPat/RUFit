@@ -28,7 +28,7 @@ const user_registration = async ({ username, password, email }) => {
 const set_user_pref = async ({user_data}) => {
     // console.log(user_data);
     try{
-        const response = await APIClient.post('/userinfo', {user_data}, {sendAuth:true});
+        const response = await APIClient.post('/userinfo', {user_data}, {sendAccess:true});
         return status_constants.API_REQUEST_SUCCESS;
     }
     catch(error){

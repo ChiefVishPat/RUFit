@@ -35,18 +35,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
         setChosenGoal(goal);
     };
 
-    const setAuthStatus = async () => {
-        try {
-          await AsyncStorage.setItem('authenticated', JSON.stringify(true));
-          // console.log('Authentication status saved successfully!');
-        } catch (error) {
-          console.error('Failed to save authentication status:', error);
-        }
-    };
-
     const handlePress = async () => {
-
-        setAuthStatus() 
         const user_data = {
             ...filteredUserData,
             goal: chosenGoal

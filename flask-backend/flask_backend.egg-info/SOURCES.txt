@@ -1,4 +1,8 @@
 setup.py
+./app/__init__.py
+./app/config.py
+./app/extensions.py
+./app/logging_config.py
 app/__init__.py
 app/config.py
 app/extensions.py
