@@ -7,7 +7,8 @@ from flask_jwt_extended import (
     create_refresh_token,
     verify_jwt_in_request,
     jwt_required,
-    decode_token
+    decode_token,
+    JWTManager
 )
 from flask_jwt_extended.exceptions import JWTExtendedException
 from datetime import datetime
@@ -16,6 +17,7 @@ from app.logging_config import logger  # Import our logger
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+jwt = JWTManager()
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -82,9 +84,15 @@ def is_token_expired():
     try:
         decoded_token = decode_token(token)
         return jsonify({"expired": False}), 200
-    except JWTExtendedException as e:
+    except Exception as e:
         # This catches all JWT errors (expired, invalid, etc.)
         return jsonify({
             "expired": True,
             "reason": str(e)  # Optional: include error details
         }), 200
+
+@jwt.invalid_token_loader
+@jwt.expired_token_loader
+@jwt.unauthorized_loader
+def custom_error_response(reason):
+    return jsonify({"expired": True, "reason": reason}), 200
