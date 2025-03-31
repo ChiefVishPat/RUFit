@@ -48,6 +48,12 @@ const AuthenticationWrapper = ({ children }) => {
                     return;
                 }
 
+                /* 
+                    - handleAuthAccess will determine if accessToken is valid or exp
+                    - If exp, it will "handle" the expiry --> use refreshToken to fetch
+                    another one
+                    - If refreshToken is also exp (or some error occurs), isValid becomes false
+                */
                 const isValid = await handleAuthAccess(accessToken, refreshToken);
                 if (!isValid) {
                     await handleLogout({

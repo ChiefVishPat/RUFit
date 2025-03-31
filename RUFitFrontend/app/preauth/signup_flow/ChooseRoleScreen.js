@@ -21,7 +21,7 @@ const ChooseRoleScreen = ({ navigation, route }) => {
         Kanit_400Regular,
     });
     
-    const [chosenRole, setChosenRole] = useState("Coach");
+    const [chosenRole, setChosenRole] = useState("Client");
 
     const handleRoleChange = (role) => {
         setChosenRole(role);

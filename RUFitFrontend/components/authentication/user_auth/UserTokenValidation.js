@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { APIClient } from '../../api/APIClient';
 
 export const handleAuthAccess = async (accessToken, refreshToken ) => {
-  console.log(`UserTokenValidation: ${accessToken}`);
-  console.log(`UserTokenValidation: ${refreshToken}`);
+  //console.log(`UserTokenValidation: ${accessToken}`);
+  //console.log(`UserTokenValidation: ${refreshToken}`);
   if (!accessToken || !refreshToken) {
     console.warn('Tokens missing - forcing logout');
     //await clearTokens();
@@ -45,6 +45,12 @@ const refreshTokens = async (refreshToken) => {
 
     if (error.response?.status === 401) {
       // Refresh token expired or invalid
+      if (error.response.data.msg){
+        console.error(error.response.data.msg);
+      }
+      else if (error.response.data.message){
+        console.error(error.response.data.message);
+      }
       await clearTokens();
     }
     

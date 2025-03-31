@@ -49,7 +49,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
                 console.log("user info saved to DB succesfully");
             }
             if (loginResult == status_constants.API_REQUEST_SUCCESS){
-                navigation.navigate("AuthenticatedClientHomeScreen");
+                navigation.navigate("ClientIndex");
                 // ^^
                 // probably have to send some data, but most likely not
                 // should be able to access info when needed from backend using access_token
