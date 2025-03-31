@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
 import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import DropDownPicker from "react-native-dropdown-picker";
-import ToggleButton from "../../../components/ui/ToggleButton";
+import HorizontalToggleChoice from "../../../components/ui/HorizontalToggleChoice";
 import { useState, useEffect } from "react";
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
@@ -88,7 +88,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
                             >
                             </TextInput>
-                            <ToggleButton
+                            <HorizontalToggleChoice
                                 leftButtonLabel="lb"
                                 rightButtonLabel="kg"
                                 onPress={(button) => {
@@ -128,7 +128,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
                             >
                             </TextInput>
-                            <ToggleButton
+                            <HorizontalToggleChoice
                                 leftButtonLabel="US"
                                 rightButtonLabel="SI"
                                 onPress={(button) => {

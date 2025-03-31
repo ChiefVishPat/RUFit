@@ -2,7 +2,7 @@ import { StyleSheet, View, Pressable, Text } from "react-native";
 import { useState } from "react";
 import { global_styles } from "../../app/GlobalStyles";
 
-export default function ToggleButton({
+export default function HorizontalToggleChoice({
     leftButtonLabel,
     rightButtonLabel,
     onPress // This will now accept a parameter indicating which button was pressed

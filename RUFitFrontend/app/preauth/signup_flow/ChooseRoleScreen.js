@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
 import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
 import DropDownPicker from "react-native-dropdown-picker";
-import ToggleButton from "../../../components/ui/ToggleButton";
+import HorizontalToggleChoice from "../../../components/ui/HorizontalToggleChoice";
 import { useState, useEffect } from "react";
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
-import TrainingIntensityToggleBtn from "../../../components/ui/buttons/TrainingIntensityToggleBtn";
+import VerticalToggleChoice from "../../../components/ui/buttons/VerticalToggleChoice";
 
 import {
     useFonts,
@@ -58,12 +58,12 @@ const ChooseRoleScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.subText}>How will you be using this app?</Text>
                     </View>
 
-                    <TrainingIntensityToggleBtn
+                    <VerticalToggleChoice
                         Label1="Coach"
                         Label2="Client"
                         onValueChange={() => {console.log("hi");}}>
                         
-                    </TrainingIntensityToggleBtn>
+                    </VerticalToggleChoice>
                 </View>
             </KeyboardAvoidingView>
             <View style={styles.navigationBtnContainer}>

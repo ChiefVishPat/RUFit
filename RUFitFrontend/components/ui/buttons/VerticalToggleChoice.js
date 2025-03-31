@@ -6,7 +6,7 @@ import {
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-export default function TrainingIntensityToggleBtn({ onValueChange, Label1, Label2, Label3 }) {
+export default function VerticalToggleChoice({ onValueChange, Label1, Label2, Label3 }) {
 
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
