@@ -3,6 +3,7 @@ import AuthenticationWrapper from './AuthenticationWrapper';
 import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
 import SavedWorkoutsScreen from '../../app/postauth/client/SavedWorkoutsScreen';
 import SaveWorkoutScreen from '../../app/postauth/client/SaveWorkoutScreen';
+import ClientProfileScreen from '../../app/postauth/client/ClientProfileScreen';
 
 // Example: Wrap HomeScreen with ProtectedScreen
 const AuthenticatedClientHomeScreen = () => (
@@ -21,6 +22,12 @@ const AuthenticatedSaveWorkoutScreen = () => (
     </AuthenticationWrapper>
 );
 
+const AuthenticatedClientProfileScreen = () => (
+    <AuthenticationWrapper>
+        <ClientProfileScreen />
+    </AuthenticationWrapper>
+);
+
 // We can write as many exports as we need for protected screens
 
-export { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen};
+export { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen, AuthenticatedClientProfileScreen };

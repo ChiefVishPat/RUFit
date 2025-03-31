@@ -9,7 +9,6 @@ import {
     Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../../../components/BottomNavBar';
 import TopHeader from '../../../components/TopHeader';
 
 import { useNavigation } from '@react-navigation/native';
@@ -150,8 +149,6 @@ export default function SaveWorkoutScreen() {
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
             </ScrollView>
-
-            <BottomNavBar />
         </View>
     );
 }

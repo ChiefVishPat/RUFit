@@ -9,7 +9,6 @@ import {
     SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../../../components/BottomNavBar';
 import TopHeader from '../../../components/TopHeader';
 
 import { useNavigation } from '@react-navigation/native';
@@ -105,8 +104,6 @@ export default function SavedWorkoutsScreen() {
                     <Ionicons name="add-circle" size={24} color="white" />
                     <Text style={styles.addButtonText}>Add New Workout</Text>
                 </TouchableOpacity>
-
-                <BottomNavBar />
             </View>
         </SafeAreaView>
     );

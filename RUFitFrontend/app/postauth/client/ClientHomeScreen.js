@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../../../components/BottomNavBar'; // Import BottomNavBar
+import BottomNavBar from '../../../components/ui/BottomNavBar'; // Import BottomNavBar
 import TopHeader from '../../../components/TopHeader'; // Import TopHeader
 import { APIClient } from '../../../components/api/APIClient';
 
@@ -43,9 +43,6 @@ export default function ClientHomeScreen() {
                     <Text style={styles.cardLabel}>Distance</Text>
                 </View>
             </View>
-
-            {/* Bottom Navigation */}
-            <BottomNavBar />
         </View>
     );
 }

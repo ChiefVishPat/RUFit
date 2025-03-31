@@ -14,13 +14,12 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
     // Check if access token is expired
     const validationResponse = await APIClient.post('/auth/is-token-expired', { 
       access_token: accessToken  // Consistent with your backend endpoint
-    });
-
+    }); 
+    
     if (validationResponse.data.expired) {
       // Attempt to refresh tokens
       return await refreshTokens(refreshToken);
     }
-    
     // Access token is still valid
     return true;
   } catch (error) {
