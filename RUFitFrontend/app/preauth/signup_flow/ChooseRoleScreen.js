@@ -20,21 +20,16 @@ const ChooseRoleScreen = ({ navigation, route }) => {
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
+    
+    const [chosenRole, setChosenRole] = useState("Coach");
 
-    const [open, setOpen] = useState(false);
-    const [genderSelection, setGenderSelection] = useState("");
-    const [genderOptions, setGenderOptions] = useState([
-        { label: "Male", value: "male" },
-        { label: "Female", value: "female" },
-        { label: "Prefer not to say", value: "other" },
-    ]);
+    const handleRoleChange = (role) => {
+        setChosenRole(role);
+    };
 
-    const [weightValue, setWeightValue] = useState(null);
-    const [weightUnit, setWeightUnit] = useState("lb");
-
-    const [heightValue1, setHeightValue1] = useState(null);
-    const [heightValue2, setHeightValue2] = useState(null);
-    const [heightUnit, setHeightUnit] = useState("US");
+    useEffect(() => {
+        console.log("Chosen role: %s", chosenRole);
+      }, [chosenRole]); // Dependency array - effect runs when these values change
 
     if (!fontsLoaded) {
         return (
@@ -58,12 +53,14 @@ const ChooseRoleScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.subText}>How will you be using this app?</Text>
                     </View>
 
-                    <VerticalToggleChoice
-                        Label1="Coach"
-                        Label2="Client"
-                        onValueChange={() => {console.log("hi");}}>
-                        
-                    </VerticalToggleChoice>
+                    <View style={styles.toggleContainer}>
+                        <VerticalToggleChoice
+                            onValueChange={handleRoleChange}
+                            labels={['Coach', 'Client']}
+                            selectedIndex={1} // Option 2 will be selected initially
+                        />
+                    </View>
+                    
                 </View>
             </KeyboardAvoidingView>
             <View style={styles.navigationBtnContainer}>
@@ -74,14 +71,11 @@ const ChooseRoleScreen = ({ navigation, route }) => {
 
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
+                        // at some point, we will change this so that choosing "Coach" will direct you to another signup flow
+                        // right now, all signups go to Client flow
                         navigation.navigate('BodyData', {
                             ...route.params,
-                            gender: genderSelection,
-                            weight: weightValue,
-                            weightUnit: weightUnit,
-                            heightValue1: heightValue1,
-                            heightValue2: heightValue2,
-                            heightUnit: heightUnit,
+                            userRole: chosenRole
                         })
                     }}>
                     </ScarletPressable>
@@ -121,6 +115,14 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
+        //borderColor: 'blue',
+        //borderWidth: 2,
+    },
+    toggleContainer: {
+        width: Dimensions.get('screen').width * 0.9,
+        height: 'fit-content',
+        paddingHorizontal: 10,
+        marginTop: 80,
         //borderColor: 'blue',
         //borderWidth: 2,
     },

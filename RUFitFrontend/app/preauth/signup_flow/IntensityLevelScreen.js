@@ -4,7 +4,7 @@ import { useState } from "react";
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
-import TrainingIntensityToggleBtn from "../../../components/ui/buttons/TrainingIntensityToggleBtn";
+import VerticalToggleChoice from "../../../components/ui/buttons/VerticalToggleChoice";
 
 import {
     useFonts,
@@ -49,12 +49,11 @@ const IntensityLevelScreen = ({ navigation, route }) => {
                     </View>
 
                     <View style={styles.forms}>
-                        <TrainingIntensityToggleBtn
+                        <VerticalToggleChoice
                             onValueChange={handleIntensityChange}
-                            Label1="Amateur"                                
-                            Label2="Experienced"                                
-                            Label3="Professional">                                
-                        </TrainingIntensityToggleBtn>
+                            labels={['Amateur', 'Experienced', 'Professional']}
+                            selectedIndex={0} // Option 2 will be selected initially
+                        />
                     </View>
                 </View>
             </KeyboardAvoidingView>

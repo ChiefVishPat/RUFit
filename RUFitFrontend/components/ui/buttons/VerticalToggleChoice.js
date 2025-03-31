@@ -6,18 +6,19 @@ import {
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-export default function VerticalToggleChoice({ onValueChange, Label1, Label2, Label3 }) {
-
+export default function VerticalToggleChoice({ onValueChange, labels, selectedIndex = 0 }) {
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const [levels, setLevels] = useState([
-        { label: Label1, value: true },
-        { label: Label2, value: false },
-        { label: Label3, value: false },
-    ]);
+    // Initialize levels based on the labels array
+    const [levels, setLevels] = useState(
+        labels.map((label, index) => ({
+            label,
+            value: index === selectedIndex // Only the selectedIndex is true initially
+        }))
+    );
 
     const getValueByLabel = (labelName) => {
         return levels.find(level => level.label === labelName)?.value;
@@ -30,7 +31,7 @@ export default function VerticalToggleChoice({ onValueChange, Label1, Label2, La
                 value: option.label === selectedLabel, // Set selected level to true, others to false
             }))
         );
-        onValueChange(selectedLabel); // sets intensity level for parent (IntensityLevelScreen.js)
+        onValueChange(selectedLabel);
     };
 
     if (!fontsLoaded) {
@@ -43,23 +44,17 @@ export default function VerticalToggleChoice({ onValueChange, Label1, Label2, La
 
     return (
         <View style={styles.container}>
-            <Pressable style={getValueByLabel(Label1) ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress(Label1)}
-            >
-                <Text style={getValueByLabel(Label1) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label1}</Text>
-            </Pressable>
-
-            <Pressable style={getValueByLabel(Label2) ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress(Label2)}
-            >
-                <Text style={getValueByLabel(Label2) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label2}</Text>
-            </Pressable>
-
-            <Pressable style={getValueByLabel(Label3) ? styles.filledPressable : styles.unfilledPressable}
-                onPress={() => handlePress(Label3)}
-            >
-                <Text style={getValueByLabel(Label3) ? styles.pressableLabelText1 : styles.pressableLabelText2}>{Label3}</Text>
-            </Pressable>
+            {levels.map((level) => (
+                <Pressable 
+                    key={level.label}
+                    style={level.value ? styles.filledPressable : styles.unfilledPressable}
+                    onPress={() => handlePress(level.label)}
+                >
+                    <Text style={level.value ? styles.pressableLabelText1 : styles.pressableLabelText2}>
+                        {level.label}
+                    </Text>
+                </Pressable>
+            ))}
         </View>
     );
 }
@@ -85,7 +80,7 @@ const styles = StyleSheet.create({
         color: 'white', // Text color
     },
     filledPressable: {
-        flex: 1,
+        //flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         height: 55,
@@ -97,7 +92,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     unfilledPressable: {
-        flex: 1,
+        //flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         height: 55,

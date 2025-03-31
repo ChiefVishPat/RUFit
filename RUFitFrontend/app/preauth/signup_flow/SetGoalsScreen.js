@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { global_styles, GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
-import TrainingIntensityToggleBtn from "../../../components/ui/buttons/TrainingIntensityToggleBtn";
+import VerticalToggleChoice from "../../../components/ui/buttons/VerticalToggleChoice";
 import { setGoalsPrompts, getValueByLabel } from "../../../components/ui/text_prompts/text_prompts";
 import ModalAlert from '../../../components/ui/alerts/ModalAlert'
 import * as status_constants from '../../../constants/StatusConstants';
@@ -99,12 +99,11 @@ const SetGoalsScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.subText}>What is your diet goal? You may opt out of answering this if you'd like</Text>
                     </View>
                     <View style={styles.forms}>
-                        <TrainingIntensityToggleBtn
+                        <VerticalToggleChoice
                             onValueChange={handleGoalChange}
-                            Label1="Deficit"                                
-                            Label2="Maintain"                                
-                            Label3="Surplus">                                
-                        </TrainingIntensityToggleBtn>
+                            labels={['Deficit', 'Maintain', 'Surplus']}
+                            selectedIndex={1}>                             
+                        </VerticalToggleChoice>
                     </View>
 
                     <View style={styles.subTextContainer}>
