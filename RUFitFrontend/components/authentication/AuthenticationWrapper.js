@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalAlert from '../ui/alerts/ModalAlert';
-import { handleAuthAccess } from './user_auth/UserTokenValidation';
+import { NOT_AUTHENTICATED } from "../../constants/StatusConstants"
+import { checkAuthentication } from './user_auth/UserTokenValidation';
 
 const AuthenticationWrapper = ({ children }) => {
     const navigation = useNavigation();
@@ -11,7 +12,7 @@ const AuthenticationWrapper = ({ children }) => {
     const [alertConfig, setAlertConfig] = useState({
         title: '',
         message: '',
-        onConfirm: () => {},
+        onConfirm: () => { },
     });
 
     const handleLogout = async (config) => {
@@ -33,48 +34,29 @@ const AuthenticationWrapper = ({ children }) => {
     };
 
     useEffect(() => {
-        const checkAuthentication = async () => {
+        const checkAuth = async() => {
             try {
-                const [accessToken, refreshToken] = await Promise.all([
-                    AsyncStorage.getItem('access_token'),
-                    AsyncStorage.getItem('refresh_token'),
-                ]);
-
-                if (!accessToken || !refreshToken) {
+                const auth_response = checkAuthentication();
+                if (auth_response == NOT_AUTHENTICATED) {
                     await handleLogout({
-                        alertTitle: 'Session Expired', 
+                        alertTitle: 'Session Expired',
                         alertMessage: 'Please sign in to continue.'
                     });
-                    return;
                 }
-
-                /* 
-                    - handleAuthAccess will determine if accessToken is valid or exp
-                    - If exp, it will "handle" the expiry --> use refreshToken to fetch
-                    another one
-                    - If refreshToken is also exp (or some error occurs), isValid becomes false
-                */
-                const isValid = await handleAuthAccess(accessToken, refreshToken);
-                if (!isValid) {
-                    await handleLogout({
-                        alertTitle: 'Session Expired', 
-                        alertMessage: 'Please sign in to continue.'
-                    });
-                    return;
+                else{
+                    setIsAuthenticated(true);
                 }
-
-                setIsAuthenticated(true);
-            } catch (error) {
-                console.error('Auth check failed:', error);
+            }
+            catch(error){
+                console.error(error);
                 await handleLogout({
                     alertTitle: 'Error', 
                     alertMessage: 'Failed to verify your session. Please log in again.'
                 });
             }
-        };
-
-        checkAuthentication();
-    }, []); // Removed navigation dependency
+        }
+        checkAuth();
+    }, []);
 
     // Show loading state while checking auth
     if (isAuthenticated === null) {

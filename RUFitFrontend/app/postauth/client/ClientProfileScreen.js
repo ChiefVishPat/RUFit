@@ -1,1 +1,3 @@
-export default function ClientProfileScreen() {}
+export default function ClientProfileScreen() {
+    // const userData = 
+}

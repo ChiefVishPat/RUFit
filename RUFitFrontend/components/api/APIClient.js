@@ -1,5 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { checkAuthentication } from "../authentication/user_auth/UserTokenValidation";
+import { AUTHENTICATED, NOT_AUTHENTICATED } from "../../constants/StatusConstants";
 
 export const APIClient = axios.create({
   baseURL: "http://127.0.0.1:5000",
@@ -9,8 +11,6 @@ export const APIClient = axios.create({
 // Request interceptor to add auth token when needed
 APIClient.interceptors.request.use(
   async (config) => {
-    
-    // convert data in JSON object
     if (config.data && typeof config.data === 'object') {
       config.data = JSON.stringify(config.data);
     }
@@ -18,42 +18,47 @@ APIClient.interceptors.request.use(
     // Check if this request requires authentication
     if (config.sendAccess) {
       try {
-        const accessToken = await AsyncStorage.getItem('access_token');
-        
-        if (accessToken) {
+        const auth_response = await checkAuthentication();
+        if (auth_response === AUTHENTICATED) {
+          const accessToken = await AsyncStorage.getItem('access_token');
           config.headers.Authorization = `Bearer ${accessToken}`;
         } else {
-          console.warn('No access token found in AsyncStorage');
+          // 👇 Reject the request with a custom error
+          return Promise.reject({
+            isAuthError: true,  // Flag to identify auth errors
+            status: 401,
+            message: 'User not authenticated',
+          });
         }
       } catch (error) {
-        console.error('Failed to retrieve access token:', error);
+        return Promise.reject({
+          isAuthError: true,
+          status: 500,
+          message: 'Failed to validate authentication',
+        });
       }
     }
 
     if (config.sendRefresh) {
       try {
         const refreshToken = await AsyncStorage.getItem('refresh_token');
-        
         if (refreshToken) {
           config.headers.Authorization = `Bearer ${refreshToken}`;
         } else {
-          console.warn('No refresh token found in AsyncStorage');
+          return Promise.reject({
+            isAuthError: true,
+            status: 401,
+            message: 'No refresh token found',
+          });
         }
       } catch (error) {
-        console.error('Failed to retrieve refresh token:', error);
+        return Promise.reject({
+          isAuthError: true,
+          status: 500,
+          message: 'Failed to retrieve refresh token',
+        });
       }
     }
-
-    /*
-    console.log('Outgoing Request:', {
-      url: `${config.baseURL}${config.url}`,
-      method: config.method?.toUpperCase(),
-      headers: config.headers,
-      data: config.data,
-    })
-    */
-    
-    
 
     return config;
   },

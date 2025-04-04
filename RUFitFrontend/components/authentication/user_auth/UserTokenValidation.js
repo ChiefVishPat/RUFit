@@ -1,6 +1,46 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AUTHENTICATED, NOT_AUTHENTICATED } from '../../../constants/StatusConstants';
 import { APIClient } from '../../api/APIClient';
 
+/* 
+    THIS IS THE ONLY FUNCTION THAT EXTERNAL SOURCES SHOULD REFERENCE (only one that is being exported)
+    This function will either return:
+      "status_constants.AUTHENTICATED" or
+      "status_constants.NOT_AUTHENTICATED"
+*/
+const checkAuthentication = async () => {
+  try {
+      const [accessToken, refreshToken] = await Promise.all([
+          AsyncStorage.getItem('access_token'),
+          AsyncStorage.getItem('refresh_token'),
+      ]);
+
+      if (!accessToken || !refreshToken) {
+          return NOT_AUTHENTICATED;
+      }
+      /* 
+          - handleAuthAccess will determine if accessToken is valid or exp
+          - If exp, it will "handle" the expiry --> use refreshToken to fetch
+          another one
+          - If refreshToken is also exp (or some error occurs), isValid becomes false
+      */
+      const isValid = await handleAuthAccess(accessToken, refreshToken);
+      if (!isValid) {
+          return NOT_AUTHENTICATED;
+      }
+
+      return AUTHENTICATED;
+  } catch (error) {
+      console.error('Auth check failed:', error);
+      throw error;
+  }
+};
+
+
+/*
+    Handles expired tokens and ensures continouous authentication
+    by fetching new access / refresh tokens
+*/
 export const handleAuthAccess = async (accessToken, refreshToken ) => {
   //console.log(`UserTokenValidation: ${accessToken}`);
   //console.log(`UserTokenValidation: ${refreshToken}`);
@@ -29,6 +69,9 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
   }
 };
 
+/*
+    Fetches new tokens
+*/
 const refreshTokens = async (refreshToken) => {
   try {
     const response = await APIClient.post('/auth/refresh', {}, {sendRefresh:true});
@@ -58,6 +101,11 @@ const refreshTokens = async (refreshToken) => {
   }
 };
 
+/* 
+    Clears tokens for logout
+*/
 const clearTokens = async () => {
   await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
 };
+
+export { checkAuthentication }
