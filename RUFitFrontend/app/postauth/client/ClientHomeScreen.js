@@ -1,14 +1,55 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../../../components/ui/BottomNavBar'; // Import BottomNavBar
 import TopHeader from '../../../components/TopHeader'; // Import TopHeader
 import { APIClient } from '../../../components/api/APIClient';
+import { user_logout } from '../../../components/authentication/user_auth/UserAuthActions';
+import { Button } from 'react-native';
+import { API_REQUEST_SUCCESS } from '../../../constants/StatusConstants';
+import { useNavigation } from '@react-navigation/native';
+import ModalAlert from '../../../components/ui/alerts/ModalAlert';
+import ChoiceAlertModal from '../../../components/ui/alerts/ChoiceAlertModal';
 
 export default function ClientHomeScreen() {
-    
+    const navigation = useNavigation();
+
+    const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+    const [logoutConfirm, setLogoutConfirm] = useState(false);
+
+    const handleLogoutConfirmation = (confirmed) => {
+        setShowLogoutAlert(false);
+        if (confirmed) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "LoginScreen" }]
+          });
+        }
+      };
+      
+      const handleLogOut = async () => {
+        try {
+          const logoutResponse = await user_logout();
+          if (logoutResponse === API_REQUEST_SUCCESS) {
+            setShowLogoutAlert(true); // Show modal and WAIT for user choice
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    // const ModalAlert = ({ isVisible, title, message, onClose }) => {
     return (
         <View style={styles.container}>
+
+            {showLogoutAlert ?
+                <ChoiceAlertModal
+                    isVisible={true}
+                    title={"Logout warning"}
+                    message={"Are you sure you want to logout?"}
+                    onConfirm={() => {handleLogoutConfirmation(true)}}
+                    onCancel={() => {handleLogoutConfirmation(false)}} />
+                : null
+            }
             {/* Reusable Header */}
             <TopHeader
                 title="HOME"
@@ -42,7 +83,10 @@ export default function ClientHomeScreen() {
                     <Text style={styles.cardValue}>100 m</Text>
                     <Text style={styles.cardLabel}>Distance</Text>
                 </View>
+
             </View>
+            <Button title="Btn" onPress={handleLogOut} />
+
         </View>
     );
 }

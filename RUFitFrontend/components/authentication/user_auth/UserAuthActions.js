@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { APIClient } from '../../api/APIClient';
 import * as status_constants from '../../../constants/StatusConstants';
+import { useNavigation } from '@react-navigation/native';
 function setAccessToken(a){ AsyncStorage.setItem('access_token', a); }
 function setRefreshToken(r){ AsyncStorage.setItem('refresh_token', r); }
 
 // registers user with [ email, username, password ] 
+
 const user_registration = async ({ username, password, email }) => {
     // Required fields
     if (!username || !password) {
@@ -50,13 +52,25 @@ const user_login = async ({username, password}) => {
 
     try {
         const response = await APIClient.post('/auth/login', { username, password });
-        setAccessToken(response.data['access_token']);
-        setRefreshToken(response.data['refresh_token']);
+        setAccessToken(response.data?.access_token);
+        setRefreshToken(response.data?.refresh_token);
         return status_constants.API_REQUEST_SUCCESS;
     } catch (error) {
+        console.error(`user_login error: ${error}`);
         return error.response.data.message;
     }
 }
-export { user_registration, user_login, set_user_pref };
+
+const user_logout = async () => {
+    // add line to send request to Flask for logout (handle removal of tokens, etc.)
+    try {
+        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+        return status_constants.API_REQUEST_SUCCESS;
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+export { user_registration, user_login, set_user_pref, user_logout };
 
 // const AuthenticationWrapper = ({ children }) => {

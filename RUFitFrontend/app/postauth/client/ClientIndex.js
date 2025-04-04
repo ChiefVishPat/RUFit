@@ -1,62 +1,41 @@
-/* 
-
-      return (
-        <View style={styles.bottomTab}>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('AuthenticatedClientHomeScreen')}>
-                <Ionicons name="home" size={24} color="white" />
-                <Text style={styles.tabLabel}>Home</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('Activity')}>
-                <Ionicons name="stats-chart" size={24} color="white" />
-                <Text style={styles.tabLabel}>Activity</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('AuthenticatedSavedWorkoutsScreen')}>
-                <Ionicons name="barbell" size={24} color="white" />
-                <Text style={styles.tabLabel}>Workouts</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('Macros')}>
-                <Ionicons name="fast-food" size={24} color="white" />
-                <Text style={styles.tabLabel}>Macros</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('Exercises')}>
-                <Ionicons name="fitness" size={24} color="white" />
-                <Text style={styles.tabLabel}>Exercises</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.tabButton}
-                onPress={() => navigation.navigate('Profile')}>
-                <Ionicons name="person" size={24} color="white" />
-                <Text style={styles.tabLabel}>Profile</Text>
-            </TouchableOpacity>
-        </View>
-    );
-
-*/
-
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
 import { NavigationContainer } from '@react-navigation/native';
+import { APIClient } from '../../../components/api/APIClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Tab = createBottomTabNavigator();
 
 export default function ClientIndex() {
-  console.log("yeah im working");
+  console.log("ClientIndex running");
+  
+  useEffect(() => {
+    const run = async() => {
+      try {
+        const response = await APIClient.get("/userinfo", {sendAccess:true})
+        console.log(response.data);
+      }
+      catch(error){
+        console.error(error);
+      }
+    }
+    run()
+  }, []);
+  
+  const [isReady, setIsReady] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isReady) return null;
   return (
+    
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -101,7 +80,7 @@ export default function ClientIndex() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    position: 'absolute',
+    //position: 'absolute',
     height: 80,
     borderTopWidth: 0,
     backgroundColor: '#CC0033',

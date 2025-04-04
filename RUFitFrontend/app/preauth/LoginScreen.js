@@ -27,9 +27,37 @@ export default function LoginScreen() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [signUpError, setSignUpError] = useState('');
-    
+
+    const handleLogin = async () => {
+        setIsLoading(true);
+        if (username && password) {
+            try {
+                const loginResponse = await user_login({ username, password })
+                if (loginResponse == status_constants.API_REQUEST_SUCCESS) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'ClientIndex' }]
+                      });
+                }
+                else {
+                    setSignUpError(loginResponse); // will be appropriate error message
+                }
+            }
+            catch (error) {
+                console.error(error);
+            }
+            finally {
+                setIsLoading(false);
+            }
+        }
+        else {
+            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
+        }
+    }
+
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -57,25 +85,25 @@ export default function LoginScreen() {
             <View style={styles.inputFieldsContainer}>
                 {/* Username Input */}
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Username"
-                        placeholderTextColor="#aaa"
-                        value={username}
-                        onChangeText={setUsername}
-                    />
+                    style={styles.inputField}
+                    placeholder="Username"
+                    placeholderTextColor="#aaa"
+                    value={username}
+                    onChangeText={setUsername}
+                />
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Password"
-                        placeholderTextColor="#aaa"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
+                    style={styles.inputField}
+                    placeholder="Password"
+                    placeholderTextColor="#aaa"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
             </View>
 
             <View style={styles.errorMessageContainer}>
                 <Text style={styles.errorMessage} >
-                    { signUpError }
+                    {signUpError}
                 </Text>
             </View>
 
@@ -84,27 +112,15 @@ export default function LoginScreen() {
                 <TouchableOpacity
                     style={styles.loginButton}
                     // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={async () => {
-                        if (username && password){
-                            const loginResponse = await user_login({ username, password })
-                            if (loginResponse == status_constants.API_REQUEST_SUCCESS){
-                                navigation.navigate(AuthenticatedClientHomeScreen);
-                            }
-                            else{
-                                setSignUpError(loginResponse); // will be appropriate error message
-                            }
-                        }
-                        else{
-                            setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
-                        }
-                    }}>
+                    onPress={handleLogin}
+                    disabled={isLoading}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                     style={styles.regRedirectButton}
                     // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate(SignupScreen); }}>
+                    onPress={() => { navigation.navigate("SignupScreen"); }}>
                     <Text style={styles.regDirectBtnText}>Don't have an account? Sign up here</Text>
                 </TouchableOpacity>
             </View>

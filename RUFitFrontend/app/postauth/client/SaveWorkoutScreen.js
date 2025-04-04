@@ -45,10 +45,16 @@ export default function SaveWorkoutScreen() {
             return;
         }
 
+        /*
         const validExercises = exercises.filter(
             (ex) => ex.name.trim() && ex.sets && ex.reps && ex.weight
         );
-        if (validExercises.length === 0) {
+         */
+        const validExercises = (exercises || []).filter(
+            (ex) => ex.name.trim() && ex.sets && ex.reps && ex.weight
+        );
+
+        if (!validExercises) {
             Alert.alert(
                 'Validation Error',
                 'At least one valid exercise is required.'
