@@ -110,7 +110,7 @@ export default function ClientHomeScreen({userData, alertConfig}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgb(67, 65, 65)',
+        backgroundColor: '#1F1F1F',
         paddingTop: 50,
     },
     performanceTitle: {

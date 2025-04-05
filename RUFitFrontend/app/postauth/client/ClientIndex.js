@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +12,7 @@ const Tab = createBottomTabNavigator();
 
 export default function ClientIndex() {
 
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
@@ -91,7 +93,7 @@ export default function ClientIndex() {
       <Tab.Screen
         name="Profile"
         component={AuthenticatedClientProfileScreen}
-        initialParams={{userData:userData}}
+        initialParams={{userData:userData, navigation:navigation}}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>
