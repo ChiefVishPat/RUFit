@@ -3,31 +3,48 @@ import AuthenticationWrapper from './AuthenticationWrapper';
 import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
 import SavedWorkoutsScreen from '../../app/postauth/client/SavedWorkoutsScreen';
 import SaveWorkoutScreen from '../../app/postauth/client/SaveWorkoutScreen';
-import ClientProfileScreen from '../../app/postauth/client/ClientProfileScreen';
+import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfileScreen';
+import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
+import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
+import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
 
 // Example: Wrap HomeScreen with ProtectedScreen
-const AuthenticatedClientHomeScreen = () => (
+export const AuthenticatedClientHomeScreen = () => (
     <AuthenticationWrapper>
         <ClientHomeScreen/>
     </AuthenticationWrapper>
 );
-const AuthenticatedSavedWorkoutsScreen = () => (
+export const AuthenticatedSavedWorkoutsScreen = () => (
     <AuthenticationWrapper>
         <SavedWorkoutsScreen />
     </AuthenticationWrapper>
 );
-const AuthenticatedSaveWorkoutScreen = () => (
+export const AuthenticatedSaveWorkoutScreen = () => (
     <AuthenticationWrapper>
         <SaveWorkoutScreen />
     </AuthenticationWrapper>
 );
 
-const AuthenticatedClientProfileScreen = () => (
+export const AuthenticatedClientProfileScreen = () => (
     <AuthenticationWrapper>
         <ClientProfileScreen />
     </AuthenticationWrapper>
 );
 
-// We can write as many exports as we need for protected screens
+export const AuthenticatedMyBodyDataScreen = () => (
+    <AuthenticationWrapper>
+        <MyBodyData />
+    </AuthenticationWrapper>
+);
 
-export { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen, AuthenticatedClientProfileScreen };
+export const AuthenticatedAccountSettingsScreen = () => (
+    <AuthenticationWrapper>
+        <AccountSettings />
+    </AuthenticationWrapper>
+);
+
+export const AuthenticatedProfileSettingsScreen = () => (
+    <AuthenticationWrapper>
+        <ProfileSettings />
+    </AuthenticationWrapper>
+);

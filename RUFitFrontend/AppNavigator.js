@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
-import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from './components/authentication/AuthenticatedScreens';
+import * as authenticated_screens from './components/authentication/AuthenticatedScreens';
 import ClientIndex from './app/postauth/client/ClientIndex';
 import LoginScreen from './app/preauth/LoginScreen';
 import SignupScreen from './app/preauth/signup_flow/SignupScreen';
@@ -65,17 +65,32 @@ const AppNavigator = ({ isAuthenticated }) => {
             {/* Authenticated Screens */}
             <Stack.Screen
                 name="AuthenticatedClientHomeScreen"
-                component={AuthenticatedClientHomeScreen}
+                component={authenticated_screens.AuthenticatedClientHomeScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen
                 name="AuthenticatedSavedWorkoutsScreen"
-                component={AuthenticatedSavedWorkoutsScreen}
+                component={authenticated_screens.AuthenticatedSavedWorkoutsScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen
                 name="AuthenticatedSaveWorkoutScreen"
-                component={AuthenticatedSaveWorkoutScreen}
+                component={authenticated_screens.AuthenticatedSaveWorkoutScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="AuthenticatedMyBodyDataScreen"
+                component={authenticated_screens.AuthenticatedMyBodyDataScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="AuthenticatedAccountSettingsScreen"
+                component={authenticated_screens.AuthenticatedAccountSettingsScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="AuthenticatedProfileSettingsScreen"
+                component={authenticated_screens.AuthenticatedProfileSettingsScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
         </Stack.Navigator>

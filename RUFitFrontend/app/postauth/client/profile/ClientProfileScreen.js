@@ -1,13 +1,13 @@
 import { useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from "react-native";
-import ModalAlert from "../../../components/ui/alerts/ModalAlert";
-import { get_user_profile } from "../../../components/user_data/UserProfileRequests";
-import { GradientScreen } from "../../GlobalStyles"
+import ModalAlert from "../../../../components/ui/alerts/ModalAlert";
+import { get_user_profile } from "../../../../components/user_data/UserProfileRequests";
+import { GradientScreen } from "../../../GlobalStyles"
 import { LinearGradient } from 'expo-linear-gradient';
-import { user_logout } from "../../../components/authentication/user_auth/UserAuthActions";
-import { API_REQUEST_SUCCESS } from "../../../constants/StatusConstants";
-import ChoiceAlertModal from "../../../components/ui/alerts/ChoiceAlertModal";
+import { user_logout } from "../../../../components/authentication/user_auth/UserAuthActions";
+import { API_REQUEST_SUCCESS } from "../../../../constants/StatusConstants";
+import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal";
 
 export default function ClientProfileScreen() {
     const route = useRoute();
@@ -62,23 +62,26 @@ export default function ClientProfileScreen() {
                 </LinearGradient>
 
                 <View style={styles.progressChart}>
-                    <Text style={{color: 'white'}}>some kind of progress chart</Text>
+                    <Text style={{ color: 'white' }}>some kind of progress chart</Text>
                 </View>
 
                 <View style={styles.profileOptionsContainer}>
 
 
-                    <View style={styles.profileOptionCard}>
+                    <TouchableOpacity style={styles.profileOptionCard}
+                        onPress={() => {navigation.navigate('AuthenticatedMyBodyDataScreen', {navigation})}}>
                         <Text style={styles.optionText}>My Body Data</Text>
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={styles.profileOptionCard}>
+                    <TouchableOpacity style={styles.profileOptionCard}
+                        onPress={() => {navigation.navigate('AuthenticatedProfileSettingsScreen', {navigation})}}>
                         <Text style={styles.optionText}>Profile Settings</Text>
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={styles.profileOptionCard}>
+                    <TouchableOpacity style={styles.profileOptionCard}
+                        onPress={() => {navigation.navigate('AuthenticatedAccountSettingsScreen', {navigation})}}>
                         <Text style={styles.optionText}>Account Settings</Text>
-                    </View>
+                    </TouchableOpacity>
 
                     <TouchableOpacity style={styles.profileOptionCard}
                         onPress={handleLogOut}>
