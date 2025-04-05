@@ -1,16 +1,16 @@
 from flask import Flask
 from dotenv import load_dotenv
-from .config import Config
+from .config import Config, DevelopmentConfig
 from .extensions import db, bcrypt, jwt
 from .routes.auth import auth_bp
 from .routes.workouts import workouts_bp
 from .routes.userinfo import userinfo_bp
 from .logging_config import logger
 
-def create_app():
+def create_app(config_class=Config):
     load_dotenv()
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
     app.config['JWT_SECRET_KEY'] = Config.JWT_SECRET_KEY
     app.config["JWT_ALGORITHM"] = "HS256"
 

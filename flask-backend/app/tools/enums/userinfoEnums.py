@@ -1,23 +1,23 @@
 from enum import Enum
 
 class TrainingIntensityLevels(Enum):
-    AMATEUR = "Amateur"
-    EXPERIENCED = "Experienced"
-    PROFESSIONAL = "Professional"
+    AMATEUR = "AMATEUR"
+    EXPERIENCED = "EXPERIENCED"
+    PROFESSIONAL = "PROFESSIONAL"
 
 class GenderChoices(Enum):
-    MALE = "Male"
-    FEMALE = "Female"
-    OTHER = "Other"
+    MALE = "MALE"
+    FEMALE = "FEMALE"
+    OTHER = "OTHER"
 
 class TrainingGoals(Enum):
-    DEFICIT = "Deficit"
-    SURPLUS = "Surplus"
-    MAINTAIN = "Maintain"
+    DEFICIT = "DEFICIT"
+    SURPLUS = "SURPLUS"
+    MAINTAIN = "MAINTAIN"
 
 class WeightUnits(Enum):
-    KG = "kg"
-    LB = "lb"
+    KG = "KG"
+    LB = "LB"
 
 class HeightUnits(Enum):
     SI = "SI"

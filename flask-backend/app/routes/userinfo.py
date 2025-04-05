@@ -5,6 +5,7 @@ from app.extensions import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.logging_config import logger
 from ..tools.unit_conversion import SI_to_US_height, SI_to_US_weight
+from ..tools.enums.userinfoEnums import *
 
 userinfo_bp = Blueprint('userinfo', __name__, url_prefix='/userinfo')
 
@@ -17,23 +18,23 @@ def create_userinfo():
     logger.info(data)
 
     #age = data.get('age')
-    gender = data.get('gender')
+    gender = str(data.get('gender')).upper()
     weight = int(data.get('weight'))
-    weight_unit = data.get('weightUnit')
+    weight_unit = str(data.get('weightUnit')).upper()
 
     # convert weight to pounds if necessary:
-    if weight_unit == "kg":
+    if weight_unit == "KG":
         weight = SI_to_US_weight(weight)
 
     height_ft = int(data.get('heightValue1'))
     height_in = int(data.get('heightValue2'))
-    height_unit = data.get('heightUnit')
+    height_unit = str(data.get('heightUnit')).upper()
 
     if height_unit == "SI":
         height_ft, height_in = SI_to_US_height(height_ft, height_in)
     
-    training_intensity = data.get('trainingIntensity')
-    goal = data.get('goal')
+    training_intensity = str(data.get('trainingIntensity')).upper()
+    goal = str(data.get('goal')).upper()
 
     logger.info("User %s is submitting userinfo", user_id)
 
@@ -46,10 +47,14 @@ def create_userinfo():
         return jsonify({'message': 'You must enter a value for all fields'}), 400
 
     new_userinfo = Userinfo(
-        user_id=user_id, weight=weight, weight_unit=weight_unit,
-        height_ft=height_ft, height_in=height_in, height_unit=height_unit,
-        gender=gender, training_intensity=training_intensity, goal=goal
+        user_id=user_id, weight=weight, weight_unit=WeightUnits(weight_unit),
+        height_ft=height_ft, height_in=height_in, height_unit=HeightUnits(height_unit),
+        gender=GenderChoices(gender), training_intensity=TrainingIntensityLevels(training_intensity), goal=TrainingGoals(goal)
     )
+    
+    logger.info(gender)
+    logger.info(GenderChoices(gender))
+
     db.session.add(new_userinfo)
     db.session.commit()
 
@@ -68,6 +73,7 @@ def get_userinfo():
         return jsonify({'message': 'User info not found'}), 404
 
     logger.info("User info retrieved for user %s", user_id)
+    logger.info(userinfo)
     return jsonify({
         'username':user.username,
         'email':user.email,
