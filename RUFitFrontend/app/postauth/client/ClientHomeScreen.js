@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../../../components/ui/BottomNavBar'; // Import BottomNavBar
@@ -7,47 +7,62 @@ import { APIClient } from '../../../components/api/APIClient';
 import { user_logout } from '../../../components/authentication/user_auth/UserAuthActions';
 import { Button } from 'react-native';
 import { API_REQUEST_SUCCESS } from '../../../constants/StatusConstants';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute} from '@react-navigation/native';
 import ModalAlert from '../../../components/ui/alerts/ModalAlert';
 import ChoiceAlertModal from '../../../components/ui/alerts/ChoiceAlertModal';
 
-export default function ClientHomeScreen() {
+export default function ClientHomeScreen({userData, alertConfig}) {
+
     const navigation = useNavigation();
+    const route = useRoute();
 
+    const [showUserDataAlert, setShowUserDataAlert] = useState(userData ? false : true);
+    
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-    const [logoutConfirm, setLogoutConfirm] = useState(false);
+    // const [logoutConfirm, setLogoutConfirm] = useState(false);
 
+    const handleLogOut = async () => {
+        try {
+            const logoutResponse = await user_logout();
+            if (logoutResponse === API_REQUEST_SUCCESS) {
+                setShowLogoutAlert(true); // Show modal and WAIT for user choice
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    
     const handleLogoutConfirmation = (confirmed) => {
         setShowLogoutAlert(false);
         if (confirmed) {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "LoginScreen" }]
-          });
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "LoginScreen" }]
+            });
         }
-      };
-      
-      const handleLogOut = async () => {
-        try {
-          const logoutResponse = await user_logout();
-          if (logoutResponse === API_REQUEST_SUCCESS) {
-            setShowLogoutAlert(true); // Show modal and WAIT for user choice
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      };
-    // const ModalAlert = ({ isVisible, title, message, onClose }) => {
+    };
+
     return (
         <View style={styles.container}>
+
+            {/*
+            {showUserDataAlert ?
+                <ModalAlert
+                    isVisible={showUserDataAlert}
+                    title={alertConfig.title}
+                    message={alertConfig.message}
+                    onConfirm={() => { setShowUserDataAlert(false) }}>
+                </ModalAlert> : null}
+             */}
+            
 
             {showLogoutAlert ?
                 <ChoiceAlertModal
                     isVisible={true}
                     title={"Logout warning"}
                     message={"Are you sure you want to logout?"}
-                    onConfirm={() => {handleLogoutConfirmation(true)}}
-                    onCancel={() => {handleLogoutConfirmation(false)}} />
+                    onConfirm={() => { handleLogoutConfirmation(true) }}
+                    onCancel={() => { handleLogoutConfirmation(false) }} />
                 : null
             }
             {/* Reusable Header */}

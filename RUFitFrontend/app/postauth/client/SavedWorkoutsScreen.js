@@ -11,10 +11,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import TopHeader from '../../../components/TopHeader';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function SavedWorkoutsScreen() {
     const navigation = useNavigation();
+    const route = useRoute();
 
     const [workouts, setWorkouts] = useState([
         {

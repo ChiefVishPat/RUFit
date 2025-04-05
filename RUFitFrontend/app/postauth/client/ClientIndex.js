@@ -1,41 +1,58 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
-import { NavigationContainer } from '@react-navigation/native';
-import { APIClient } from '../../../components/api/APIClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
+import ModalAlert from '../../../components/ui/alerts/ModalAlert';
 
 const Tab = createBottomTabNavigator();
 
 export default function ClientIndex() {
-  console.log("ClientIndex running");
-  
+
+  const [loading, setLoading] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    title: '',
+    message: '',
+  });
+
+  const [userData, setUserData] = useState(null);
+
   useEffect(() => {
-    const run = async() => {
+    const getUserData = async () => {
       try {
-        const response = await APIClient.get("/userinfo", {sendAccess:true})
-        console.log(response.data);
+        const response = await get_user_profile();
+        console.log(`User profile response: ${response}`);
+        setUserData(response);
       }
-      catch(error){
+      catch (error) {
         console.error(error);
+        setShowAlert(true);
+        setAlertConfig({
+          title: "Error",
+          message: "Unable to retrieve user data",
+        })
+      }
+      finally{
+        setLoading(false);
       }
     }
-    run()
+    getUserData();
   }, []);
-  
+
+  /*
   const [isReady, setIsReady] = React.useState(false);
 
   React.useEffect(() => {
     const timer = setTimeout(() => setIsReady(true), 100);
     return () => clearTimeout(timer);
   }, []);
+  */
 
-  if (!isReady) return null;
+  if (loading) return null;
   return (
-    
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -62,16 +79,19 @@ export default function ClientIndex() {
       <Tab.Screen
         name="Home"
         component={AuthenticatedClientHomeScreen}
+        initialParams={{userData:userData, alertConfig:alertConfig}}
         options={{ title: 'Home' }}
       />
       <Tab.Screen
         name="Workouts"
         component={AuthenticatedSavedWorkoutsScreen}
+        initialParams={{userData:userData}}
         options={{ title: 'Workouts' }}
       />
       <Tab.Screen
         name="Profile"
         component={AuthenticatedClientProfileScreen}
+        initialParams={{userData:userData}}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>

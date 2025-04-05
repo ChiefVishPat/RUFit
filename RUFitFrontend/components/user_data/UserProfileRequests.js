@@ -1,3 +1,4 @@
+import { API_REQUEST_SUCCESS } from "../../constants/StatusConstants";
 import { APIClient } from "../api/APIClient"
 
 /*
@@ -7,10 +8,11 @@ import { APIClient } from "../api/APIClient"
 
 const get_user_profile = async() => {
     try {
-        const response = APIClient.get("/userinfo", {sendAccess:true});
+        const response = await APIClient.get("/userinfo", {sendAccess:true});
+        return response.data;
     }
     catch(error){
-        throw error;
+        return error;
     }
     
     

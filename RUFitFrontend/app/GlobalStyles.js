@@ -51,8 +51,7 @@ export const global_styles = StyleSheet.create({
     },
 });
 
-export const GradientScreen = ({ children }) => {
-    
+export const GradientScreen = ({ children }) => {    
     return (
         <LinearGradient
                 colors={[background_color, 'darkred']} // Adjust colors as needed
