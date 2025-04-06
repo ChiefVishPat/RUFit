@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -11,23 +11,37 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../../../components/BottomNavBar';
 import TopHeader from '../../../components/TopHeader';
-
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { APIClient } from '../../../components/api/APIClient';
 
 export default function SavedWorkoutsScreen() {
     const navigation = useNavigation();
+    const [sessions, setSessions] = useState([]);
 
-    const [workouts, setWorkouts] = useState([
-        {
-            id: '1',
-            name: 'Full Body Workout',
-            date: '2025-03-05',
-            exercises: 5,
-        },
-        { id: '2', name: 'Upper Body Blast', date: '2025-03-04', exercises: 4 },
-    ]);
+    const fetchWorkouts = async () => {
+        try {
+            const response = await APIClient.get('/workout');
+            // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
+            setSessions(response.data);
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                console.log('User not authorized, setting sessions to empty');
+                setSessions([]);
+            } else {
+                console.error(error);
+                Alert.alert('Error', 'Failed to fetch workouts.');
+            }
+        }
+    };
 
-    const handleDelete = (id) => {
+    // Refresh data when the screen gains focus
+    useFocusEffect(
+        useCallback(() => {
+            fetchWorkouts();
+        }, [])
+    );
+
+    const handleDelete = async (session_id) => {
         Alert.alert(
             'Delete Workout',
             'Are you sure you want to delete this workout?',
@@ -35,10 +49,19 @@ export default function SavedWorkoutsScreen() {
                 { text: 'Cancel', style: 'cancel' },
                 {
                     text: 'Delete',
-                    onPress: () => {
-                        setWorkouts(
-                            workouts.filter((workout) => workout.id !== id)
-                        );
+                    onPress: async () => {
+                        try {
+                            await APIClient.delete(`/workout/${session_id}`);
+                            setSessions(
+                                sessions.filter(
+                                    (session) =>
+                                        session.session_id !== session_id
+                                )
+                            );
+                        } catch (error) {
+                            console.error(error);
+                            Alert.alert('Error', 'Failed to delete workout.');
+                        }
                     },
                     style: 'destructive',
                 },
@@ -50,27 +73,27 @@ export default function SavedWorkoutsScreen() {
         <TouchableOpacity
             style={styles.workoutCard}
             onPress={() =>
-                navigation.navigate('WorkoutDetailScreen', {
-                    workoutId: item.id,
+                navigation.navigate('AuthenticatedWorkoutDetailScreen', {
+                    session: item,
                 })
             }>
             <View>
-                <Text style={styles.workoutName}>{item.name}</Text>
+                <Text style={styles.workoutName}>{item.workout_name}</Text>
                 <Text style={styles.workoutDetails}>
-                    {item.exercises} exercises • {item.date}
+                    {item.exercises ? item.exercises.length : 0} exercises •{' '}
+                    {item.date}
                 </Text>
             </View>
-
             <View style={styles.cardActions}>
                 <TouchableOpacity
                     onPress={() =>
                         navigation.navigate('AuthenticatedSaveWorkoutScreen', {
-                            workoutId: item.id,
+                            session: item,
                         })
                     }>
                     <Ionicons name="create" size={24} color="#2DC5F4" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                <TouchableOpacity onPress={() => handleDelete(item.session_id)}>
                     <Ionicons
                         name="trash"
                         size={24}
@@ -86,10 +109,11 @@ export default function SavedWorkoutsScreen() {
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 <TopHeader title="Saved Workouts" showBackButton={true} />
-
                 <FlatList
-                    data={workouts}
-                    keyExtractor={(item) => item.id}
+                    data={sessions}
+                    keyExtractor={(item, index) =>
+                        item.session_id || index.toString()
+                    }
                     renderItem={renderWorkout}
                     contentContainerStyle={styles.listContainer}
                     ListEmptyComponent={
@@ -98,14 +122,14 @@ export default function SavedWorkoutsScreen() {
                         </Text>
                     }
                 />
-
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => navigation.navigate('AuthenticatedSaveWorkoutScreen')}>
+                    onPress={() =>
+                        navigation.navigate('AuthenticatedSaveWorkoutScreen')
+                    }>
                     <Ionicons name="add-circle" size={24} color="white" />
                     <Text style={styles.addButtonText}>Add New Workout</Text>
                 </TouchableOpacity>
-
                 <BottomNavBar />
             </View>
         </SafeAreaView>
@@ -123,7 +147,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         padding: 20,
-        paddingBottom: 100, // Ensures list is not covered by the button
+        paddingBottom: 100, // Extra space for the add button
     },
     workoutCard: {
         backgroundColor: '#333',

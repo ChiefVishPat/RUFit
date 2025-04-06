@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
-import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from './components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen, AuthenticatedWorkoutDetailScreen } from './components/authentication/AuthenticatedScreens';
 import LoginScreen from './app/preauth/LoginScreen';
 import SignupScreen from './app/preauth/signup_flow/SignupScreen';
 import UserProfileSetup from './app/preauth/signup_flow/UserProfileSetup';
@@ -70,6 +70,11 @@ const AppNavigator = ({ isAuthenticated }) => {
             <Stack.Screen
                 name="AuthenticatedSaveWorkoutScreen"
                 component={AuthenticatedSaveWorkoutScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="AuthenticatedWorkoutDetailScreen"
+                component={AuthenticatedWorkoutDetailScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
         </Stack.Navigator>
