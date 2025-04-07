@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import TopHeader from '../../../components/TopHeader';
-import BottomNavBar from '../../../components/BottomNavBar';
 import { useRoute } from '@react-navigation/native';
 
 export default function WorkoutDetailScreen() {
@@ -13,7 +12,6 @@ export default function WorkoutDetailScreen() {
             <View style={styles.container}>
                 <TopHeader title="Workout Details" showBackButton={true} />
                 <Text style={styles.error}>No workout details available.</Text>
-                <BottomNavBar />
             </View>
         );
     }
@@ -34,7 +32,6 @@ export default function WorkoutDetailScreen() {
                     </View>
                 ))}
             </ScrollView>
-            <BottomNavBar />
         </View>
     );
 }

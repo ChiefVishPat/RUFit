@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../../../components/ui/BottomNavBar'; // Import BottomNavBar
 import TopHeader from '../../../components/TopHeader'; // Import TopHeader
-import { APIClient } from '../../../components/api/APIClient';
 import { user_logout } from '../../../components/authentication/user_auth/UserAuthActions';
 import { Button } from 'react-native';
 import { API_REQUEST_SUCCESS } from '../../../constants/StatusConstants';
 import { useNavigation, useRoute} from '@react-navigation/native';
-import ModalAlert from '../../../components/ui/alerts/ModalAlert';
 import ChoiceAlertModal from '../../../components/ui/alerts/ChoiceAlertModal';
 
 export default function ClientHomeScreen({userData, alertConfig}) {

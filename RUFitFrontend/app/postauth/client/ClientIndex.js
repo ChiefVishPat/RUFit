@@ -4,9 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
-import ModalAlert from '../../../components/ui/alerts/ModalAlert';
 
 const Tab = createBottomTabNavigator();
 
