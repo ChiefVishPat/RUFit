@@ -3,6 +3,7 @@ import AuthenticationWrapper from './AuthenticationWrapper';
 import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
 import SavedWorkoutsScreen from '../../app/postauth/client/SavedWorkoutsScreen';
 import SaveWorkoutScreen from '../../app/postauth/client/SaveWorkoutScreen';
+import WorkoutDetailScreen from '../../app/postauth/client/WorkoutDetailScreen';
 import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfileScreen';
 import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
 import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
@@ -22,6 +23,11 @@ export const AuthenticatedSavedWorkoutsScreen = () => (
 export const AuthenticatedSaveWorkoutScreen = () => (
     <AuthenticationWrapper>
         <SaveWorkoutScreen />
+    </AuthenticationWrapper>
+);
+export const AuthenticatedWorkoutDetailScreen = () => (
+    <AuthenticationWrapper>
+        <WorkoutDetailScreen />
     </AuthenticationWrapper>
 );
 

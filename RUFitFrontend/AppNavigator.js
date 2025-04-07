@@ -93,6 +93,11 @@ const AppNavigator = ({ isAuthenticated }) => {
                 component={authenticated_screens.AuthenticatedProfileSettingsScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+            <Stack.Screen
+                name="AuthenticatedWorkoutDetailScreen"
+                component={AuthenticatedWorkoutDetailScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
         </Stack.Navigator>
     );
 };
