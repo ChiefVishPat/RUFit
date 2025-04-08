@@ -12,12 +12,13 @@ tracker_bp = Blueprint('tracker', __name__, url_prefix='/tracker')
 def create_tracker():
     user_id = get_jwt_identity()
     data = request.get_json()
-    today = datetime.datetime.utcnow().date()
 
+    # Get today's date
+    today = datetime.datetime.utcnow().date()    
     # Retrieve any existing tracker record for today
     tracker_record = Tracker.query.filter_by(user_id=user_id, date=today).first()
 
-    # Require food name for tracking
+    # Require a food name in the payload for tracking
     food_name = data.get('food_name')
     if not food_name:
         logger.warning("Tracker creation failed: Food name is required for user %s", user_id)
@@ -40,7 +41,7 @@ def create_tracker():
             db.session.add(tracker_record)
             logger.info("Created new tracker record for user %s on %s", user_id, today)
         else:
-            # Update the existing tracker record for today
+            # Update the existing tracker record by adding new values
             tracker_record.calorie += data.get('calories', 0)
             tracker_record.protein += data.get('protein', 0)
             tracker_record.unsat_fat += data.get('unsaturated_fats', 0)
@@ -77,10 +78,11 @@ def get_tracker():
 
     return jsonify({
         'date': tracker_record.date.strftime('%Y-%m-%d'),
+        'food_name': tracker_record.food_name,
         'calories': tracker_record.calorie,
         'protein': tracker_record.protein,
         'carbs': tracker_record.carbs,
         'fiber': tracker_record.fiber,
         'unsat_fat': tracker_record.unsat_fat,
-        'sat_fat': tracker_record.sat_fat,
+        'sat_fat': tracker_record.sat_fat
     }), 200
