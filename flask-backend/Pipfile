@@ -19,6 +19,7 @@ pre-commit = "*"
 loguru = "*"
 
 [dev-packages]
+ruff = "*"
 
 [requires]
 python_version = ">=3.10"
