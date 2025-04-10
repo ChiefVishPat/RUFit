@@ -4,6 +4,8 @@ cm_to_in_multiplier = 0.394
 """
     Converts SI weight unit (kg) to US weight unit (lb)
 """
+
+
 def SI_to_US_weight(kg):
     return kg * 2.205
 

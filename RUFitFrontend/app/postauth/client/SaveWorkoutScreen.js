@@ -17,7 +17,7 @@ import { APIClient } from '../../../components/api/APIClient';
 export default function SaveWorkoutScreen() {
     const navigation = useNavigation();
     const route = useRoute();
-    // When editing, the existing session is passed as "session"
+    // When editing, an existing session is passed as "session"
     const existingSession = route.params?.session;
 
     const [workoutName, setWorkoutName] = useState('');
@@ -34,7 +34,10 @@ export default function SaveWorkoutScreen() {
                 name: ex.exercise,
                 sets: String(ex.sets),
                 reps: String(ex.reps),
-                weight: String(ex.weight),
+                weight:
+                    ex.weight !== undefined && ex.weight !== null
+                        ? String(ex.weight)
+                        : '',
             }));
             setExercises(loadedExercises);
         }
@@ -67,16 +70,18 @@ export default function SaveWorkoutScreen() {
             return;
         }
 
-        /*
-        const validExercises = exercises.filter(
-            (ex) => ex.name.trim() && ex.sets && ex.reps && ex.weight !== ''
-        );
-         */
+        // Updated validation: allow weight of 0 by checking if weight is not an empty string
         const validExercises = (exercises || []).filter(
-            (ex) => ex.name.trim() && ex.sets && ex.reps && ex.weight
+            (ex) =>
+                ex.name.trim() &&
+                ex.sets &&
+                ex.reps &&
+                ex.weight !== '' &&
+                ex.weight !== undefined &&
+                ex.weight !== null
         );
 
-        if (!validExercises) {
+        if (validExercises.length === 0) {
             Alert.alert(
                 'Validation Error',
                 'At least one valid exercise is required.'
@@ -93,10 +98,7 @@ export default function SaveWorkoutScreen() {
             let response;
             if (existingSession) {
                 // Update the existing session using PUT with the session_id
-                response = await APIClient.put(
-                    `/workout/${existingSession.session_id}`,
-                    payload
-                );
+                response = await APIClient.put(`/workout/${existingSession.session_id}`,payload);
             } else {
                 // Create a new workout session
                 response = await APIClient.post('/workout', payload);

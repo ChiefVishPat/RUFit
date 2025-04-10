@@ -171,13 +171,13 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 80, // Positioned above the BottomNavBar
+        bottom: 80,
         left: 20,
         right: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#2DC5F4',
+        backgroundColor: '#CC0033',
         padding: 15,
         borderRadius: 8,
     },

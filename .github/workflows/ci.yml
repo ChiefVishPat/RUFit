@@ -28,8 +28,11 @@ jobs:
       - name: Install dependencies
         run: pipenv install --dev
 
-      - name: Run Ruff Linter
-        run: pipenv run ruff check . --fix
+      - name: Fix import order with Ruff
+        run: pipenv run ruff check --select I --fix .
+
+      - name: Format code with Ruff
+        run: pipenv run ruff format .
 
       - name: Run Unit Tests
         run: pipenv run pytest

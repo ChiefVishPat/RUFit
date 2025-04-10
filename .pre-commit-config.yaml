@@ -3,5 +3,7 @@ repos:
     rev: v0.11.4
     hooks:
       - id: ruff
-        args: [--fix]  # Automatically fix linter issues on commit
+        name: Ruff Lint and Fix Imports
+        args: [--select, I, --fix]
       - id: ruff-format
+        name: Ruff Format Code
