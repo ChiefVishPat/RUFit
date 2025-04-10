@@ -1,0 +1,16 @@
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "C90"]
+ignore = ["E501"]
+
+exclude = [
+  "node_modules",
+  ".git",
+  "__pycache__",
+  ".venv",
+  "env",
+  "build",
+  "dist",
+  "logs"
+]

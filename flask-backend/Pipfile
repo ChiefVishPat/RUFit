@@ -12,9 +12,11 @@ flask-bcrypt = "*"
 flask-jwt-extended = "*"
 python-dotenv = "*"
 pymysql = "*"
-rich = "*"
 flask-migrate = "*"
 flask-backend = {file = ".", editable = true}
+ruff = "*"
+pre-commit = "*"
+loguru = "*"
 
 [dev-packages]
 
