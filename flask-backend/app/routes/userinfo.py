@@ -5,85 +5,97 @@ from app.extensions import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.logging_config import logger
 from ..tools.unit_conversion import SI_to_US_height, SI_to_US_weight
-from ..tools.enums.userinfoEnums import *
+from ..tools.enums.userinfoEnums import GenderChoices, WeightUnits, HeightUnits, TrainingIntensityLevels, TrainingGoals
 
-userinfo_bp = Blueprint('userinfo', __name__, url_prefix='/userinfo')
+userinfo_bp = Blueprint("userinfo", __name__, url_prefix="/userinfo")
 
-@userinfo_bp.route('', methods=['POST'])
+
+@userinfo_bp.route("", methods=["POST"])
 @jwt_required()
 def create_userinfo():
     user_id = get_jwt_identity()
-    data = request.get_json().get('user_data')
-    logger.info(request)
-    logger.info(data)
+    data = request.get_json().get("user_data")
+    if not data:
+        logger.warning(f"No user data provided for user {user_id}")
+        return jsonify({"message": "No user data provided"}), 400
 
-    #age = data.get('age')
-    gender = str(data.get('gender')).upper()
-    weight = int(data.get('weight'))
-    weight_unit = str(data.get('weightUnit')).upper()
+    try:
+        weight = int(data.get("weight"))
+        height_ft = int(data.get("heightValue1"))
+        height_in = int(data.get("heightValue2"))
+    except (ValueError, TypeError) as ve:
+        logger.warning(f"Invalid numeric values provided for user {user_id}: {ve}")
+        return jsonify({"message": "Invalid numeric values provided"}), 400
 
-    # convert weight to pounds if necessary:
-    if weight_unit == "KG":
-        weight = SI_to_US_weight(weight)
+    gender = data.get("gender")
+    weight_unit = data.get("weightUnit")
+    height_unit = data.get("heightUnit")
+    training_intensity = str(data.get("trainingIntensity")).upper()
+    goal = str(data.get("goal")).upper()
 
-    height_ft = int(data.get('heightValue1'))
-    height_in = int(data.get('heightValue2'))
-    height_unit = str(data.get('heightUnit')).upper()
+    try:
+        # Convert SI units if needed
+        if height_unit == "SI":
+            height_ft, height_in = SI_to_US_height(height_ft, height_in)
+        if weight_unit.lower() == "kg":
+            weight = SI_to_US_weight(weight)
+    except Exception as e:
+        logger.error(f"Conversion error for user {user_id}: {e}")
+        return jsonify({"message": "Conversion error"}), 500
 
-    if height_unit == "SI":
-        height_ft, height_in = SI_to_US_height(height_ft, height_in)
-    
-    training_intensity = str(data.get('trainingIntensity')).upper()
-    goal = str(data.get('goal')).upper()
+    try:
+        new_userinfo = Userinfo(
+            user_id=user_id,
+            weight=weight,
+            weight_unit=WeightUnits(weight_unit),
+            height_ft=height_ft,
+            height_in=height_in,
+            height_unit=HeightUnits(height_unit),
+            gender=GenderChoices(gender),
+            training_intensity=TrainingIntensityLevels(training_intensity),
+            goal=TrainingGoals(goal),
+        )
+        db.session.add(new_userinfo)
+        db.session.commit()
+        logger.info(f"Created userinfo for user {user_id}")
+        return jsonify({"message": "User info updated successfully"}), 201
 
-    logger.info("User %s is submitting userinfo", user_id)
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error creating userinfo for user {user_id}: {e}")
+        return jsonify({"message": "Internal Server Error"}), 500
 
-    if height_in is not None and (height_in < 0 or height_in > 11):
-        logger.warning("User %s provided invalid height_in: %s", user_id, height_in)
-        return jsonify({'message': 'Height in inches must be between 0 and 11'}), 400
 
-    if not all([weight, weight_unit, training_intensity, height_ft, height_in, height_unit, gender, goal]):
-        logger.warning("User %s failed to provide all required fields", user_id)
-        return jsonify({'message': 'You must enter a value for all fields'}), 400
-
-    new_userinfo = Userinfo(
-        user_id=user_id, weight=weight, weight_unit=WeightUnits(weight_unit),
-        height_ft=height_ft, height_in=height_in, height_unit=HeightUnits(height_unit),
-        gender=GenderChoices(gender), training_intensity=TrainingIntensityLevels(training_intensity), goal=TrainingGoals(goal)
-    )
-    
-    logger.info(gender)
-    logger.info(GenderChoices(gender))
-
-    db.session.add(new_userinfo)
-    db.session.commit()
-
-    logger.info("User %s userinfo created successfully", user_id)
-    return jsonify({'message': 'New user data set!'}), 201
-
-@userinfo_bp.route('', methods=['GET'])
+@userinfo_bp.route("", methods=["GET"])
 @jwt_required()
 def get_userinfo():
     user_id = get_jwt_identity()
-    user = User.query.filter_by(id=user_id).first()
-    userinfo = Userinfo.query.filter_by(user_id=user_id).first()
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        userinfo = Userinfo.query.filter_by(user_id=user_id).first()
+    except Exception as e:
+        logger.error(f"Error fetching user info for user {user_id}: {e}")
+        return jsonify({"message": "Internal Server Error"}), 500
 
     if not userinfo:
-        logger.warning("User info not found for user %s", user_id)
-        return jsonify({'message': 'User info not found'}), 404
+        logger.warning(f"Userinfo not found for user {user_id}")
+        return jsonify({"message": "User info not found"}), 404
 
-    logger.info("User info retrieved for user %s", user_id)
-    logger.info(userinfo)
-    return jsonify({
-        'username':user.username,
-        'email':user.email,
-        'gender': userinfo.gender.value,
-        #'age': userinfo.age,
-        'weight': userinfo.weight,
-        'weight_unit': userinfo.weight_unit.value,
-        'height_ft': userinfo.height_ft,
-        'height_in': userinfo.height_in,
-        'height_unit': userinfo.height_unit.value,
-        'training_intensity': userinfo.training_intensity.value,
-        'goal': userinfo.goal.value
-    }), 200
+    try:
+        response = {
+            "username": user.username if user else "",
+            "email": user.email if user else "",
+            "gender": userinfo.gender.value,
+            "weight": userinfo.weight,
+            "weight_unit": userinfo.weight_unit.value,
+            "height_ft": userinfo.height_ft,
+            "height_in": userinfo.height_in,
+            "height_unit": userinfo.height_unit.value,
+            "training_intensity": userinfo.training_intensity.value,
+            "goal": userinfo.goal.value,
+        }
+        logger.info(f"Fetched user info for user {user_id}")
+        return jsonify(response), 200
+    except Exception as e:
+        logger.error(f"Error processing user info for user {user_id}: {e}")
+        return jsonify({"message": "Internal Server Error"}), 500
