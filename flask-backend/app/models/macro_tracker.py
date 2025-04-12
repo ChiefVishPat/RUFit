@@ -7,6 +7,8 @@ class Tracker(db.Model):
     food_name = db.Column(db.String(255), nullable=False)
     date = db.Column(db.Date, nullable=False)
 
+    barcode = db.Column(db.String(50), nullable=True) #keep nullable true so that it remains an optional field
+
     # Macros: using integer for calorie and floats for the others.
     calorie = db.Column(db.Integer, default=0)
     carbs = db.Column(db.Float, default=0.0)

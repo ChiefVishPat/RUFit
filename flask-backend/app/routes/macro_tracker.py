@@ -6,6 +6,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.extensions import db
 from app.logging_config import logger
 from app.models.macro_tracker import Tracker
+import request
 
 tracker_bp = Blueprint('tracker', __name__, url_prefix='/tracker')
 
@@ -55,6 +56,39 @@ def create_tracker():
         logger.error(f'Error updating tracker for user {user_id}: {e}')
         return jsonify({'message': 'Internal Server Error'}), 500
 
+#code below is a skeleton for the barcode back end, not functinal as intended yet
+'''
+@app.route('/api/scan-barcode', methods=['POST'])
+@jwt_required()
+def scan_barcode():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    barcode = data.get('barcode')
+
+    if not barcode:
+        return jsonify({'error': 'No barcode provided'}), 400
+
+    url = f'https://world.openfoodfacts.org/api/v0/product/{barcode}.json'
+    res = requests.get(url)
+
+    if res.status_code != 200 or res.json().get('status') != 1:
+        return jsonify({'error': 'Product not found'}), 404
+
+    product = res.json()['product']
+    nutriments = product.get('nutriments', {})
+
+    #dictionary for the api
+    macro= {
+        'food_name': product.get('product_name', 'Unknown'),
+        'calories': nutriments.get('energy-kcal_100g', 0),
+        'protein': nutriments.get('proteins_100g', 0),
+        'carbs': nutriments.get('carbohydrates_100g', 0),
+        'fat': nutriments.get('fat_100g', 0),
+    }
+
+    # You could save this to a FoodLog model here too if needed
+    return jsonify(tracker), 200
+'''
 
 @tracker_bp.route('', methods=['GET'])
 @jwt_required()
