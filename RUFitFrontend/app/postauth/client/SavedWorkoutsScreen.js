@@ -122,15 +122,15 @@ export default function SavedWorkoutsScreen() {
                         </Text>
                     }
                 />
-                <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() =>
-                        navigation.navigate('AuthenticatedSaveWorkoutScreen')
-                    }>
-                    <Ionicons name="add-circle" size={24} color="white" />
-                    <Text style={styles.addButtonText}>Add New Workout</Text>
-                </TouchableOpacity>
             </View>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() =>
+                    navigation.navigate('AuthenticatedSaveWorkoutScreen')
+                }>
+                <Ionicons name="add-circle" size={24} color="white" />
+                <Text style={styles.addButtonText}>Add New Workout</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -171,15 +171,21 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 80,
+        bottom: 30,
         left: 20,
         right: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#CC0033',
-        padding: 15,
+        padding: 20,
         borderRadius: 8,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 5, //IOS
+        elevation: 2, // Android
     },
     addButtonText: {
         color: 'white',

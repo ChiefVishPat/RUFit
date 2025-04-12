@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-
+from flask_jwt_extended import jwt_required
 from app.logging_config import logger
 from app.services.auth_service import login_user, register_user
 
@@ -49,6 +49,7 @@ def login():
 
 
 @auth_bp.route('/refresh', methods=['POST'])
+@jwt_required()
 def refresh():
     # This endpoint can simply call the refresh logic from your JWT settings
     from flask import jsonify
