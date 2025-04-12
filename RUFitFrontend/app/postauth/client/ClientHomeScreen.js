@@ -63,11 +63,7 @@ export default function ClientHomeScreen({userData, alertConfig}) {
                 : null
             }
             {/* Reusable Header */}
-            <TopHeader
-                title="HOME"
-                showBackButton={false}
-                showShareButton={true}
-            />
+            
 
             {/* Performance Section */}
             <Text style={styles.performanceTitle}>Performance</Text>

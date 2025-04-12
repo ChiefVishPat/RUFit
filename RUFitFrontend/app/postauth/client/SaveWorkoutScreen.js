@@ -116,10 +116,10 @@ export default function SaveWorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <TopHeader
+            {/* <TopHeader
                 title={existingSession ? 'Edit Workout' : 'Save Workout'}
                 showBackButton={true}
-            />
+            /> */}
             <ScrollView contentContainerStyle={styles.formContainer}>
                 <Text style={styles.label}>Workout Session Name</Text>
                 <TextInput

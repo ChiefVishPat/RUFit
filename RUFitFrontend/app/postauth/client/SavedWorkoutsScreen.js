@@ -108,7 +108,8 @@ export default function SavedWorkoutsScreen() {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <TopHeader title="Saved Workouts" showBackButton={true} />
+                {/* <TopHeader title="Saved Workouts" showBackButton={true} /> */}
+                
                 <FlatList
                     data={sessions}
                     keyExtractor={(item, index) =>

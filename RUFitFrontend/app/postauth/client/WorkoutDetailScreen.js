@@ -10,7 +10,8 @@ export default function WorkoutDetailScreen() {
     if (!session) {
         return (
             <View style={styles.container}>
-                <TopHeader title="Workout Details" showBackButton={true} />
+                {/* <TopHeader title="Workout Details" showBackButton={true} /> */}
+                
                 <Text style={styles.error}>No workout details available.</Text>
             </View>
         );
@@ -18,7 +19,8 @@ export default function WorkoutDetailScreen() {
 
     return (
         <View style={styles.container}>
-            <TopHeader title="Workout Details" showBackButton={true} />
+            {/* <TopHeader title="Workout Details" showBackButton={true} /> */}
+            
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <Text style={styles.workoutName}>{session.workout_name}</Text>
                 <Text style={styles.date}>{session.date}</Text>

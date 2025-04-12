@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -54,7 +54,8 @@ export default function ClientIndex() {
   if (loading) return null;
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+    
+    screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -73,14 +74,21 @@ export default function ClientIndex() {
         tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
-        headerShown: false,
+        // headerShown: false,
+
+        headerTitle: route.name === 'Home' ? '🏠 Home' : route.name,
+        headerStyle: {
+        backgroundColor: '#CC0033',
+        },
+        headerTintColor: '#fff',
+        headerTitleAlign: 'center',
       })}
     >
       <Tab.Screen
         name="Home"
         component={AuthenticatedClientHomeScreen}
         initialParams={{userData:userData, alertConfig:alertConfig}}
-        options={{ title: 'Home' }}
+        options={{ title: 'Home', headerTitle: 'Home Screen Title' }}
       />
       <Tab.Screen
         name="Workouts"
