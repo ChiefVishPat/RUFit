@@ -10,9 +10,8 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../components/TopHeader';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { APIClient } from '../../../components/api/APIClient';
+import { APIClient } from '../../../../components/api/APIClient';
 
 export default function SaveWorkoutScreen() {
     const navigation = useNavigation();
@@ -200,8 +199,8 @@ export default function SaveWorkoutScreen() {
                         onPress={handleSaveWorkout}>
                         <Text style={styles.saveWorkoutButtonText}>
                             {existingSession
-                                ? 'Update Workout'
-                                : 'Save Workout'}
+                                ? 'Edit Workout'
+                                : 'Add New Workout'}
                         </Text>
                     </TouchableOpacity>
                 )}
@@ -216,7 +215,7 @@ export default function SaveWorkoutScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#1F1F1F' },
+    container: { flex: 1, backgroundColor: '#1F1F1F', paddingTop: 15,},
     formContainer: { padding: 20 },
     label: { color: 'white', fontSize: 16, marginBottom: 5 },
     input: {
@@ -252,6 +251,12 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         marginBottom: 10,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 0.5, // IOS
+        shadowRadius: 8, //IOS
+        elevation: 2, // Android
     },
     addExerciseButtonText: {
         color: 'white',
@@ -262,6 +267,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#CC0033',
         padding: 15,
         borderRadius: 5,
+        marginTop: 10,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 0.5, // IOS
+        shadowRadius: 8, //IOS
+        elevation: 2, // Android
     },
     saveWorkoutButtonText: {
         color: 'white',

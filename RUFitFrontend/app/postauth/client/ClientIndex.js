@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
-import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator } from '../../../components/authentication/AuthenticatedScreens';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
+import ClientHeader from './workouts/ClientHeader';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,7 @@ export default function ClientIndex() {
           message: "Unable to retrieve user data",
         })
       }
-      finally{
+      finally {
         setLoading(false);
       }
     }
@@ -54,8 +55,7 @@ export default function ClientIndex() {
   if (loading) return null;
   return (
     <Tab.Navigator
-    
-    screenOptions={({ route }) => ({
+      screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -69,37 +69,32 @@ export default function ClientIndex() {
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
-        tabBarActiveTintColor: 'white',  // Indigo-500
-        tabBarInactiveTintColor: 'white', // Slate-400
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'white',
         tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
-        // headerShown: false,
 
-        headerTitle: route.name === 'Home' ? '🏠 Home' : route.name,
-        headerStyle: {
-        backgroundColor: '#CC0033',
-        },
-        headerTintColor: '#fff',
-        headerTitleAlign: 'center',
+        header: () => <ClientHeader title={route.name} />
       })}
     >
+
       <Tab.Screen
         name="Home"
         component={AuthenticatedClientHomeScreen}
-        initialParams={{userData:userData, alertConfig:alertConfig}}
-        options={{ title: 'Home', headerTitle: 'Home Screen Title' }}
+        initialParams={{ userData: userData, alertConfig: alertConfig }}
+
       />
       <Tab.Screen
         name="Workouts"
-        component={AuthenticatedSavedWorkoutsScreen}
-        initialParams={{userData:userData}}
-        options={{ title: 'Workouts' }}
+        component={AuthenticatedWorkoutNavigator}
+        initialParams={{ userData: userData }}
+        options={{ headerShown: false, title: 'Workouts' }}
       />
       <Tab.Screen
         name="Profile"
         component={AuthenticatedClientProfileScreen}
-        initialParams={{userData:userData, navigation:navigation}}
+        initialParams={{ userData: userData, navigation: navigation }}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>

@@ -9,9 +9,11 @@ import {
     SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../components/TopHeader';
+import TopHeader from '../../../../components/TopHeader';
 import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
-import { APIClient } from '../../../components/api/APIClient';
+import { APIClient } from '../../../../components/api/APIClient';
+import { createStackNavigator } from '@react-navigation/stack';
+import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
 export default function SavedWorkoutsScreen() {
     const navigation = useNavigation();
@@ -87,7 +89,7 @@ export default function SavedWorkoutsScreen() {
             <View style={styles.cardActions}>
                 <TouchableOpacity
                     onPress={() =>
-                        navigation.navigate('AuthenticatedSaveWorkoutScreen', {
+                        navigation.navigate('SaveWorkout', {
                             session: item,
                         })
                     }>
@@ -127,7 +129,7 @@ export default function SavedWorkoutsScreen() {
             <TouchableOpacity
                 style={styles.addButton}
                 onPress={() =>
-                    navigation.navigate('AuthenticatedSaveWorkoutScreen')
+                    navigation.navigate('SaveWorkout')
                 }>
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add New Workout</Text>
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
         shadowColor: 'black', // IOS
         shadowOffset: { height: 1, width: 1 }, // IOS
         shadowOpacity: 1, // IOS
-        shadowRadius: 5, //IOS
+        shadowRadius: 3, //IOS
         elevation: 2, // Android
     },
     addButtonText: {

@@ -67,17 +67,20 @@ const AppNavigator = ({ isAuthenticated }) => {
                 options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen
-                name="AuthenticatedSavedWorkoutsScreen"
+                name="AuthenticatedWorkoutNavigator"
                 component={
-                    authenticated_screens.AuthenticatedSavedWorkoutsScreen
+                    authenticated_screens.AuthenticatedWorkoutNavigator
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+            {/*
             <Stack.Screen
                 name="AuthenticatedSaveWorkoutScreen"
                 component={authenticated_screens.AuthenticatedSaveWorkoutScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+            */}
+            
             <Stack.Screen
                 name="AuthenticatedWorkoutDetailScreen"
                 component={authenticated_screens.AuthenticatedWorkoutDetailScreen}

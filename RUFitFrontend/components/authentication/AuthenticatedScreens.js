@@ -1,8 +1,10 @@
 import React from 'react';
 import AuthenticationWrapper from './AuthenticationWrapper';
 import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
-import SavedWorkoutsScreen from '../../app/postauth/client/SavedWorkoutsScreen';
-import SaveWorkoutScreen from '../../app/postauth/client/SaveWorkoutScreen';
+//import SavedWorkoutsScreen from '../../app/postauth/client/workouts/SavedWorkoutsScreen';
+//import { SavedWorkoutsNavigator } from '../../app/postauth/client/workouts/SavedWorkoutsScreen';
+//import SaveWorkoutScreen from '../../app/postauth/client/workouts/SaveWorkoutScreen';
+import WorkoutNavigator from '../../app/postauth/client/workouts/WorkoutNavigator';
 import WorkoutDetailScreen from '../../app/postauth/client/WorkoutDetailScreen';
 import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfileScreen';
 import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
@@ -15,16 +17,28 @@ export const AuthenticatedClientHomeScreen = () => (
         <ClientHomeScreen/>
     </AuthenticationWrapper>
 );
-export const AuthenticatedSavedWorkoutsScreen = () => (
+export const AuthenticatedWorkoutNavigator = () => (
+    <AuthenticationWrapper>
+        <WorkoutNavigator/>
+    </AuthenticationWrapper>
+);
+
+{/* 
+
+    export const AuthenticatedSavedWorkoutsScreen = () => (
     <AuthenticationWrapper>
         <SavedWorkoutsScreen />
     </AuthenticationWrapper>
-);
-export const AuthenticatedSaveWorkoutScreen = () => (
+    
+    export const AuthenticatedSaveWorkoutScreen = () => (
     <AuthenticationWrapper>
         <SaveWorkoutScreen />
     </AuthenticationWrapper>
 );
+);
+*/}
+
+
 export const AuthenticatedWorkoutDetailScreen = () => (
     <AuthenticationWrapper>
         <WorkoutDetailScreen />
