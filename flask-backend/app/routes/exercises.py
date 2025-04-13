@@ -8,6 +8,7 @@ exercises_bp = Blueprint('exercises', __name__, url_prefix='/exercises')
 
 # In-memory list to store exercise data.
 exercises = []
+all_muscle_groups = set()
 
 
 def clean_field(value):
@@ -26,8 +27,10 @@ def load_exercises_from_csv():
     This function cleans each field to remove unwanted characters.
     """
     global exercises
+    global all_muscle_groups
     exercises.clear()
-    
+    all_muscle_groups.clear()
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
     # Move up one level, then into 'data'
@@ -42,12 +45,15 @@ def load_exercises_from_csv():
                 exercise_name = clean_field(row['Exercise Name']).strip()
                 muscle_groups_raw = clean_field(row['Muscle Group(s)'])
                 # Split by comma into a list; ignore any empty strings.
-                groups = [group.strip() for group in muscle_groups_raw.split(',') if group.strip()]
+                groups = [group.strip() for group in muscle_groups_raw.split(';') if group.strip()]
                 instructions = clean_field(row['Instructions']).strip()
                 
                 # Clean the Tips column and split on semicolon delimiter.
                 tips_raw = clean_field(row['Tips']).strip()
                 tips = [tip.strip() for tip in tips_raw.split(';') if tip.strip()]
+
+                # Add muscle groups to the global set
+                all_muscle_groups.update(groups)
 
                 exercise = {
                     'exercise_name': exercise_name,
@@ -62,7 +68,16 @@ def load_exercises_from_csv():
 
 # Load the exercises once at startup.
 load_exercises_from_csv()
+print(all_muscle_groups)
 
+
+@exercises_bp.route('/muscle-groups', methods=['GET'])
+def get_muscle_groups():
+    """
+    Endpoint to return all unique muscle groups.
+    """
+    if (all_muscle_groups):
+        return jsonify(sorted(list(all_muscle_groups)))
 
 @exercises_bp.route('', methods=['GET'])
 def get_exercises():
