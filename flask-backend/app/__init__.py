@@ -6,6 +6,7 @@ from .routes.auth import auth_bp
 from .routes.workouts import workouts_bp
 from .routes.userinfo import userinfo_bp
 from .routes.macro_tracker import tracker_bp
+from .routes.exercises import exercises_bp
 from .logging_config import logger
 
 
@@ -30,6 +31,7 @@ def create_app(config_class=Config):
     app.register_blueprint(workouts_bp)
     app.register_blueprint(userinfo_bp)
     app.register_blueprint(tracker_bp)
+    app.register_blueprint(exercises_bp)
 
     logger.info("Application created successfully")
     return app
