@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import TopHeader from '../../../components/TopHeader';
 import { useRoute } from '@react-navigation/native';
 
 export default function WorkoutDetailScreen() {

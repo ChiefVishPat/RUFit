@@ -81,11 +81,14 @@ const AppNavigator = ({ isAuthenticated }) => {
             />
             */}
             
+            {/*
             <Stack.Screen
                 name="AuthenticatedWorkoutDetailScreen"
                 component={authenticated_screens.AuthenticatedWorkoutDetailScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+            */}
+            
             <Stack.Screen
                 name="AuthenticatedMyBodyDataScreen"
                 component={authenticated_screens.AuthenticatedMyBodyDataScreen}

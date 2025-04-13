@@ -75,7 +75,7 @@ export default function SavedWorkoutsScreen() {
         <TouchableOpacity
             style={styles.workoutCard}
             onPress={() =>
-                navigation.navigate('AuthenticatedWorkoutDetailScreen', {
+                navigation.navigate('ViewWorkout', {
                     session: item,
                 })
             }>

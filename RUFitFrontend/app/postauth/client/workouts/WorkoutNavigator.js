@@ -1,6 +1,8 @@
 import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 import SavedWorkoutsScreen from "./SavedWorkoutsScreen";
 import SaveWorkoutScreen from "./SaveWorkoutScreen";
+import WorkoutDetailScreen from "./WorkoutDetailScreen";
 import ClientHeader from "./ClientHeader";
 
 export default function WorkoutNavigator() {
@@ -28,6 +30,18 @@ export default function WorkoutNavigator() {
                     title: route.params?.session ? 'Edit Workout' : 'New Workout',
                     gestureEnabled: false,
                     header: () => <ClientHeader title={route.params?.session ? 'Edit Workout' : 'Add New Workout'} />,
+                    headerBackTitle: 'Back',
+                })}
+            />
+            <Stack.Screen
+                name="ViewWorkout"
+                component={WorkoutDetailScreen}
+                options={({ route }) => ({
+                    title: route.params?.session?.workout_name || "My Workout",
+                    gestureEnabled: true,
+                    header: () => <ClientHeader title={route.params?.session?.workout_name || "My Workout"}
+                                                backButton={true}
+                                  />,
                     headerBackTitle: 'Back',
                 })}
             />

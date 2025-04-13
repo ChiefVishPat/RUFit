@@ -61,7 +61,7 @@ export default function ClientIndex() {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Workouts') {
+          } else if (route.name === 'WorkoutNavigator') {
             iconName = focused ? 'barbell' : 'barbell-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -86,7 +86,7 @@ export default function ClientIndex() {
 
       />
       <Tab.Screen
-        name="Workouts"
+        name="WorkoutNavigator"
         component={AuthenticatedWorkoutNavigator}
         initialParams={{ userData: userData }}
         options={{ headerShown: false, title: 'Workouts' }}
