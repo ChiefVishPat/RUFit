@@ -3,8 +3,8 @@ import { useNavigation } from "@react-navigation/native";
 import SavedWorkoutsScreen from "./SavedWorkoutsScreen";
 import SaveWorkoutScreen from "./SaveWorkoutScreen";
 import WorkoutDetailScreen from "./WorkoutDetailScreen";
-import ScreenHeader from "./ScreenHeader";
-import ModalHeader from "./ModalHeader";
+import ScreenHeader from "../ScreenHeader";
+import ModalHeader from "../ModalHeader";
 
 export default function WorkoutNavigator() {
     const Stack = createStackNavigator();

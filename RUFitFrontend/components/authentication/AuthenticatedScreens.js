@@ -10,6 +10,7 @@ import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfile
 import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
 import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
 import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
+import ExerciseNavigator from '../../app/postauth/client/exercises/ExerciseNavigator';
 
 // Example: Wrap HomeScreen with ProtectedScreen
 export const AuthenticatedClientHomeScreen = () => (
@@ -20,6 +21,12 @@ export const AuthenticatedClientHomeScreen = () => (
 export const AuthenticatedWorkoutNavigator = () => (
     <AuthenticationWrapper>
         <WorkoutNavigator/>
+    </AuthenticationWrapper>
+);
+
+export const AuthenticatedExerciseNavigator = () => (
+    <AuthenticationWrapper>
+        <ExerciseNavigator />
     </AuthenticationWrapper>
 );
 
