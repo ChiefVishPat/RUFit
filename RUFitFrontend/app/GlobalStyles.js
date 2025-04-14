@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 // style={global_styles.screenContainer}
 export const background_color = '#1a1717';
+export const scarlet_red = "#CC0033";
 
 /*
 --------------------------------------------------------------------------------------------
