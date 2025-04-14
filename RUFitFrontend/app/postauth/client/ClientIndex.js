@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator } from '../../../components/authentication/AuthenticatedScreens';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
-import ClientHeader from './workouts/ClientHeader';
+import ScreenHeader from './workouts/ScreenHeader';
 
 const Tab = createBottomTabNavigator();
 
@@ -75,7 +75,7 @@ export default function ClientIndex() {
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
 
-        header: () => <ClientHeader title={route.name} />
+        header: () => <ScreenHeader title={route.name} />
       })}
     >
 

@@ -3,7 +3,8 @@ import { useNavigation } from "@react-navigation/native";
 import SavedWorkoutsScreen from "./SavedWorkoutsScreen";
 import SaveWorkoutScreen from "./SaveWorkoutScreen";
 import WorkoutDetailScreen from "./WorkoutDetailScreen";
-import ClientHeader from "./ClientHeader";
+import ScreenHeader from "./ScreenHeader";
+import ModalHeader from "./ModalHeader";
 
 export default function WorkoutNavigator() {
     const Stack = createStackNavigator();
@@ -19,7 +20,7 @@ export default function WorkoutNavigator() {
                     title: 'Workouts',
                     headerTitle: 'Workouts',
                     gestureEnabled: false,
-                    header: () => <ClientHeader title={"Workouts"} />
+                    header: () => <ScreenHeader title={"Workouts"} />
                 }}
 
             />
@@ -29,7 +30,7 @@ export default function WorkoutNavigator() {
                 options={({ route }) => ({
                     title: route.params?.session ? 'Edit Workout' : 'New Workout',
                     gestureEnabled: false,
-                    header: () => <ClientHeader title={route.params?.session ? 'Edit Workout' : 'Add New Workout'} />,
+                    header: () => <ScreenHeader title={route.params?.session ? 'Edit Workout' : 'Add New Workout'} />,
                     headerBackTitle: 'Back',
                 })}
             />
@@ -37,9 +38,10 @@ export default function WorkoutNavigator() {
                 name="ViewWorkout"
                 component={WorkoutDetailScreen}
                 options={({ route }) => ({
+                    presentation: "modal",
                     title: route.params?.session?.workout_name || "My Workout",
                     gestureEnabled: true,
-                    header: () => <ClientHeader title={route.params?.session?.workout_name || "My Workout"}
+                    header: () => <ModalHeader title={route.params?.session?.workout_name || "My Workout"}
                                                 backButton={true}
                                   />,
                     headerBackTitle: 'Back',
