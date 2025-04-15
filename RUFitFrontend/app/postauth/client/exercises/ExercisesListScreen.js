@@ -101,11 +101,21 @@ export default function ExercisesListScreen() {
                     <Text style={styles.exerciseName}>{item.exercise_name}</Text>
                 </View>
                 <View style={styles.muscleGroupContainer}>
-                    {item.muscle_groups.map((group, index) => (
-                        <Text key={index} style={styles.muscleGroup}>
-                            {group}
-                        </Text>
-                    ))}
+                    {item.muscle_groups.map((group, index) => {
+                        const isMatched = selectedMuscleGroups.includes(group);
+                        return (
+                            <Text
+                                key={index}
+                                style={[
+                                    styles.muscleGroup,
+                                    isMatched && styles.matchedMuscleGroup, // 👈 conditional red style
+                                ]}
+                            >
+                                {group}
+                            </Text>
+                        );
+                    })}
+
                 </View>
             </View>
         </TouchableOpacity>
@@ -339,17 +349,27 @@ const styles = StyleSheet.create({
     },
     muscleGroup: {
         backgroundColor: "white",
-        opacity: 0.7,
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 10,
         fontSize: 14,
         fontWeight: 'bold',
-        // color: 'white',
         color: "#333",
         marginRight: 6,
         marginBottom: 6,
     },
+    matchedMuscleGroup: {
+        backgroundColor: "#DA2A2A",
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 10,
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: 'white',
+        // color: "#333",
+        marginRight: 6,
+        marginBottom: 6,
+      },      
     muscleGroupFilterContainer: {
         borderColor: 'white',
         borderWidth: 2,
@@ -366,7 +386,7 @@ const styles = StyleSheet.create({
         rowGap: 15, // ✅ spacing between rows
         columnGap: 10, // ✅ spacing between pills
     },
-    
+
     pill: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -375,7 +395,7 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         borderRadius: 20,
     },
-    
+
     pillText: {
         fontSize: 14,
         color: '#1877F2',

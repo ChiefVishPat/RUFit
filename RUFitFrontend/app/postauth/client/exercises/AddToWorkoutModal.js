@@ -52,15 +52,12 @@ export default function AddToWorkoutModal({ visible, onClose, exercise }) {
                     "exercise": exercise_name,
                 }
             ],
-            "workout_name": "My Workout"
         }
         onClose();
         navigation.navigate('WorkoutsModal', { sessionAppend: sessionAppend });
     }
 
     // SavedWorkoutsModal
-
-
 
     const styles = StyleSheet.create({
         openTrigger: {

@@ -48,8 +48,6 @@ export default function SaveWorkoutScreen() {
         }
     }, [autoFocusName]);
 
-
-
     const [workoutName, setWorkoutName] = useState('');
     const [exercises, setExercises] = useState([
         { name: '', sets: '', reps: '', weight: '' },

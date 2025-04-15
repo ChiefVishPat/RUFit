@@ -19,7 +19,7 @@ import { APIClient } from '../../../../components/api/APIClient';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
-export default function SelectWorkout(){
+export default function SelectWorkout() {
     const navigation = useNavigation();
     const route = useRoute();
     const [sessions, setSessions] = useState([]);
@@ -53,7 +53,10 @@ export default function SelectWorkout(){
             style={styles.workoutCard}
             onPress={() =>
                 navigation.navigate('SaveWorkoutModal', {
-                    session: item, // should be session append
+                    session: {
+                        ...item,
+                        exercises: [...item.exercises, ...sessionAppend.exercises],
+                    }, // should be session append
                     isModal: true
                 })
             }>
@@ -64,11 +67,12 @@ export default function SelectWorkout(){
                     {item.date}
                 </Text>
             </View>
+            {/*
             <View style={styles.cardActions}>
                 <TouchableOpacity
                     onPress={() =>
                         navigation.navigate('SaveWorkout', {
-                            session: item,
+
                         })
                     }>
                     <Ionicons name="create" size={24} color="#2DC5F4" />
@@ -82,6 +86,8 @@ export default function SelectWorkout(){
                     />
                 </TouchableOpacity>
             </View>
+            */}
+            
         </TouchableOpacity>
     );
 
@@ -89,7 +95,7 @@ export default function SelectWorkout(){
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 {/* <TopHeader title="Saved Workouts" showBackButton={true} /> */}
-                
+
                 <FlatList
                     data={sessions}
                     keyExtractor={(item, index) =>
@@ -106,7 +112,7 @@ export default function SelectWorkout(){
             </View>
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName:true })}>
+                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName: true })}>
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add New Workout</Text>
             </TouchableOpacity>
