@@ -1,3 +1,7 @@
+
+// used by ExerciseDescriptionScreen.js (more specifically, AddToWorkoutModal.js component)
+// so user can select a workout from all workouts to add exercise to
+
 import React, { useState, useCallback } from 'react';
 import {
     View,
@@ -15,10 +19,11 @@ import { APIClient } from '../../../../components/api/APIClient';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
-export default function SavedWorkoutsScreen() {
+export default function SelectWorkout(){
     const navigation = useNavigation();
     const route = useRoute();
     const [sessions, setSessions] = useState([]);
+    const sessionAppend = route.params?.sessionAppend;
 
     const fetchWorkouts = async () => {
         try {
@@ -43,41 +48,14 @@ export default function SavedWorkoutsScreen() {
         }, [])
     );
 
-    const handleDelete = async (session_id) => {
-        Alert.alert(
-            'Delete Workout',
-            'Are you sure you want to delete this workout?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'Delete',
-                    onPress: async () => {
-                        try {
-                            await APIClient.delete(`/workout/${session_id}`);
-                            setSessions(
-                                sessions.filter(
-                                    (session) =>
-                                        session.session_id !== session_id
-                                )
-                            );
-                        } catch (error) {
-                            console.error(error);
-                            Alert.alert('Error', 'Failed to delete workout.');
-                        }
-                    },
-                    style: 'destructive',
-                },
-            ]
-        );
-    };
-
     const renderWorkout = ({ item }) => (
         <TouchableOpacity
             style={styles.workoutCard}
             onPress={() =>
-                navigation.navigate('ViewWorkout', {
-                    session: item,
-                })  
+                navigation.navigate('SaveWorkoutModal', {
+                    session: item, // should be session append
+                    isModal: true
+                })
             }>
             <View>
                 <Text style={styles.workoutName}>{item.workout_name}</Text>

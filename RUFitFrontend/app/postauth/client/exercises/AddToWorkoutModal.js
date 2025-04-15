@@ -43,8 +43,22 @@ export default function AddToWorkoutModal({ visible, onClose, exercise }) {
                 autoFocusName: true,
             },
         });
-
     }
+
+    const navigateExistingWorkout = (exercise_name) => {
+        const sessionAppend = {
+            "exercises": [
+                {
+                    "exercise": exercise_name,
+                }
+            ],
+            "workout_name": "My Workout"
+        }
+        onClose();
+        navigation.navigate('WorkoutsModal', { sessionAppend: sessionAppend });
+    }
+
+    // SavedWorkoutsModal
 
 
 

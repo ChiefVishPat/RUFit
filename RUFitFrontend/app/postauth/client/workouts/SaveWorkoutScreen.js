@@ -20,6 +20,9 @@ export default function SaveWorkoutScreen() {
     // When editing, an existing session is passed as "session"
     const existingSession = route.params?.session;
 
+    // Detects whether screen is being presented as a modal (for navigation logic)
+    const isModal = route.params?.isModal || false;
+
     // If param "autoFocusName" is passed as true, user is prompted to edit workout name first
     const nameInputRef = useRef(null);
     const autoFocusName = route.params?.autoFocusName ?? false;
@@ -130,7 +133,19 @@ export default function SaveWorkoutScreen() {
             }
             console.log(response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
-            navigation.goBack();
+
+            if (isModal) {
+                // navigation.navigate('ClientIndex', {
+                //     screen: 'WorkoutNavigator',
+                // });
+                navigation.pop(2);
+                return;
+            }
+            else {
+                navigation.goBack();
+                return;
+            }
+
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Failed to save workout session.');

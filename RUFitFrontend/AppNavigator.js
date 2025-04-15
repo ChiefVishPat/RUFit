@@ -2,12 +2,15 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useEffect } from 'react';
 import * as authenticated_screens from './components/authentication/AuthenticatedScreens';
+import SavedWorkoutsScreen from './app/postauth/client/workouts/SavedWorkoutsScreen';
+import SaveWorkoutScreen from './app/postauth/client/workouts/SaveWorkoutScreen';
 import ClientIndex from './app/postauth/client/ClientIndex';
 import LoginScreen from './app/preauth/LoginScreen';
 import SignupScreen from './app/preauth/signup_flow/SignupScreen';
 import UserProfileSetup from './app/preauth/signup_flow/UserProfileSetup';
 import PreAuthLanding from './app/preauth/preauth_landing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SelectWorkout from './app/postauth/client/workouts/SelectWorkout';
 
 const Stack = createStackNavigator();
 
@@ -73,6 +76,27 @@ const AppNavigator = ({ isAuthenticated }) => {
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+            
+            {/* These will allow ExerciseDescriptionScreen to access existing workouts as a modal */}
+            <Stack.Screen
+                name="WorkoutsModal"
+                component={SelectWorkout} // or import directly if not in that object
+                options={{
+                    presentation: 'modal',       // 👈 this makes it show as a modal
+                    headerShown: false,          // or true, depending on your design
+                    gestureEnabled: true,        // allow swipe-to-close
+                }}
+            />
+            <Stack.Screen
+                name="SaveWorkoutModal"
+                component={SaveWorkoutScreen} // or import directly if not in that object
+                options={{
+                    presentation: 'modal',       // 👈 this makes it show as a modal
+                    headerShown: false,          // or true, depending on your design
+                    gestureEnabled: true,        // allow swipe-to-close
+                }}
+            />
+
             <Stack.Screen
                 name="AuthenticatedExerciseNavigator"
                 component={
@@ -87,7 +111,7 @@ const AppNavigator = ({ isAuthenticated }) => {
                 options={{ headerShown: false, gestureEnabled: false }}
             />
             */}
-            
+
             {/*
             <Stack.Screen
                 name="AuthenticatedWorkoutDetailScreen"
@@ -95,7 +119,7 @@ const AppNavigator = ({ isAuthenticated }) => {
                 options={{ headerShown: false, gestureEnabled: false }}
             />
             */}
-            
+
             <Stack.Screen
                 name="AuthenticatedMyBodyDataScreen"
                 component={authenticated_screens.AuthenticatedMyBodyDataScreen}
