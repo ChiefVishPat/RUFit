@@ -128,9 +128,7 @@ export default function SavedWorkoutsScreen() {
             </View>
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() =>
-                    navigation.navigate('SaveWorkout')
-                }>
+                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName:true })}>
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add New Workout</Text>
             </TouchableOpacity>

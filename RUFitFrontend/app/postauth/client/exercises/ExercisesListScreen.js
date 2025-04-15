@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, FlatList, Alert, Modal, Pressable } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, FlatList, Alert, Modal, Pressable, Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -6,8 +6,6 @@ import { APIClient } from "../../../../components/api/APIClient";
 import { background_color, scarlet_red } from "../../../GlobalStyles";
 import SearchBar from "./SearchBar";
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
-
 
 
 export default function ExercisesListScreen() {
@@ -97,7 +95,7 @@ export default function ExercisesListScreen() {
     const renderExercise = ({ item }) => (
         <TouchableOpacity
             style={styles.exerciseCard}
-            onPress={() => console.log("exercise pressed!")}>
+            onPress={() => navigation.navigate("Exercise Description", { exercise: item })}>
             <View style={styles.cardContainer}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.exerciseName}>{item.exercise_name}</Text>

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRef } from 'react';
 import { APIClient } from '../../../../components/api/APIClient';
 
 export default function SaveWorkoutScreen() {
@@ -18,6 +19,33 @@ export default function SaveWorkoutScreen() {
     const route = useRoute();
     // When editing, an existing session is passed as "session"
     const existingSession = route.params?.session;
+
+    // If param "autoFocusName" is passed as true, user is prompted to edit workout name first
+    const nameInputRef = useRef(null);
+    const autoFocusName = route.params?.autoFocusName ?? false;
+    console.log(autoFocusName);
+
+    useEffect(() => {
+        if (autoFocusName && nameInputRef.current) {
+            const timeout = setTimeout(() => {
+                nameInputRef.current.focus();
+
+                // Optional: Move cursor to end if editing existing name
+                if (workoutName) {
+                    nameInputRef.current.setNativeProps({
+                        selection: {
+                            start: workoutName.length,
+                            end: workoutName.length,
+                        },
+                    });
+                }
+            }, 300); // small delay to wait for UI to render
+
+            return () => clearTimeout(timeout);
+        }
+    }, [autoFocusName]);
+
+
 
     const [workoutName, setWorkoutName] = useState('');
     const [exercises, setExercises] = useState([
@@ -30,14 +58,12 @@ export default function SaveWorkoutScreen() {
             setWorkoutName(existingSession.workout_name);
             // Convert backend "exercise" key to "name" for the form
             const loadedExercises = existingSession.exercises.map((ex) => ({
-                name: ex.exercise,
-                sets: String(ex.sets),
-                reps: String(ex.reps),
-                weight:
-                    ex.weight !== undefined && ex.weight !== null
-                        ? String(ex.weight)
-                        : '',
+                name: ex?.exercise ?? '',
+                sets: ex?.sets != null ? String(ex.sets) : '',
+                reps: ex?.reps != null ? String(ex.reps) : '',
+                weight: ex?.weight != null ? String(ex.weight) : '',
             }));
+
             setExercises(loadedExercises);
         }
     }, [existingSession]);
@@ -97,7 +123,7 @@ export default function SaveWorkoutScreen() {
             let response;
             if (existingSession) {
                 // Update the existing session using PUT with the session_id
-                response = await APIClient.put(`/workout/${existingSession.session_id}`,payload);
+                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload);
             } else {
                 // Create a new workout session
                 response = await APIClient.post('/workout', payload);
@@ -122,6 +148,7 @@ export default function SaveWorkoutScreen() {
             <ScrollView contentContainerStyle={styles.formContainer}>
                 <Text style={styles.label}>Workout Session Name</Text>
                 <TextInput
+                    ref={nameInputRef}
                     style={styles.input}
                     placeholder="Enter workout session name"
                     placeholderTextColor="#aaa"
@@ -199,7 +226,7 @@ export default function SaveWorkoutScreen() {
                         onPress={handleSaveWorkout}>
                         <Text style={styles.saveWorkoutButtonText}>
                             {existingSession
-                                ? 'Edit Workout'
+                                ? 'Save Workout'
                                 : 'Add New Workout'}
                         </Text>
                     </TouchableOpacity>
@@ -215,7 +242,7 @@ export default function SaveWorkoutScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#1F1F1F', paddingTop: 15,},
+    container: { flex: 1, backgroundColor: '#1F1F1F', paddingTop: 15, },
     formContainer: { padding: 20 },
     label: { color: 'white', fontSize: 16, marginBottom: 5 },
     input: {

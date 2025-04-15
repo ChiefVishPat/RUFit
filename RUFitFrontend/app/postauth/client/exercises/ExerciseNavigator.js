@@ -27,9 +27,11 @@ export default function ExerciseNavigator() {
                 name="Exercise Description"
                 component={ExerciseDescriptionScreen}
                 options={({ route }) => ({
-                    title: route.params?.session ? 'Edit Workout' : 'New Workout',
+                    title: route.params?.exercise?.exercise_name || 'Exercise',
                     gestureEnabled: false,
-                    header: () => <ScreenHeader title={route.params?.session ? 'Edit Workout' : 'Add New Workout'} />,
+                    header: () => (
+                        <ScreenHeader title={route.params?.exercise?.exercise_name || 'Exercise'} backButton={true} />
+                    ),
                     headerBackTitle: 'Back',
                 })}
             />
