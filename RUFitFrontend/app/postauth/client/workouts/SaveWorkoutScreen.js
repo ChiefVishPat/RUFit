@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, CommonActions } from '@react-navigation/native';
 import { useRef } from 'react';
 import { APIClient } from '../../../../components/api/APIClient';
 
@@ -19,6 +19,7 @@ export default function SaveWorkoutScreen() {
     const route = useRoute();
     // When editing, an existing session is passed as "session"
     const existingSession = route.params?.session;
+    const newWorkout = route.params?.newWorkout || false;
 
     // Detects whether screen is being presented as a modal (for navigation logic)
     const isModal = route.params?.isModal || false;
@@ -26,7 +27,6 @@ export default function SaveWorkoutScreen() {
     // If param "autoFocusName" is passed as true, user is prompted to edit workout name first
     const nameInputRef = useRef(null);
     const autoFocusName = route.params?.autoFocusName ?? false;
-    console.log(autoFocusName);
 
     useEffect(() => {
         if (autoFocusName && nameInputRef.current) {
@@ -122,21 +122,19 @@ export default function SaveWorkoutScreen() {
                 exercises: validExercises,
             };
             let response;
-            if (existingSession) {
+            if (existingSession && !newWorkout) {
                 // Update the existing session using PUT with the session_id
                 response = await APIClient.put(`/workout/${existingSession.session_id}`, payload);
             } else {
                 // Create a new workout session
+                console.log("session id does not exist");
                 response = await APIClient.post('/workout', payload);
             }
             console.log(response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
 
             if (isModal) {
-                // navigation.navigate('ClientIndex', {
-                //     screen: 'WorkoutNavigator',
-                // });
-                navigation.pop(2);
+                navigation.pop(2); // closes SaveWorkoutModal
                 return;
             }
             else {

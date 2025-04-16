@@ -51,15 +51,18 @@ export default function SelectWorkout() {
     const renderWorkout = ({ item }) => (
         <TouchableOpacity
             style={styles.workoutCard}
-            onPress={() =>
+            onPress={() => {
                 navigation.navigate('SaveWorkoutModal', {
                     session: {
                         ...item,
                         exercises: [...item.exercises, ...sessionAppend.exercises],
-                    }, // should be session append
+                    },
                     isModal: true
-                })
-            }>
+                });
+            }}
+
+
+        >
             <View>
                 <Text style={styles.workoutName}>{item.workout_name}</Text>
                 <Text style={styles.workoutDetails}>
@@ -87,7 +90,7 @@ export default function SelectWorkout() {
                 </TouchableOpacity>
             </View>
             */}
-            
+
         </TouchableOpacity>
     );
 

@@ -13,72 +13,103 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectWorkout from './app/postauth/client/workouts/SelectWorkout';
 
 const Stack = createStackNavigator();
+const MainStack = createStackNavigator();
+const RootStack = createStackNavigator(); // wraps both main and modals
 
-const AppNavigator = ({ isAuthenticated }) => {
-    console.log(`AppNavigator: ${isAuthenticated}`);
-    /*
-    useEffect(() => {
-        const setAuthStatus = async () => {
-            try {
-                await AsyncStorage.setItem('authenticated', JSON.stringify(false));
-                console.log('Authentication status saved successfully!');
-            } catch (error) {
-                console.error('Failed to save authentication status:', error);
-            }
-        };
-        setAuthStatus();
-    }, []);
-    */
+function MainStackScreen({ isAuthenticated }) {
     return (
-        <Stack.Navigator
+        <MainStack.Navigator
             initialRouteName={
                 isAuthenticated ? 'ClientIndex' : 'PreAuthLanding'
             }>
             {/* Non-authenticated Screens */}
 
-            <Stack.Screen
+            <MainStack.Screen
                 name="ClientIndex"
                 component={ClientIndex}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
-            <Stack.Screen
+            <MainStack.Screen
                 name="PreAuthLanding"
                 component={PreAuthLanding}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
-            <Stack.Screen
+            <MainStack.Screen
                 name="LoginScreen"
                 component={LoginScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
-            <Stack.Screen
+            <MainStack.Screen
                 name="SignupScreen"
                 component={SignupScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
 
-            <Stack.Screen
+            <MainStack.Screen
                 name="UserProfileSetup"
                 component={UserProfileSetup}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
 
             {/* Authenticated Screens */}
-            <Stack.Screen
+            <MainStack.Screen
                 name="AuthenticatedClientHomeScreen"
                 component={authenticated_screens.AuthenticatedClientHomeScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
-            <Stack.Screen
+            <MainStack.Screen
                 name="AuthenticatedWorkoutNavigator"
                 component={
                     authenticated_screens.AuthenticatedWorkoutNavigator
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
             />
-            
+
+            <MainStack.Screen
+                name="AuthenticatedExerciseNavigator"
+                component={
+                    authenticated_screens.AuthenticatedExerciseNavigator
+                }
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+
+            <MainStack.Screen
+                name="AuthenticatedMyBodyDataScreen"
+                component={authenticated_screens.AuthenticatedMyBodyDataScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <MainStack.Screen
+                name="AuthenticatedAccountSettingsScreen"
+                component={
+                    authenticated_screens.AuthenticatedAccountSettingsScreen
+                }
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <MainStack.Screen
+                name="AuthenticatedProfileSettingsScreen"
+                component={
+                    authenticated_screens.AuthenticatedProfileSettingsScreen
+                }
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+        </MainStack.Navigator>
+    );
+}
+
+const AppNavigator = ({ isAuthenticated }) => {
+
+    return (
+        <RootStack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Main"
+        >
+            <RootStack.Screen
+                name="Main"
+                children={() => <MainStackScreen isAuthenticated={isAuthenticated} />}
+            />
+
             {/* These will allow ExerciseDescriptionScreen to access existing workouts as a modal */}
-            <Stack.Screen
+            <RootStack.Screen
                 name="WorkoutsModal"
                 component={SelectWorkout} // or import directly if not in that object
                 options={{
@@ -87,7 +118,8 @@ const AppNavigator = ({ isAuthenticated }) => {
                     gestureEnabled: true,        // allow swipe-to-close
                 }}
             />
-            <Stack.Screen
+            
+            <RootStack.Screen
                 name="SaveWorkoutModal"
                 component={SaveWorkoutScreen} // or import directly if not in that object
                 options={{
@@ -96,50 +128,7 @@ const AppNavigator = ({ isAuthenticated }) => {
                     gestureEnabled: true,        // allow swipe-to-close
                 }}
             />
-
-            <Stack.Screen
-                name="AuthenticatedExerciseNavigator"
-                component={
-                    authenticated_screens.AuthenticatedExerciseNavigator
-                }
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-            {/*
-            <Stack.Screen
-                name="AuthenticatedSaveWorkoutScreen"
-                component={authenticated_screens.AuthenticatedSaveWorkoutScreen}
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-            */}
-
-            {/*
-            <Stack.Screen
-                name="AuthenticatedWorkoutDetailScreen"
-                component={authenticated_screens.AuthenticatedWorkoutDetailScreen}
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-            */}
-
-            <Stack.Screen
-                name="AuthenticatedMyBodyDataScreen"
-                component={authenticated_screens.AuthenticatedMyBodyDataScreen}
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-            <Stack.Screen
-                name="AuthenticatedAccountSettingsScreen"
-                component={
-                    authenticated_screens.AuthenticatedAccountSettingsScreen
-                }
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-            <Stack.Screen
-                name="AuthenticatedProfileSettingsScreen"
-                component={
-                    authenticated_screens.AuthenticatedProfileSettingsScreen
-                }
-                options={{ headerShown: false, gestureEnabled: false }}
-            />
-        </Stack.Navigator>
+        </RootStack.Navigator>
     );
 };
 

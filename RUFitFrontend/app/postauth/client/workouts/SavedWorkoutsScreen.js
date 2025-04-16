@@ -24,6 +24,7 @@ export default function SavedWorkoutsScreen() {
         try {
             const response = await APIClient.get('/workout');
             // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
+            console.log(response.data);
             setSessions(response.data);
         } catch (error) {
             if (error.response && error.response.status === 401) {

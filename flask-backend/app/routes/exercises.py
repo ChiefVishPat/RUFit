@@ -68,7 +68,7 @@ def load_exercises_from_csv():
 
 # Load the exercises once at startup.
 load_exercises_from_csv()
-print(all_muscle_groups)
+# print(all_muscle_groups)
 
 
 @exercises_bp.route('/muscle-groups', methods=['GET'])

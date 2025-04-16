@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 25,
         // fontWeight: 'bold',
-        marginLeft: 20,
+        marginHorizontal: 20,
         marginBottom: 1,
     },
     subheader: {

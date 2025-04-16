@@ -41,6 +41,7 @@ export default function AddToWorkoutModal({ visible, onClose, exercise }) {
             params: {
                 session: session,
                 autoFocusName: true,
+                newWorkout: true
             },
         });
     }
