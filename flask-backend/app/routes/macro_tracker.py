@@ -21,6 +21,9 @@ def create_tracker():
 
     food_name = data.get('food_name')
     barcode = data.get('barcode')  
+    print("🔍 Received data:", data)
+    print("🔍 Barcode:", data.get('barcode'))
+
     macros = {
         'calories': data.get('calories'),
         'protein': data.get('protein'),
@@ -33,8 +36,13 @@ def create_tracker():
     # Try to fetch data from barcode if provided
     if barcode:
         try:
+            
+
             api_url = f'https://world.openfoodfacts.org/api/v0/product/{barcode}.json'
             response = requests.get(api_url)
+            print("🔁 Fetching Open Food Facts data for barcode:", barcode)
+            print("🌐 API URL:", api_url)
+            print("📦 API response:", response.json())
             if response.status_code == 200:
                 product = response.json().get('product', {})
                 nutriments = product.get('nutriments', {})
@@ -127,6 +135,62 @@ def get_tracker():
                 'sat_fat': tracker_record.sat_fat,
             }
         ), 200
+
+    except Exception as e:
+        logger.error(f'Error fetching tracker for user {user_id}: {e}')
+        return jsonify({'message': 'Internal Server Error'}), 500
+
+@tracker_bp.route('/<int:id>', methods=['PATCH'])
+@jwt_required()
+def update_tracker(id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    try:
+        tracker = Tracker.query.filter_by(id=id, user_id=user_id).first()
+        if not tracker:
+            return jsonify({'message': 'Tracker entry not found'}), 404
+
+        # Update fields only if they are provided
+        tracker.food_name = data.get('food_name', tracker.food_name)
+        tracker.barcode = data.get('barcode', tracker.barcode)
+        tracker.calorie = data.get('calories', tracker.calorie)
+        tracker.protein = data.get('protein', tracker.protein)
+        tracker.carbs = data.get('carbs', tracker.carbs)
+        tracker.fiber = data.get('fiber', tracker.fiber)
+        tracker.sat_fat = data.get('saturated_fats', tracker.sat_fat)
+        tracker.unsat_fat = data.get('unsaturated_fats', tracker.unsat_fat)
+
+        db.session.commit()
+        logger.info(f'Tracker entry {id} updated by user {user_id}')
+        return jsonify({'message': 'Tracker entry updated successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Error updating tracker {id} for user {user_id}: {e}')
+        return jsonify({'message': 'Internal Server Error'}), 500
+
+
+@tracker_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_tracker(id):
+    user_id = get_jwt_identity()
+
+    try:
+        tracker = Tracker.query.filter_by(id=id, user_id=user_id).first()
+        if not tracker:
+            return jsonify({'message': 'Tracker entry not found'}), 404
+
+        db.session.delete(tracker)
+        db.session.commit()
+        logger.info(f'Tracker entry {id} deleted by user {user_id}')
+        return jsonify({'message': 'Tracker entry deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Error deleting tracker {id} for user {user_id}: {e}')
+        return jsonify({'message': 'Internal Server Error'}), 500
+
 
     except Exception as e:
         logger.error(f'Error fetching tracker for user {user_id}: {e}')
