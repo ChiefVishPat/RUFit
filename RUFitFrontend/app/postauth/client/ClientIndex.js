@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
-import { AuthenticatedClientHomeScreen, AuthenticatedSavedWorkoutsScreen, AuthenticatedClientProfileScreen } from '../../../components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator, AuthenticatedExerciseNavigator } from '../../../components/authentication/AuthenticatedScreens';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
+import ScreenHeader from './ScreenHeader';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,7 @@ export default function ClientIndex() {
           message: "Unable to retrieve user data",
         })
       }
-      finally{
+      finally {
         setLoading(false);
       }
     }
@@ -60,7 +61,9 @@ export default function ClientIndex() {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Workouts') {
+          } else if (route.name === 'WorkoutNavigator') {
+            iconName = focused ? 'analytics' : 'analytics-outline';
+          } else if (route.name === 'ExerciseNavigator') {
             iconName = focused ? 'barbell' : 'barbell-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -68,30 +71,38 @@ export default function ClientIndex() {
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
-        tabBarActiveTintColor: 'white',  // Indigo-500
-        tabBarInactiveTintColor: 'white', // Slate-400
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'white',
         tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
-        headerShown: false,
+
+        header: () => <ScreenHeader title={route.name} />
       })}
     >
+
       <Tab.Screen
         name="Home"
         component={AuthenticatedClientHomeScreen}
-        initialParams={{userData:userData, alertConfig:alertConfig}}
-        options={{ title: 'Home' }}
+        initialParams={{ userData: userData, alertConfig: alertConfig }}
+
       />
       <Tab.Screen
-        name="Workouts"
-        component={AuthenticatedSavedWorkoutsScreen}
-        initialParams={{userData:userData}}
-        options={{ title: 'Workouts' }}
+        name="WorkoutNavigator"
+        component={AuthenticatedWorkoutNavigator}
+        initialParams={{ userData: userData }}
+        options={{ headerShown: false, title: 'Workouts' }}
+      />
+      <Tab.Screen
+        name="ExerciseNavigator"
+        component={AuthenticatedExerciseNavigator}
+        initialParams={{ userData: userData }}
+        options={{ headerShown: false, title: 'Exercises' }}
       />
       <Tab.Screen
         name="Profile"
         component={AuthenticatedClientProfileScreen}
-        initialParams={{userData:userData, navigation:navigation}}
+        initialParams={{ userData: userData, navigation: navigation }}
         options={{ title: 'Profile' }}
       />
     </Tab.Navigator>

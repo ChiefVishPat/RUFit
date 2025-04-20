@@ -1,3 +1,7 @@
+
+// used by ExerciseDescriptionScreen.js (more specifically, AddToWorkoutModal.js component)
+// so user can select a workout from all workouts to add exercise to
+
 import React, { useState, useCallback } from 'react';
 import {
     View,
@@ -9,14 +13,17 @@ import {
     SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../components/TopHeader';
+import TopHeader from '../../../../components/TopHeader';
 import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
-import { APIClient } from '../../../components/api/APIClient';
+import { APIClient } from '../../../../components/api/APIClient';
+import { createStackNavigator } from '@react-navigation/stack';
+import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
-export default function SavedWorkoutsScreen() {
+export default function SelectWorkout() {
     const navigation = useNavigation();
     const route = useRoute();
     const [sessions, setSessions] = useState([]);
+    const sessionAppend = route.params?.sessionAppend;
 
     const fetchWorkouts = async () => {
         try {
@@ -41,42 +48,21 @@ export default function SavedWorkoutsScreen() {
         }, [])
     );
 
-    const handleDelete = async (session_id) => {
-        Alert.alert(
-            'Delete Workout',
-            'Are you sure you want to delete this workout?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'Delete',
-                    onPress: async () => {
-                        try {
-                            await APIClient.delete(`/workout/${session_id}`);
-                            setSessions(
-                                sessions.filter(
-                                    (session) =>
-                                        session.session_id !== session_id
-                                )
-                            );
-                        } catch (error) {
-                            console.error(error);
-                            Alert.alert('Error', 'Failed to delete workout.');
-                        }
-                    },
-                    style: 'destructive',
-                },
-            ]
-        );
-    };
-
     const renderWorkout = ({ item }) => (
         <TouchableOpacity
             style={styles.workoutCard}
-            onPress={() =>
-                navigation.navigate('AuthenticatedWorkoutDetailScreen', {
-                    session: item,
-                })
-            }>
+            onPress={() => {
+                navigation.navigate('SaveWorkoutModal', {
+                    session: {
+                        ...item,
+                        exercises: [...item.exercises, ...sessionAppend.exercises],
+                    },
+                    isModal: true
+                });
+            }}
+
+
+        >
             <View>
                 <Text style={styles.workoutName}>{item.workout_name}</Text>
                 <Text style={styles.workoutDetails}>
@@ -84,11 +70,12 @@ export default function SavedWorkoutsScreen() {
                     {item.date}
                 </Text>
             </View>
+            {/*
             <View style={styles.cardActions}>
                 <TouchableOpacity
                     onPress={() =>
-                        navigation.navigate('AuthenticatedSaveWorkoutScreen', {
-                            session: item,
+                        navigation.navigate('SaveWorkout', {
+
                         })
                     }>
                     <Ionicons name="create" size={24} color="#2DC5F4" />
@@ -102,13 +89,16 @@ export default function SavedWorkoutsScreen() {
                     />
                 </TouchableOpacity>
             </View>
+            */}
+
         </TouchableOpacity>
     );
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <TopHeader title="Saved Workouts" showBackButton={true} />
+                {/* <TopHeader title="Saved Workouts" showBackButton={true} /> */}
+
                 <FlatList
                     data={sessions}
                     keyExtractor={(item, index) =>
@@ -122,15 +112,13 @@ export default function SavedWorkoutsScreen() {
                         </Text>
                     }
                 />
-                <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() =>
-                        navigation.navigate('AuthenticatedSaveWorkoutScreen')
-                    }>
-                    <Ionicons name="add-circle" size={24} color="white" />
-                    <Text style={styles.addButtonText}>Add New Workout</Text>
-                </TouchableOpacity>
             </View>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName: true })}>
+                <Ionicons name="add-circle" size={24} color="white" />
+                <Text style={styles.addButtonText}>Add New Workout</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -171,15 +159,21 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 80,
+        bottom: 30,
         left: 20,
         right: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#CC0033',
-        padding: 15,
+        padding: 20,
         borderRadius: 8,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 3, //IOS
+        elevation: 2, // Android
     },
     addButtonText: {
         color: 'white',

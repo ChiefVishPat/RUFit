@@ -20,6 +20,7 @@ APIClient.interceptors.request.use(
                 config.headers.Authorization = `Bearer ${accessToken}`;
             } else {
                 console.warn('No access token found in AsyncStorage');
+                return Promise.reject(error);
             }
         } catch (error) {
             console.error('Failed to retrieve access token:', error);

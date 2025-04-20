@@ -10,15 +10,43 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../components/TopHeader';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { APIClient } from '../../../components/api/APIClient';
+import { useNavigation, useRoute, CommonActions } from '@react-navigation/native';
+import { useRef } from 'react';
+import { APIClient } from '../../../../components/api/APIClient';
 
 export default function SaveWorkoutScreen() {
     const navigation = useNavigation();
     const route = useRoute();
     // When editing, an existing session is passed as "session"
     const existingSession = route.params?.session;
+    const newWorkout = route.params?.newWorkout || false;
+
+    // Detects whether screen is being presented as a modal (for navigation logic)
+    const isModal = route.params?.isModal || false;
+
+    // If param "autoFocusName" is passed as true, user is prompted to edit workout name first
+    const nameInputRef = useRef(null);
+    const autoFocusName = route.params?.autoFocusName ?? false;
+
+    useEffect(() => {
+        if (autoFocusName && nameInputRef.current) {
+            const timeout = setTimeout(() => {
+                nameInputRef.current.focus();
+
+                // Optional: Move cursor to end if editing existing name
+                if (workoutName) {
+                    nameInputRef.current.setNativeProps({
+                        selection: {
+                            start: workoutName.length,
+                            end: workoutName.length,
+                        },
+                    });
+                }
+            }, 300); // small delay to wait for UI to render
+
+            return () => clearTimeout(timeout);
+        }
+    }, [autoFocusName]);
 
     const [workoutName, setWorkoutName] = useState('');
     const [exercises, setExercises] = useState([
@@ -31,14 +59,12 @@ export default function SaveWorkoutScreen() {
             setWorkoutName(existingSession.workout_name);
             // Convert backend "exercise" key to "name" for the form
             const loadedExercises = existingSession.exercises.map((ex) => ({
-                name: ex.exercise,
-                sets: String(ex.sets),
-                reps: String(ex.reps),
-                weight:
-                    ex.weight !== undefined && ex.weight !== null
-                        ? String(ex.weight)
-                        : '',
+                name: ex?.exercise ?? '',
+                sets: ex?.sets != null ? String(ex.sets) : '',
+                reps: ex?.reps != null ? String(ex.reps) : '',
+                weight: ex?.weight != null ? String(ex.weight) : '',
             }));
+
             setExercises(loadedExercises);
         }
     }, [existingSession]);
@@ -96,16 +122,26 @@ export default function SaveWorkoutScreen() {
                 exercises: validExercises,
             };
             let response;
-            if (existingSession) {
+            if (existingSession && !newWorkout) {
                 // Update the existing session using PUT with the session_id
-                response = await APIClient.put(`/workout/${existingSession.session_id}`,payload);
+                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload);
             } else {
                 // Create a new workout session
+                console.log("session id does not exist");
                 response = await APIClient.post('/workout', payload);
             }
             console.log(response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
-            navigation.goBack();
+
+            if (isModal) {
+                navigation.pop(2); // closes SaveWorkoutModal
+                return;
+            }
+            else {
+                navigation.goBack();
+                return;
+            }
+
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Failed to save workout session.');
@@ -116,13 +152,14 @@ export default function SaveWorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <TopHeader
+            {/* <TopHeader
                 title={existingSession ? 'Edit Workout' : 'Save Workout'}
                 showBackButton={true}
-            />
+            /> */}
             <ScrollView contentContainerStyle={styles.formContainer}>
                 <Text style={styles.label}>Workout Session Name</Text>
                 <TextInput
+                    ref={nameInputRef}
                     style={styles.input}
                     placeholder="Enter workout session name"
                     placeholderTextColor="#aaa"
@@ -200,8 +237,8 @@ export default function SaveWorkoutScreen() {
                         onPress={handleSaveWorkout}>
                         <Text style={styles.saveWorkoutButtonText}>
                             {existingSession
-                                ? 'Update Workout'
-                                : 'Save Workout'}
+                                ? 'Save Workout'
+                                : 'Add New Workout'}
                         </Text>
                     </TouchableOpacity>
                 )}
@@ -216,7 +253,7 @@ export default function SaveWorkoutScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#1F1F1F' },
+    container: { flex: 1, backgroundColor: '#1F1F1F', paddingTop: 15, },
     formContainer: { padding: 20 },
     label: { color: 'white', fontSize: 16, marginBottom: 5 },
     input: {
@@ -252,6 +289,12 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         marginBottom: 10,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 0.5, // IOS
+        shadowRadius: 8, //IOS
+        elevation: 2, // Android
     },
     addExerciseButtonText: {
         color: 'white',
@@ -262,6 +305,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#CC0033',
         padding: 15,
         borderRadius: 5,
+        marginTop: 10,
+
+        shadowColor: 'black', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 0.5, // IOS
+        shadowRadius: 8, //IOS
+        elevation: 2, // Android
     },
     saveWorkoutButtonText: {
         color: 'white',
