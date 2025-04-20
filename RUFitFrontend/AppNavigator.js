@@ -73,6 +73,14 @@ function MainStackScreen({ isAuthenticated }) {
                 options={{ headerShown: false, gestureEnabled: false }}
             />
 
+             <MainStack.Screen
+                name="AuthenticatedMacroTrackerNavigator"
+                component={
+                    authenticated_screens.AuthenticatedMacroTrackerNavigator
+                }
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+
             <MainStack.Screen
                 name="AuthenticatedMyBodyDataScreen"
                 component={authenticated_screens.AuthenticatedMyBodyDataScreen}
@@ -92,6 +100,7 @@ function MainStackScreen({ isAuthenticated }) {
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
             />
+
         </MainStack.Navigator>
     );
 }

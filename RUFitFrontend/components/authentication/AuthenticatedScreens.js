@@ -11,7 +11,8 @@ import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
 import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
 import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
 import ExerciseNavigator from '../../app/postauth/client/exercises/ExerciseNavigator';
-import BarcodeScanner from '../../app/postauth/client/BarcodeScanner';
+import BarcodeScanner from '../../app/postauth/client/macrotrackerBC/ScanMacroScreen';
+import MacroTrackerNavigator from '../../app/postauth/client/macrotrackerBC/MacroTrackerNavigator';
 
 
 // Example: Wrap HomeScreen with ProtectedScreen
@@ -80,10 +81,8 @@ export const AuthenticatedProfileSettingsScreen = () => (
     </AuthenticationWrapper>
 );
 
-/*FOR BARCODE/MACRO SCREEN
-export const  = () => (
+export const AuthenticatedMacroTrackerNavigator = () => (
     <AuthenticationWrapper>
-        <ProfileSettings />
+        <MacroTrackerNavigator />
     </AuthenticationWrapper>
 );
-*/
