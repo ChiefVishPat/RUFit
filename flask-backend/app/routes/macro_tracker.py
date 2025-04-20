@@ -21,8 +21,8 @@ def create_tracker():
 
     food_name = data.get('food_name')
     barcode = data.get('barcode')  
-    print("🔍 Received data:", data)
-    print("🔍 Barcode:", data.get('barcode'))
+    print("Received data:", data)
+    print("Barcode:", data.get('barcode'))
 
     macros = {
         'calories': data.get('calories'),
@@ -40,9 +40,11 @@ def create_tracker():
 
             api_url = f'https://world.openfoodfacts.org/api/v0/product/{barcode}.json'
             response = requests.get(api_url)
-            print("🔁 Fetching Open Food Facts data for barcode:", barcode)
-            print("🌐 API URL:", api_url)
-            print("📦 API response:", response.json())
+            
+            print("Fetching Open Food Facts data for barcode:", barcode)
+            print("API URL:", api_url)
+            print("API response:", response.json())
+
             if response.status_code == 200:
                 product = response.json().get('product', {})
                 nutriments = product.get('nutriments', {})

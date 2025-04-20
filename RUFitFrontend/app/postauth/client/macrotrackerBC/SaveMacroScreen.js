@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
+import { useEffect } from 'react';
 
 export default function SaveMacroScreen() {
   const navigation = useNavigation();
@@ -30,6 +31,13 @@ export default function SaveMacroScreen() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (route.params?.barcode) {
+      setForm((prev) => ({ ...prev, barcode: route.params.barcode }));
+    }
+  }, [route.params?.barcode]);
+  
 
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
 

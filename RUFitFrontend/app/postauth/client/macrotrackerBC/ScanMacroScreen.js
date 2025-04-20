@@ -154,68 +154,43 @@ const styles = StyleSheet.create({
 export default MacroTrackerScreen;
 */
 
-// ScanMacroScreen.js
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { Text, View, StyleSheet, Alert } from 'react-native';
+import { Camera } from 'expo-camera';
 
-export default function ScanMacroScreen() {
-  const navigation = useNavigation();
+export default function ScanMacroScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ data }) => {
+  const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    Alert.alert('Barcode Scanned', `Barcode: ${data}`, [
+    Alert.alert('Scanned!', `Barcode: ${data}`, [
       {
-        text: 'Use this barcode',
+        text: 'OK',
         onPress: () => {
           navigation.navigate('Save Macro', { barcode: data });
         },
       },
-      {
-        text: 'Scan Again',
-        onPress: () => setScanned(false),
-        style: 'cancel',
-      },
     ]);
   };
 
-  if (hasPermission === null) {
-    return <ActivityIndicator style={styles.centered} size="large" color="#2DC5F4" />;
-  }
-  if (hasPermission === false) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.text}>Camera access denied. Please enable camera permissions.</Text>
-      </View>
-    );
-  }
+  if (hasPermission === null) return <Text>Requesting camera permission...</Text>;
+  if (hasPermission === false) return <Text>No access to camera</Text>;
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
+      <Camera
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
+        ratio="16:9"
       />
-
-      <View style={styles.overlay}>
-        <Text style={styles.scanText}>Scan a food product's barcode</Text>
-        <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="close" size={28} color="#fff" />
-          <Text style={styles.cancelText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -223,43 +198,5 @@ export default function ScanMacroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1F1F1F',
-  },
-  text: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-    marginHorizontal: 20,
-  },
-  overlay: {
-    position: 'absolute',
-    bottom: 40,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  scanText: {
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  cancelButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#CC0033',
-    padding: 10,
-    borderRadius: 8,
-  },
-  cancelText: {
-    color: 'white',
-    marginLeft: 10,
-    fontWeight: 'bold',
   },
 });
