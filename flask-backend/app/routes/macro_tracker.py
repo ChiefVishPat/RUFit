@@ -7,6 +7,8 @@ from app.extensions import db
 from app.logging_config import logger
 from app.models.macro_tracker import Tracker
 
+import requests
+
 tracker_bp = Blueprint('tracker', __name__, url_prefix='/tracker')
 
 
@@ -17,8 +19,43 @@ def create_tracker():
     data = request.get_json()
     today = datetime.datetime.utcnow().date()
 
-    # Validate required field
     food_name = data.get('food_name')
+    barcode = data.get('barcode')  
+    macros = {
+        'calories': data.get('calories'),
+        'protein': data.get('protein'),
+        'unsaturated_fats': data.get('unsaturated_fats'),
+        'saturated_fats': data.get('saturated_fats'),
+        'fiber': data.get('fiber'),
+        'carbs': data.get('carbs'),
+    }
+
+    # Try to fetch data from barcode if provided
+    if barcode:
+        try:
+            api_url = f'https://world.openfoodfacts.org/api/v0/product/{barcode}.json'
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                product = response.json().get('product', {})
+                nutriments = product.get('nutriments', {})
+
+                macros['calories'] = macros['calories'] or nutriments.get('energy-kcal_100g', 0)
+                macros['protein'] = macros['protein'] or nutriments.get('proteins_100g', 0)
+                macros['unsaturated_fats'] = macros['unsaturated_fats'] or (
+                    nutriments.get('fat_100g', 0) - nutriments.get('saturated-fat_100g', 0)
+                )
+                macros['saturated_fats'] = macros['saturated_fats'] or nutriments.get('saturated-fat_100g', 0)
+                macros['fiber'] = macros['fiber'] or nutriments.get('fiber_100g', 0)
+                macros['carbs'] = macros['carbs'] or nutriments.get('carbohydrates_100g', 0)
+
+                food_name = food_name or product.get('product_name', 'Unknown')
+                logger.info(f'Barcode data fetched for user {user_id}')
+            else:
+                logger.warning(f'Failed to fetch barcode data for {barcode}, status {response.status_code}')
+        except Exception as e:
+            logger.error(f'Error fetching product from barcode {barcode} for user {user_id}: {e}')
+            return jsonify({'message': 'Error fetching data from barcode'}), 500
+
     if not food_name:
         logger.warning(f'Tracker creation failed: Food name is required for user {user_id}')
         return jsonify({'message': 'Food name is required'}), 400
@@ -29,23 +66,23 @@ def create_tracker():
             tracker_record = Tracker(
                 user_id=user_id,
                 food_name=food_name,
-                calorie=data.get('calories', 0),
-                protein=data.get('protein', 0),
-                unsat_fat=data.get('unsaturated_fats', 0),
-                sat_fat=data.get('saturated_fats', 0),
-                fiber=data.get('fiber', 0),
-                carbs=data.get('carbs', 0),
+                calorie=macros['calories'] or 0,
+                protein=macros['protein'] or 0,
+                unsat_fat=macros['unsaturated_fats'] or 0,
+                sat_fat=macros['saturated_fats'] or 0,
+                fiber=macros['fiber'] or 0,
+                carbs=macros['carbs'] or 0,
                 date=today,
             )
             db.session.add(tracker_record)
             logger.info(f'Created tracker record for user {user_id} on {today}')
         else:
-            tracker_record.calorie += data.get('calories', 0)
-            tracker_record.protein += data.get('protein', 0)
-            tracker_record.unsat_fat += data.get('unsaturated_fats', 0)
-            tracker_record.sat_fat += data.get('saturated_fats', 0)
-            tracker_record.fiber += data.get('fiber', 0)
-            tracker_record.carbs += data.get('carbs', 0)
+            tracker_record.calorie += macros['calories'] or 0
+            tracker_record.protein += macros['protein'] or 0
+            tracker_record.unsat_fat += macros['unsaturated_fats'] or 0
+            tracker_record.sat_fat += macros['saturated_fats'] or 0
+            tracker_record.fiber += macros['fiber'] or 0
+            tracker_record.carbs += macros['carbs'] or 0
             logger.info(f'Updated tracker record for user {user_id} on {today}')
         db.session.commit()
         return jsonify({'message': 'Macros updated successfully'}), 200
@@ -54,6 +91,9 @@ def create_tracker():
         db.session.rollback()
         logger.error(f'Error updating tracker for user {user_id}: {e}')
         return jsonify({'message': 'Internal Server Error'}), 500
+
+
+
 
 
 @tracker_bp.route('', methods=['GET'])

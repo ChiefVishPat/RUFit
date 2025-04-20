@@ -15,4 +15,6 @@ class Tracker(db.Model):
     fiber = db.Column(db.Float, default=0.0)
     protein = db.Column(db.Float, default=0.0)
 
+    barcode = db.Column(db.String(50), nullable= True) #im setting nullable to true so that users can optionally enter a barcode
+
     user = db.relationship('User', backref=db.backref('tracker', lazy=True))

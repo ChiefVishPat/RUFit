@@ -105,5 +105,5 @@ const AppNavigator = ({ isAuthenticated }) => {
         </Stack.Navigator>
     );
 };
-
+//need to add stack screen for barcode and macro page
 export default AppNavigator;

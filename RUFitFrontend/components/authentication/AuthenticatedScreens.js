@@ -8,7 +8,7 @@ import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfile
 import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
 import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
 import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
-
+import BarcodeScanner from '../../app/postauth/client/BarcodeScanner';
 // Example: Wrap HomeScreen with ProtectedScreen
 export const AuthenticatedClientHomeScreen = () => (
     <AuthenticationWrapper>
@@ -54,3 +54,11 @@ export const AuthenticatedProfileSettingsScreen = () => (
         <ProfileSettings />
     </AuthenticationWrapper>
 );
+
+/*FOR BARCODE/MACRO SCREEN
+export const  = () => (
+    <AuthenticationWrapper>
+        <ProfileSettings />
+    </AuthenticationWrapper>
+);
+*/
