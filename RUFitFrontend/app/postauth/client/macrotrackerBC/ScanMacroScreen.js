@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
+import * as Camera from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ScanMacroScreen() {
@@ -94,12 +94,12 @@ export default function ScanMacroScreen() {
 
   return (
     <View style={styles.container}>
-      <Camera
-        style={styles.camera}
-        type={Camera.Constants.Type.back}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        ref={cameraRef}
-      />
+    <Camera.Camera
+    style={styles.camera}
+    type={Camera.Constants.Type.back}
+    onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+    ref={cameraRef}
+    />
       {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
     </View>
   );
@@ -111,6 +111,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   camera: {
-    flex: 1,
+    flex: 1
   },
 });

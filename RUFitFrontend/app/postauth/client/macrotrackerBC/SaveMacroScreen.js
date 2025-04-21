@@ -33,11 +33,10 @@ export default function SaveMacroScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (route.params?.barcode) {
-      setForm((prev) => ({ ...prev, barcode: route.params.barcode }));
-    }
-  }, [route.params?.barcode]);
-  
+  if (route.params?.scannedBarcode) {
+    setForm((prev) => ({ ...prev, barcode: route.params.scannedBarcode }));
+  }
+}, [route.params?.scannedBarcode]); 
 
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
