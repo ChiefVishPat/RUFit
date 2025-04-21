@@ -127,7 +127,7 @@ def get_tracker():
             {
                 'date': tracker_record.date.strftime('%Y-%m-%d'),
                 'food_name': tracker_record.food_name,
-                'calories': tracker_record.calorie,
+                'calories': tracker_record.calories,
                 'protein': tracker_record.protein,
                 'carbs': tracker_record.carbs,
                 'fiber': tracker_record.fiber,
@@ -154,7 +154,7 @@ def update_tracker(id):
         # Update fields only if they are provided
         tracker.food_name = data.get('food_name', tracker.food_name)
         tracker.barcode = data.get('barcode', tracker.barcode)
-        tracker.calorie = data.get('calories', tracker.calorie)
+        tracker.calories = data.get('calories', tracker.calories)
         tracker.protein = data.get('protein', tracker.protein)
         tracker.carbs = data.get('carbs', tracker.carbs)
         tracker.fiber = data.get('fiber', tracker.fiber)

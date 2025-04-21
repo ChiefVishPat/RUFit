@@ -18,7 +18,7 @@ export default function SavedMacroScreen() {
 
   const fetchLogs = async () => {
     try {
-      const response = await APIClient.get('/tracker/all');
+      const response = await APIClient.get('/tracker');
       setLogs(response.data);
     } catch (error) {
       console.error(error);
