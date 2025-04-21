@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
-import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator, AuthenticatedExerciseNavigator } from '../../../components/authentication/AuthenticatedScreens';
+import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator, AuthenticatedExerciseNavigator, AuthenticatedMacroTrackerNavigator } from '../../../components/authentication/AuthenticatedScreens';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
 import ScreenHeader from './ScreenHeader';
 
@@ -67,7 +67,9 @@ export default function ClientIndex() {
             iconName = focused ? 'barbell' : 'barbell-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
-          }
+          }else if (route.name === 'MacroTracker') {
+            iconName = focused ? 'nutrition' : 'nutrition-outline';
+          } 
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
@@ -104,6 +106,12 @@ export default function ClientIndex() {
         component={AuthenticatedClientProfileScreen}
         initialParams={{ userData: userData, navigation: navigation }}
         options={{ title: 'Profile' }}
+      />
+      <Tab.Screen 
+          name="MacroTracker" 
+          component={AuthenticatedMacroTrackerNavigator} 
+          initialParams={{ userData }} 
+          options={{ headerShown: false, title: 'Macros' }} 
       />
     </Tab.Navigator>
   );

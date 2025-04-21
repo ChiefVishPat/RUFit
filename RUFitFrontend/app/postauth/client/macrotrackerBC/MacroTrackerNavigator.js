@@ -12,7 +12,7 @@ export default function MacroTrackerNavigator() {
     <Stack.Navigator initialRouteName="Macro Logs">
       <Stack.Screen
         name="Macro Logs"
-        component={SavedMacrosScreen} 
+        component={SavedMacroScreen} 
         options={{
           header: () => <ScreenHeader title="Macro Logs" />
         }}

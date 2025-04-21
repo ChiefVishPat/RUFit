@@ -8,15 +8,19 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "permissions": ["CAMERA"],
+    "android": {
+      "permissions": ["CAMERA"],
+      "foregroundImage": "./assets/images/adaptive-icon.png",
+      "backgroundColor": "#ffffff"},
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+    "infoPlist":
+      { 
+        "NSCameraUsageDescription": "This app uses the camera to scan food barcodes." 
       }
-    },
+    ,
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -33,7 +37,9 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font"
+      ["expo-camera"],
+      "expo-font",
+      "expo-barcode-scanner"
     ],
     "experiments": {
       "typedRoutes": true

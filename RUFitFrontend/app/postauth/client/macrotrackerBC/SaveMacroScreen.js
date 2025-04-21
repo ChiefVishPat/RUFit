@@ -56,11 +56,12 @@ export default function SaveMacroScreen() {
         saturated_fats: parseFloat(form.saturated_fats) || 0,
         unsaturated_fats: parseFloat(form.unsaturated_fats) || 0,
       };
+      console.log("Submitting macro payload:", payload);
       await APIClient.post('/tracker', payload);
       Alert.alert('Success', 'Macro log saved.');
       navigation.goBack();
     } catch (err) {
-      console.error(err);
+      console.error("Error saving macro:", err.response?.data || err.message);
       Alert.alert('Error', 'Could not save macro log.');
     } finally {
       setIsLoading(false);
@@ -91,14 +92,24 @@ export default function SaveMacroScreen() {
       {renderField('Fiber (g)', 'fiber', 'numeric')}
       {renderField('Saturated Fats (g)', 'saturated_fats', 'numeric')}
       {renderField('Unsaturated Fats (g)', 'unsaturated_fats', 'numeric')}
+     
+      <TouchableOpacity
+        style={styles.scanButton}
+        onPress={() => navigation.navigate('Scan Macro')}
+      >
+        <Ionicons name="barcode-outline" size={24} color="white" />
+        <Text style={styles.scanButtonText}>Scan Barcode</Text>
+      </TouchableOpacity>
 
       {isLoading ? (
         <ActivityIndicator size="large" color="#2DC5F4" />
       ) : (
+        
         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
           <Text style={styles.saveButtonText}>Save Macro</Text>
         </TouchableOpacity>
       )}
+
 
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -123,6 +134,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 20,
     alignItems: 'center',
+  },
+  scanButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2DC5F4',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  scanButtonText: {
+    color: 'white',
+    marginLeft: 8,
+    fontWeight: 'bold',
   },
   saveButtonText: { color: 'white', fontWeight: 'bold' },
   cancelButton: { marginTop: 10 },
