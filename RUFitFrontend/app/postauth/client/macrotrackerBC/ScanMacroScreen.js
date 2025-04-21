@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { Camera } from 'expo-camera';
+import * as Camera from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ScanMacroScreen() {
@@ -37,7 +37,7 @@ export default function ScanMacroScreen() {
 
   return (
     <View style={styles.container}>
-        <Camera
+      <Camera.Camera
         style={styles.camera}
         type={Camera.Constants.Type.back}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

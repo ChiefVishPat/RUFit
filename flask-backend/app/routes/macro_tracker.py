@@ -27,8 +27,8 @@ def create_tracker():
     macros = {
         'calories': data.get('calories'),
         'protein': data.get('protein'),
-        'unsaturated_fats': data.get('unsaturated_fats'),
-        'saturated_fats': data.get('saturated_fats'),
+        'unsat_fat': data.get('unsat_fat'),
+        'sat_fat': data.get('sat_fat'),
         'fiber': data.get('fiber'),
         'carbs': data.get('carbs'),
     }
@@ -36,11 +36,9 @@ def create_tracker():
     # Try to fetch data from barcode if provided
     if barcode:
         try:
-            
-
             api_url = f'https://world.openfoodfacts.org/api/v0/product/{barcode}.json'
             response = requests.get(api_url)
-            
+
             print("Fetching Open Food Facts data for barcode:", barcode)
             print("API URL:", api_url)
             print("API response:", response.json())
@@ -51,10 +49,10 @@ def create_tracker():
 
                 macros['calories'] = macros['calories'] or nutriments.get('energy-kcal_100g', 0)
                 macros['protein'] = macros['protein'] or nutriments.get('proteins_100g', 0)
-                macros['unsaturated_fats'] = macros['unsaturated_fats'] or (
+                macros['unsat_fat'] = macros['unsat_fat'] or (
                     nutriments.get('fat_100g', 0) - nutriments.get('saturated-fat_100g', 0)
                 )
-                macros['saturated_fats'] = macros['saturated_fats'] or nutriments.get('saturated-fat_100g', 0)
+                macros['sat_fat'] = macros['sat_fat'] or nutriments.get('saturated-fat_100g', 0)
                 macros['fiber'] = macros['fiber'] or nutriments.get('fiber_100g', 0)
                 macros['carbs'] = macros['carbs'] or nutriments.get('carbohydrates_100g', 0)
 
@@ -76,10 +74,10 @@ def create_tracker():
             tracker_record = Tracker(
                 user_id=user_id,
                 food_name=food_name,
-                calorie=macros['calories'] or 0,
+                calories=macros['calories'] or 0,
                 protein=macros['protein'] or 0,
-                unsat_fat=macros['unsaturated_fats'] or 0,
-                sat_fat=macros['saturated_fats'] or 0,
+                unsat_fat=macros['unsat_fat'] or 0,
+                sat_fat=macros['sat_fat'] or 0,
                 fiber=macros['fiber'] or 0,
                 carbs=macros['carbs'] or 0,
                 date=today,
@@ -87,10 +85,10 @@ def create_tracker():
             db.session.add(tracker_record)
             logger.info(f'Created tracker record for user {user_id} on {today}')
         else:
-            tracker_record.calorie += macros['calories'] or 0
+            tracker_record.calories += macros['calories'] or 0
             tracker_record.protein += macros['protein'] or 0
-            tracker_record.unsat_fat += macros['unsaturated_fats'] or 0
-            tracker_record.sat_fat += macros['saturated_fats'] or 0
+            tracker_record.unsat_fat += macros['unsat_fat'] or 0
+            tracker_record.sat_fat += macros['sat_fat'] or 0
             tracker_record.fiber += macros['fiber'] or 0
             tracker_record.carbs += macros['carbs'] or 0
             logger.info(f'Updated tracker record for user {user_id} on {today}')
