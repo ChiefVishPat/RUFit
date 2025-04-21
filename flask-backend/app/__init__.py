@@ -7,6 +7,7 @@ from .routes.workouts import workouts_bp
 from .routes.userinfo import userinfo_bp
 from .routes.macro_tracker import tracker_bp
 from .routes.exercises import exercises_bp
+from .routes.recommendations import recommendations_bp # <-- new import
 from .logging_config import logger
 
 
@@ -24,7 +25,7 @@ def create_app(config_class=Config):
     with app.app_context():
         from .models import workout, users, userinfo, macro_tracker # noqa: F401
 
-        # db.drop_all()
+        # db.drop_all() # Keep commented unless needed
         db.create_all()
 
     app.register_blueprint(auth_bp)
@@ -32,6 +33,7 @@ def create_app(config_class=Config):
     app.register_blueprint(userinfo_bp)
     app.register_blueprint(tracker_bp)
     app.register_blueprint(exercises_bp)
+    app.register_blueprint(recommendations_bp) # <-- new blueprint
 
     logger.info("Application created successfully")
     return app

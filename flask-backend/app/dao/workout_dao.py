@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.logging_config import logger
 from app.models.workout import Workout
-
+from sqlalchemy import desc
 
 def get_workouts_by_user(user_id: str):
     try:
@@ -16,6 +16,24 @@ def get_workouts_by_session(user_id: str, session_id: str):
         return Workout.query.filter_by(user_id=user_id, session_id=session_id).all()
     except Exception as e:
         logger.error(f"Error fetching workouts for session '{session_id}' and user '{user_id}': {e}")
+        raise
+    
+def get_workouts_by_user_and_exercise(user_id: str, exercise_name: str, limit: int = None):
+    """
+    Fetches workout history for a specific user and exercise, ordered by date descending.
+
+    :param user_id: The user's ID.
+    :param exercise_name: The name of the exercise.
+    :param limit: Optional limit on the number of sessions to retrieve.
+    :return: A list of Workout objects.
+    """
+    try:
+        query = Workout.query.filter_by(user_id=user_id, exercise=exercise_name).order_by(desc(Workout.date))
+        if limit:
+            return query.limit(limit).all()
+        return query.all()
+    except Exception as e:
+        logger.error(f"Error fetching workouts for user '{user_id}' and exercise '{exercise_name}': {e}")
         raise
 
 
