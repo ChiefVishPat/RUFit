@@ -8,19 +8,26 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "permissions": ["CAMERA"],
+    "permissions": [
+      "CAMERA"
+    ],
     "android": {
-      "permissions": ["CAMERA"],
+      "permissions": [
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "foregroundImage": "./assets/images/adaptive-icon.png",
-      "backgroundColor": "#ffffff"},
-    "ios": {
-      "supportsTablet": true
+      "backgroundColor": "#ffffff",
+      "package": "com.anonymous.RUFitFrontend"
     },
-    "infoPlist":
-      { 
-        "NSCameraUsageDescription": "This app uses the camera to scan food barcodes." 
-      }
-    ,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.RUFitFrontend"
+    },
+    "infoPlist": {
+      "NSCameraUsageDescription": "This app uses the camera to scan food barcodes."
+    },
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -37,7 +44,14 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      ["expo-camera"],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
       "expo-font",
       "expo-barcode-scanner"
     ],

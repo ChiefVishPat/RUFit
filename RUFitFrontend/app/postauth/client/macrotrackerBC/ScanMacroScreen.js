@@ -58,48 +58,51 @@ const styles = StyleSheet.create({
   },
 });
  */
-
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import * as Camera from 'expo-camera';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert, Button } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ScanMacroScreen() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-  const cameraRef = useRef(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+    if (!permission?.granted) {
+      requestPermission();
+    }
+  }, [permission]);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data, type }) => {
     setScanned(true);
-    Alert.alert("Barcode scanned", `Type: ${type}, Data: ${data}`, [
+    Alert.alert("Barcode Scanned", `Type: ${type}\nData: ${data}`, [
       {
-        text: 'OK',
+        text: "OK",
         onPress: () => {
-          navigation.navigate('Save Macro', { scannedBarcode: data });
+          navigation.navigate("Save Macro", { scannedBarcode: data });
         },
       },
     ]);
   };
 
-  if (hasPermission === null) return <Text>Requesting camera permission...</Text>;
-  if (hasPermission === false) return <Text>No access to camera</Text>;
+  if (!permission) {
+    return <Text>Requesting camera permissions...</Text>;
+  }
+
+  if (!permission.granted) {
+    return <Text>No access to camera. Please enable it in settings.</Text>;
+  }
 
   return (
     <View style={styles.container}>
-    <Camera.Camera
-    style={styles.camera}
-    type={Camera.Constants.Type.back}
-    onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-    ref={cameraRef}
-    />
+      <CameraView
+        style={styles.camera}
+        barcodeScannerSettings={{
+          barCodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e'],
+        }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+      />
       {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
     </View>
   );
@@ -108,9 +111,8 @@ export default function ScanMacroScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
   },
   camera: {
-    flex: 1
+    flex: 1,
   },
 });
