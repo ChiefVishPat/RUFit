@@ -109,35 +109,38 @@ def create_tracker():
 def get_tracker():
     user_id = get_jwt_identity()
     date_param = request.args.get('date')
+
     try:
         if date_param:
+            # If date is provided, filter by both user and date
             date_obj = datetime.datetime.strptime(date_param, '%Y-%m-%d').date()
+            tracker_records = Tracker.query.filter_by(user_id=user_id, date=date_obj).all()
         else:
-            date_obj = datetime.datetime.utcnow().date()
+            # If no date is provided, return all logs for the user
+            tracker_records = Tracker.query.filter_by(user_id=user_id).order_by(Tracker.date.desc()).all()
+
+        if not tracker_records:
+            return jsonify([]), 200
+
+        result = []
+        for record in tracker_records:
+            result.append({
+                'id': record.id,
+                'date': record.date.strftime('%Y-%m-%d'),
+                'food_name': record.food_name,
+                'barcode': getattr(record, 'barcode', None),
+                'calories': record.calories,
+                'protein': record.protein,
+                'carbs': record.carbs,
+                'fiber': record.fiber,
+                'unsat_fat': record.unsat_fat,
+                'sat_fat': record.sat_fat,
+            })
+
+        return jsonify(result), 200
+
     except Exception as e:
-        logger.warning(f'Invalid date format provided by user {user_id}: {e}')
-        return jsonify({'message': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    try:
-        tracker_record = Tracker.query.filter_by(user_id=user_id, date=date_obj).first()
-        if not tracker_record:
-            return jsonify({'message': 'No macro data for this date'}), 404
-
-        return jsonify(
-            {
-                'date': tracker_record.date.strftime('%Y-%m-%d'),
-                'food_name': tracker_record.food_name,
-                'calories': tracker_record.calories,
-                'protein': tracker_record.protein,
-                'carbs': tracker_record.carbs,
-                'fiber': tracker_record.fiber,
-                'unsat_fat': tracker_record.unsat_fat,
-                'sat_fat': tracker_record.sat_fat,
-            }
-        ), 200
-
-    except Exception as e:
-        logger.error(f'Error fetching tracker for user {user_id}: {e}')
+        logger.error(f'Error fetching tracker records for user {user_id}: {e}')
         return jsonify({'message': 'Internal Server Error'}), 500
 
 @tracker_bp.route('/<int:id>', methods=['PATCH'])

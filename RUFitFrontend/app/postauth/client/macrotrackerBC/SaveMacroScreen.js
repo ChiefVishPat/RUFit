@@ -22,12 +22,12 @@ export default function SaveMacroScreen() {
   const [form, setForm] = useState({
     food_name: existingMacro?.food_name || '',
     barcode: existingMacro?.barcode || '',
-    calories: existingMacro?.calorie?.toString() || '',
+    calories: existingMacro?.calories?.toString() || '',
     protein: existingMacro?.protein?.toString() || '',
     carbs: existingMacro?.carbs?.toString() || '',
     fiber: existingMacro?.fiber?.toString() || '',
-    saturated_fats: existingMacro?.sat_fat?.toString() || '',
-    unsaturated_fats: existingMacro?.unsat_fat?.toString() || '',
+    sat_fat: existingMacro?.sat_fat?.toString() || '',
+    unsat_fat: existingMacro?.unsat_fat?.toString() || '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -53,8 +53,8 @@ export default function SaveMacroScreen() {
         protein: parseFloat(form.protein) || 0,
         carbs: parseFloat(form.carbs) || 0,
         fiber: parseFloat(form.fiber) || 0,
-        saturated_fats: parseFloat(form.saturated_fats) || 0,
-        unsaturated_fats: parseFloat(form.unsaturated_fats) || 0,
+        sat_fat: parseFloat(form.sat_fat) || 0,
+        unsat_fat: parseFloat(form.unsat_fat) || 0,
       };
       console.log("Submitting macro payload:", payload);
       await APIClient.post('/tracker', payload);
@@ -90,8 +90,8 @@ export default function SaveMacroScreen() {
       {renderField('Protein (g)', 'protein', 'numeric')}
       {renderField('Carbs (g)', 'carbs', 'numeric')}
       {renderField('Fiber (g)', 'fiber', 'numeric')}
-      {renderField('Saturated Fats (g)', 'saturated_fats', 'numeric')}
-      {renderField('Unsaturated Fats (g)', 'unsaturated_fats', 'numeric')}
+      {renderField('Saturated Fats (g)', 'sat_fat', 'numeric')}
+      {renderField('Unsaturated Fats (g)', 'unsat_fat', 'numeric')}
      
       <TouchableOpacity
         style={styles.scanButton}
