@@ -17,6 +17,9 @@ flask-backend = {file = ".", editable = true}
 ruff = "*"
 pre-commit = "*"
 loguru = "*"
+pytest = "*"
+pytest-mock = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 ruff = "*"
