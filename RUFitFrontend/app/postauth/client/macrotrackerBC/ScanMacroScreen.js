@@ -15,8 +15,8 @@ export default function ScanMacroScreen() {
     }
   }, [permission]);
 
-const handleBarCodeScanned = ({ data, type }) => {
-  console.log('📦 Scanned:', { type, data });
+const handleBarCodeScanned = ({data}) => {
+  console.log('📦 Scanned:', {data});
   Alert.alert('Scanned!', `Type: ${type}\nData: ${data}`);
   setScanned(true); // disable after one scan (optional)
 };
