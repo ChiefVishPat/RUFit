@@ -1,46 +1,61 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Button } from 'react-native';
-import { CameraView, useCameraPermissions, onBarcodeScanned } from 'expo-camera';
-import { useNavigation } from '@react-navigation/native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function ScanMacroScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation();
 
+  
   useEffect(() => {
     if (!permission?.granted) {
       requestPermission();
     }
   }, [permission]);
 
-const handleBarCodeScanned = ({data}) => {
-  console.log('📦 Scanned:', {data});
-  Alert.alert('Scanned!', `Type: ${type}\nData: ${data}`);
-  setScanned(true); // disable after one scan (optional)
-};
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setScanned(false);
+      console.log("📸 ScanMacroScreen focused — scanner active");
+    }, [])
+  );
 
 
-  if (!permission) {
-    return <Text>Requesting camera permissions...</Text>;
-  }
+  const handleBarCodeScanned = ({ data, type }) => {
+    if (scanned) return; // prevent double scans
+    console.log('✅ Scanned:', { type, data });
 
-  if (!permission.granted) {
-    return <Text>No access to camera. Please enable it in settings.</Text>;
-  }
+    setScanned(true);
+
+    Alert.alert('Scanned!', `Type: ${type}\nData: ${data}`, [
+      {
+        text: 'OK',
+        onPress: () => {
+          navigation.navigate('Save Macro', { scannedBarcode: data });
+        },
+      },
+    ]);
+  };
+
+  // ✅ Handle permission/loading UI
+  if (!permission) return <Text>Requesting camera permissions...</Text>;
+  if (!permission.granted) return <Text>No access to camera. Please enable it in settings.</Text>;
 
   return (
     <View style={styles.container}>
       <CameraView
-        onBarcodeScanned={handleBarCodeScanned}
         style={styles.camera}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{
-          barCodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e'],
+          barCodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'qr'], // ← Add 'qr' for testing
         }}
-   
       />
-      {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
+      {scanned && (
+        <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />
+      )}
     </View>
   );
 }
@@ -48,6 +63,7 @@ const handleBarCodeScanned = ({data}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black',
   },
   camera: {
     flex: 1,
