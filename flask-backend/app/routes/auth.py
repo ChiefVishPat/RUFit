@@ -9,6 +9,9 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    print(data)
+    if not data:
+        return jsonify({'message': 'Invalid or missing JSON payload'}), 400
     username = data.get('username')
     password = data.get('password')
     email = data.get('email')
@@ -49,7 +52,7 @@ def login():
 
 
 @auth_bp.route('/refresh', methods=['POST'])
-@jwt_required()
+@jwt_required(refresh=True)
 def refresh():
     # This endpoint can simply call the refresh logic from your JWT settings
     from flask import jsonify
@@ -58,7 +61,7 @@ def refresh():
     try:
         # For refresh, the endpoint itself uses jwt_required(refresh=True)
         # so that a valid refresh token is required.
-        jwt_required(refresh=True)
+        # jwt_required(refresh=True)
         current_user = get_jwt_identity()
         new_access_token = create_access_token(identity=current_user)
         new_refresh_token = create_refresh_token(identity=current_user)

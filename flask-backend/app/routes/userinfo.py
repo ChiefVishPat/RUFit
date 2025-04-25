@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+import json
 
 from app.logging_config import logger
 from app.services.userinfo_service import add_or_update_userinfo, fetch_userinfo
@@ -12,6 +13,7 @@ userinfo_bp = Blueprint('userinfo', __name__, url_prefix='/userinfo')
 def create_or_update_userinfo():
     user_id = get_jwt_identity()
     data = request.get_json().get('user_data')
+    logger.info("📦 user_data:\n" + json.dumps(data, indent=2))
     if not data:
         logger.warning(f'No user data provided for user {user_id}')
         return jsonify({'message': 'No user data provided'}), 400

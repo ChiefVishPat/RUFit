@@ -18,7 +18,7 @@ export default function SavedMacroScreen() {
 
   const fetchLogs = async () => {
     try {
-      const response = await APIClient.get('/tracker');
+      const response = await APIClient.get('/tracker', {sendAccess: true});
       setLogs(response.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ export default function SavedMacroScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
-            await APIClient.delete(`/tracker/${id}`);
+            await APIClient.delete(`/tracker/${id}`, {sendAccess: true});
             fetchLogs();
           } catch (error) {
             console.error(error);

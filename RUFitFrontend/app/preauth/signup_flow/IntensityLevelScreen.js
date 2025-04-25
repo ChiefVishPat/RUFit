@@ -19,12 +19,13 @@ const IntensityLevelScreen = ({ navigation, route }) => {
         Kanit_400Regular,
     });
 
-    const [chosenIntensity, setChosenIntensity] = useState("Amateur");
+    const [chosenIntensity, setChosenIntensity] = useState("AMATEUR");
 
     const handleIntensityChange = (intensityLevel) => {
-        setChosenIntensity(intensityLevel);
+        setChosenIntensity(intensityLevel.toUpperCase());
     };
-    
+
+
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -44,8 +45,8 @@ const IntensityLevelScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.screenTitleText}>Training Intensity</Text>
                     </View>
                     <View style={styles.subTextContainer}>
-                    <Text style={fontStyles.subText}>We've designed this to work for everyone - from first-time to professional lifters </Text>
-                    <Text style={fontStyles.subText}>How intensely do you want to train?</Text>
+                        <Text style={fontStyles.subText}>We've designed this to work for everyone - from first-time to professional lifters </Text>
+                        <Text style={fontStyles.subText}>How intensely do you want to train?</Text>
                     </View>
 
                     <View style={styles.forms}>
@@ -57,13 +58,13 @@ const IntensityLevelScreen = ({ navigation, route }) => {
                     </View>
                 </View>
             </KeyboardAvoidingView>
-            
+
             <View style={styles.navigationBtnContainer}>
-                
+
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => {navigation.goBack()}}></BasicPressable>
+                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
                 </View>
-                
+
                 <View style={styles.nextBtnContainer}>
                     <ScarletPressable btnText="Next" onPress={() => {
                         navigation.navigate('SetGoals', {

@@ -6,7 +6,7 @@ export const APIClient = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor to always add the auth token (if present)
+// Request interceptor to optionally add access or refresh token
 APIClient.interceptors.request.use(
     async (config) => {
         // Convert data to JSON if it's an object
@@ -14,21 +14,39 @@ APIClient.interceptors.request.use(
             config.data = JSON.stringify(config.data);
         }
 
-        try {
-            const accessToken = await AsyncStorage.getItem('access_token');
-            if (accessToken) {
-                config.headers.Authorization = `Bearer ${accessToken}`;
-            } else {
-                console.warn('No access token found in AsyncStorage');
-                return Promise.reject(error);
-            }
-        } catch (error) {
-            console.error('Failed to retrieve access token:', error);
+        const { sendAccess, sendRefresh } = config;
+
+        if (sendAccess && sendRefresh) {
+            return Promise.reject(new Error("Cannot set both sendAccess and sendRefresh to true."));
         }
 
-        return config;
+        try {
+            if (sendAccess) {
+                console.log("access is being sent");
+                const accessToken = await AsyncStorage.getItem('access_token');
+                if (accessToken) {
+                    config.headers.Authorization = `Bearer ${accessToken}`;
+                } else {
+                    console.warn('No access token found in AsyncStorage');
+                    return Promise.reject(new Error('Access token not found'));
+                }
+            }
+
+            if (sendRefresh) {
+                const refreshToken = await AsyncStorage.getItem('refresh_token');
+                if (refreshToken) {
+                    config.headers.Authorization = `Bearer ${refreshToken}`;
+                } else {
+                    console.warn('No refresh token found in AsyncStorage');
+                    return Promise.reject(new Error('Refresh token not found'));
+                }
+            }
+
+            return config;
+        } catch (error) {
+            console.error('Token retrieval failed:', error);
+            return Promise.reject(error);
+        }
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );

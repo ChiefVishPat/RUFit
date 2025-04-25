@@ -27,7 +27,7 @@ export default function SelectWorkout() {
 
     const fetchWorkouts = async () => {
         try {
-            const response = await APIClient.get('/workout');
+            const response = await APIClient.get('/workout', {sendAccess: true});
             // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
             setSessions(response.data);
         } catch (error) {

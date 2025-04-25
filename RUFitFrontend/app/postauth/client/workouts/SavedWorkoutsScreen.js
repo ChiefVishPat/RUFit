@@ -22,7 +22,7 @@ export default function SavedWorkoutsScreen() {
 
     const fetchWorkouts = async () => {
         try {
-            const response = await APIClient.get('/workout');
+            const response = await APIClient.get('/workout', {sendAccess: true});
             // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
             console.log(response.data);
             setSessions(response.data);
@@ -54,7 +54,7 @@ export default function SavedWorkoutsScreen() {
                     text: 'Delete',
                     onPress: async () => {
                         try {
-                            await APIClient.delete(`/workout/${session_id}`);
+                            await APIClient.delete(`/workout/${session_id}`, {sendAccess: true});
                             setSessions(
                                 sessions.filter(
                                     (session) =>

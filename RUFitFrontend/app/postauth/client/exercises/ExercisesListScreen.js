@@ -42,7 +42,7 @@ export default function ExercisesListScreen() {
     useEffect(() => {
         const fetchExercises = async () => {
             try {
-                const response = await APIClient.get('/exercises');
+                const response = await APIClient.get('/exercises', {sendAccess: true});
                 setExercises(response.data);
             } catch (error) {
                 if (error.response && error.response.status === 401) {
@@ -63,7 +63,7 @@ export default function ExercisesListScreen() {
     useEffect(() => {
         const fetchMuscleGroups = async () => {
             try {
-                const response = await APIClient.get('/exercises/muscle-groups');
+                const response = await APIClient.get('/exercises/muscle-groups', {sendAccess: true});
                 setMuscleGroups(response.data);
             } catch (error) {
                 if (error.response && error.response.status === 401) {

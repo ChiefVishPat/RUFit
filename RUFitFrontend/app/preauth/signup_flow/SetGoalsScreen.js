@@ -15,7 +15,7 @@ import {
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
-import { user_login, set_user_pref} from "../../../components/authentication/user_auth/UserAuthActions";
+import { user_login, set_user_pref } from "../../../components/authentication/user_auth/UserAuthActions";
 
 const SetGoalsScreen = ({ navigation, route }) => {
 
@@ -24,15 +24,15 @@ const SetGoalsScreen = ({ navigation, route }) => {
         Kanit_400Regular,
     });
 
-    const [ isAlertVisible, setIsAlertVisible ] = useState(false);
-    const [ registrationError, setRegistrationError ] = useState(false);
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [registrationError, setRegistrationError] = useState(false);
 
     const { username, password, ...filteredUserData } = route.params;
 
-    const [chosenGoal, setChosenGoal] = useState('Deficit');
+    const [chosenGoal, setChosenGoal] = useState('DEFICIT');
 
     const handleGoalChange = (goal) => {
-        setChosenGoal(goal);
+        setChosenGoal(goal.toUpperCase());
     };
 
     const handlePress = async () => {
@@ -40,37 +40,56 @@ const SetGoalsScreen = ({ navigation, route }) => {
             ...filteredUserData,
             goal: chosenGoal
         };
-        
+        console.log(`user_data in set goals screen: ${user_data}`);
+        console.log("🧠 user_data:", JSON.stringify(user_data, null, 2));
+
         try {
-            const loginResult = await user_login({username:username, password:password});
-            // if no errors, access and refresh tokens should be set
-            const result = await set_user_pref({user_data});
-            if (result == status_constants.API_REQUEST_SUCCESS){
-                console.log("user info saved to DB succesfully");
+            const loginResult = await user_login({ username, password });
+
+            if (loginResult !== status_constants.API_REQUEST_SUCCESS) {
+                console.error("❌ Login failed:", loginResult);
+                return; // Exit early — don’t proceed to set prefs or navigate
             }
-            if (loginResult == status_constants.API_REQUEST_SUCCESS){
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: "ClientIndex" }]
-                  });
-                // ^^
-                // probably have to send some data, but most likely not
-                // should be able to access info when needed from backend using access_token
+
+            console.log("✅ User login successful");
+
+            // Now safely set user preferences
+            const prefResult = await set_user_pref({ user_data });
+
+            if (prefResult !== status_constants.API_REQUEST_SUCCESS) {
+                console.error("❌ Failed to save user preferences:", prefResult);
+                return;
             }
+
+            console.log("✅ User preferences saved to DB");
+
+            // All done — navigate now
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "ClientIndex" }]
+            });
+
         }
-        catch(error){
+        catch (error) {
             setIsAlertVisible(true);
-            setRegistrationError(error);
-            console.log(error);
+
+            const errorMessage =
+                error?.response?.data?.message || // backend custom error
+                error?.message ||                 // JS error message
+                "Something went wrong. Please try again.";
+
+            setRegistrationError(errorMessage);
+            console.log("SetGoals Error:", error);
         }
-        
-        
+
+
+
         // ^ needs to be sent to a frontend func that handles userpref set
 
         // before navigating, log in User. user login should handle access and refresh token setting
-        navigation.navigate('AuthenticatedClientHomeScreen', );
+        navigation.navigate('AuthenticatedClientHomeScreen',);
     }
-    
+
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -105,25 +124,25 @@ const SetGoalsScreen = ({ navigation, route }) => {
                         <VerticalToggleChoice
                             onValueChange={handleGoalChange}
                             labels={['Deficit', 'Maintain', 'Surplus']}
-                            selectedIndex={1}>                             
+                            selectedIndex={1}>
                         </VerticalToggleChoice>
                     </View>
 
                     <View style={styles.subTextContainer}>
                         <Text style={fontStyles.subText}>({getValueByLabel(setGoalsPrompts, chosenGoal)})</Text>
                     </View>
-                    
+
                 </View>
             </KeyboardAvoidingView>
-            
+
             <View style={styles.navigationBtnContainer}>
-                
+
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => {navigation.goBack()}}></BasicPressable>
+                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
                 </View>
-                
+
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Finish" onPress={() => handlePress()}>
+                    <ScarletPressable btnText="Finish" onPress={handlePress}>
                     </ScarletPressable>
                 </View>
 

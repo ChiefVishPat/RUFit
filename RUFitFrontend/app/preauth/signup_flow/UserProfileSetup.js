@@ -32,17 +32,20 @@ import SetGoalsScreen from './SetGoalsScreen'
 import ChooseRoleScreen from './ChooseRoleScreen'
 
 import { global_styles } from '../../GlobalStyles';
+import { useRoute } from '@react-navigation/native';
 
 
-const UserProfileSetup = ({ navigation, route }) => {
+const UserProfileSetup = () => {
     const Stack = createStackNavigator();
-    const { email, username, password } = route.params;
+    const route = useRoute();
+    const { username, password, email } = route.params
+    // const { email, username, password } = route.params;
     return (
         <Stack.Navigator initialRouteName="ChooseRole">
             <Stack.Screen
                 name="ChooseRole"
                 component={ChooseRoleScreen}
-                initialParams={{ username, password }}
+                initialParams={{ username, password, email  }}
                 options={{ headerShown: false,
                            gestureEnabled: false}}
             />

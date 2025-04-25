@@ -5,7 +5,9 @@ const setGoalsPrompts = [
 ]
 
 function getValueByLabel(object, labelName, defaultValue = null) {
-    return Object.values(object).find(level => level.label === labelName)?.value ?? defaultValue;
+    return Object.values(object).find(
+        level => level.label?.toLowerCase() === labelName?.toLowerCase()
+    )?.value ?? defaultValue;
 }
 
 

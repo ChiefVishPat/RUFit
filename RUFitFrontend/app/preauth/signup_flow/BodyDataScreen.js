@@ -23,13 +23,13 @@ const BodyDataScreen = ({ navigation, route }) => {
     const [open, setOpen] = useState(false);
     const [genderSelection, setGenderSelection] = useState("");
     const [genderOptions, setGenderOptions] = useState([
-        { label: "Male", value: "Male" },
-        { label: "Female", value: "Female" },
-        { label: "Prefer not to say", value: "Other" },
+        { label: "Male", value: "MALE" },
+        { label: "Female", value: "FEMALE" },
+        { label: "Prefer not to say", value: "OTHER" },
     ]);
 
     const [weightValue, setWeightValue] = useState(null);
-    const [weightUnit, setWeightUnit] = useState("lb");
+    const [weightUnit, setWeightUnit] = useState("LB");
 
     const [heightValue1, setHeightValue1] = useState(null);
     const [heightValue2, setHeightValue2] = useState(null);
@@ -93,10 +93,10 @@ const BodyDataScreen = ({ navigation, route }) => {
                                 rightButtonLabel="kg"
                                 onPress={(button) => {
                                     if (button == "left") {
-                                        setWeightUnit("lb");
+                                        setWeightUnit("LB");
                                     }
                                     else {
-                                        setWeightUnit("kg");
+                                        setWeightUnit("KG");
                                     }
                                 }}
                             />
@@ -160,7 +160,7 @@ const BodyDataScreen = ({ navigation, route }) => {
                             heightValue1: heightValue1,
                             heightValue2: heightValue2,
                             heightUnit: heightUnit,
-                        })
+                        });
                     }}>
                     </ScarletPressable>
                 </View>

@@ -56,7 +56,7 @@ export default function SaveMacroScreen() {
         unsat_fat: parseFloat(form.unsat_fat) || 0,
       };
       console.log("Submitting macro payload:", payload);
-      await APIClient.post('/tracker', payload);
+      await APIClient.post('/tracker', payload, {sendAccess: true});
       Alert.alert('Success', 'Macro log saved.');
       navigation.goBack();
     } catch (err) {

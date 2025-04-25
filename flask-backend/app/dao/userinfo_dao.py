@@ -1,6 +1,7 @@
 from app.extensions import db
 from app.logging_config import logger
 from app.models.userinfo import Userinfo
+import json
 
 
 def get_userinfo_by_user(user_id: str):
@@ -11,20 +12,21 @@ def get_userinfo_by_user(user_id: str):
         raise
 
 
-def create_userinfo(userinfo_data: dict):
+def create_userinfo(user_id: str, userinfo_data: dict):
     """
     userinfo_data: dict with keys - user_id, weight, weight_unit, height_ft, height_in, height_unit, gender, training_intensity, goal
     """
+    logger.info("📦 user_data:\n" + json.dumps(userinfo_data, indent=2))
     try:
         new_userinfo = Userinfo(
-            user_id=userinfo_data.get('user_id'),
+            user_id=user_id,
             weight=userinfo_data.get('weight'),
-            weight_unit=userinfo_data.get('weight_unit'),
-            height_ft=userinfo_data.get('height_ft'),
-            height_in=userinfo_data.get('height_in'),
-            height_unit=userinfo_data.get('height_unit'),
+            weight_unit=userinfo_data.get('weightUnit'),
+            height_ft=userinfo_data.get('heightValue1'),
+            height_in=userinfo_data.get('heightValue2'),
+            height_unit=userinfo_data.get('heightUnit'),
             gender=userinfo_data.get('gender'),
-            training_intensity=userinfo_data.get('training_intensity'),
+            training_intensity=userinfo_data.get('trainingIntensity'),
             goal=userinfo_data.get('goal'),
         )
         db.session.add(new_userinfo)

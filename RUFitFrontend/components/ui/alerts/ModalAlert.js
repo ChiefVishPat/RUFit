@@ -25,13 +25,15 @@ const ModalAlert = ({ isVisible, title, message, onClose }) => {
         blurAmount={5}
         reducedTransparencyFallbackColor="rgba(255, 255, 255, 0.7)"
       />
-      
+
       {/* Alert Content */}
       <View style={styles.alertContainer}>
         {title && <Text style={styles.title}>{title}</Text>}
-        <Text style={styles.message}>{message}</Text>
-        <TouchableOpacity 
-          style={styles.button} 
+        <Text style={styles.message}>
+          {typeof message === 'string' ? message : message?.message || String(message)}
+        </Text>
+        <TouchableOpacity
+          style={styles.button}
           onPress={onClose}
           activeOpacity={0.7}
         >

@@ -101,18 +101,19 @@ export default function ClientIndex() {
         initialParams={{ userData: userData }}
         options={{ headerShown: false, title: 'Exercises' }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={AuthenticatedClientProfileScreen}
-        initialParams={{ userData: userData, navigation: navigation }}
-        options={{ title: 'Profile' }}
-      />
       <Tab.Screen 
           name="MacroTracker" 
           component={AuthenticatedMacroTrackerNavigator} 
           initialParams={{ userData }} 
           options={{ headerShown: false, title: 'Macros' }} 
       />
+      <Tab.Screen
+        name="Profile"
+        component={AuthenticatedClientProfileScreen}
+        initialParams={{ userData: userData, navigation: navigation }}
+        options={{ title: 'Profile' }}
+      />
+      
     </Tab.Navigator>
   );
 }

@@ -58,7 +58,7 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
     
     if (validationResponse.data.expired) {
       // Attempt to refresh tokens
-      return await refreshTokens(refreshToken);
+      return await refreshTokens();
     }
     // Access token is still valid
     return true;
@@ -72,9 +72,10 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
 /*
     Fetches new tokens
 */
-const refreshTokens = async (refreshToken) => {
+const refreshTokens = async () => {
+  console.log("REFRESHING TOKENS");
   try {
-    const response = await APIClient.post('/auth/refresh', {}, {sendRefresh:true});
+    const response = await APIClient.post('/auth/refresh', {}, {sendRefresh: true});
 
     // Store new tokens
     await AsyncStorage.multiSet([

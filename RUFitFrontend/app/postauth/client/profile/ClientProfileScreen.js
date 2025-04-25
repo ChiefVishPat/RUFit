@@ -12,6 +12,7 @@ import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal"
 export default function ClientProfileScreen() {
     const route = useRoute();
     const userData = route.params.userData;
+    console.log(`user data in clientProfileScreen: ${userData}`);
     const navigation = route.params.navigation;
 
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
@@ -61,25 +62,21 @@ export default function ClientProfileScreen() {
                     <Text style={styles.welcomeText}>Hello, {userData.username}!</Text>
                 </LinearGradient>
 
-                <View style={styles.progressChart}>
-                    <Text style={{ color: 'white' }}>some kind of progress chart</Text>
-                </View>
-
                 <View style={styles.profileOptionsContainer}>
 
 
                     <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => {navigation.navigate('AuthenticatedMyBodyDataScreen', {navigation})}}>
+                        onPress={() => { navigation.navigate('AuthenticatedMyBodyDataScreen', { navigation }) }}>
                         <Text style={styles.optionText}>My Body Data</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => {navigation.navigate('AuthenticatedProfileSettingsScreen', {navigation})}}>
+                        onPress={() => { navigation.navigate('AuthenticatedProfileSettingsScreen', { navigation }) }}>
                         <Text style={styles.optionText}>Profile Settings</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => {navigation.navigate('AuthenticatedAccountSettingsScreen', {navigation})}}>
+                        onPress={() => { navigation.navigate('AuthenticatedAccountSettingsScreen', { navigation }) }}>
                         <Text style={styles.optionText}>Account Settings</Text>
                     </TouchableOpacity>
 
@@ -144,24 +141,40 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
     },
     profileOptionCard: {
-        alignItems: 'center',
-        alignSelf: 'flex-end',
-        height: 50,
-        marginHorizontal: 20,
-        marginBottom: 30,
         width: Dimensions.get('window').width * 0.8,
+        paddingVertical: 16,
+        marginBottom: 30,
+        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+        borderRadius: 12,
+        alignItems: 'center',
         justifyContent: 'center',
-        //backgroundColor: '#CC0033',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 3,
+        
+        
+        
+        
+        // alignItems: 'center',
+        // alignSelf: 'flex-end',
+        // height: 50,
+        // marginHorizontal: 20,
+        
+        // width: Dimensions.get('window').width * 0.8,
+        // justifyContent: 'center',
+        // //backgroundColor: '#CC0033',
 
-        // Shadow for iOS
-        shadowColor: '#1a1717',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 6,
+        // // Shadow for iOS
+        // shadowColor: '#1a1717',
+        // shadowOffset: { width: 0, height: 2 },
+        // shadowOpacity: 0.5,
+        // shadowRadius: 6,
 
-        borderColor: 'white',
-        borderWidth: 0.5,
-        borderRadius: 10,
+        // borderColor: 'white',
+        // borderWidth: 0.5,
+        // borderRadius: 10,
     },
     optionText: {
         fontSize: 25,

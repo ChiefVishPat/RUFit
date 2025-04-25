@@ -51,10 +51,9 @@ export default function SignupScreen() {
             if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
                 navigation.navigate('UserProfileSetup', {
                     username: username,
-                    password: password
-                    // ^^ these will be sent through so user can be logged in once done filling user info
-                    // we won't need email
-                })
+                    password: password,
+                    email: email
+                });
             }
             else{
                 setSignUpError(signUpResponse); // will be appropriate error message

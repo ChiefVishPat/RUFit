@@ -124,11 +124,11 @@ export default function SaveWorkoutScreen() {
             let response;
             if (existingSession && !newWorkout) {
                 // Update the existing session using PUT with the session_id
-                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload);
+                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload, {sendAccess: true});
             } else {
                 // Create a new workout session
                 console.log("session id does not exist");
-                response = await APIClient.post('/workout', payload);
+                response = await APIClient.post('/workout', payload, {sendAccess: true});
             }
             console.log(response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
