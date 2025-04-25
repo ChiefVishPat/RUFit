@@ -25,6 +25,7 @@ const checkAuthentication = async () => {
           - If refreshToken is also exp (or some error occurs), isValid becomes false
       */
       const isValid = await handleAuthAccess(accessToken, refreshToken);
+      console.log(`checkAuthentication: ${isValid}`);
       if (!isValid) {
           return NOT_AUTHENTICATED;
       }

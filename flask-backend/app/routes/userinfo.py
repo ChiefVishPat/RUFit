@@ -30,7 +30,9 @@ def create_or_update_userinfo():
 @userinfo_bp.route('', methods=['GET'])
 @jwt_required()
 def get_userinfo():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
+    logger.info(f'user_id type: {type(user_id)}')
+    logger.info(f'user_id: {user_id}')
     try:
         userinfo = fetch_userinfo(user_id)
         if not userinfo:

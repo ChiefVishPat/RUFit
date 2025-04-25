@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from app.extensions import db
 from app.logging_config import logger
+from app.models.users import User
 from app.services.auth_service import login_user, register_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -63,6 +65,13 @@ def refresh():
         # so that a valid refresh token is required.
         # jwt_required(refresh=True)
         current_user = get_jwt_identity()
+        # 💥 Check that user still exists in the database
+        user = db.session.get(User, int(current_user))
+        if not user:
+            logger.warning(f"Token refresh attempted for non-existent user {current_user_id}")
+            return jsonify({'message': 'User does not exist'}), 401
+
+
         new_access_token = create_access_token(identity=current_user)
         new_refresh_token = create_refresh_token(identity=current_user)
         logger.info(f'User {current_user} token refreshed successfully')
@@ -81,7 +90,13 @@ def is_token_expired():
     try:
         from flask_jwt_extended import decode_token
 
-        decode_token(token)  # This will raise an exception if token is invalid or expired
+        decoded = decode_token(token)  # This will raise an exception if token is invalid or expired
+        user_id = decoded.get('sub')
+
+        user = db.session.get(User, int(user_id))
+        if not user:
+            return jsonify({'expired': True, 'reason': 'User no longer exists'}), 200
+
         return jsonify({'expired': False}), 200
     except Exception as e:
         return jsonify({'expired': True, 'reason': str(e)}), 200

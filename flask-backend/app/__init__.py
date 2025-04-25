@@ -25,7 +25,7 @@ def create_app(config_class=Config):
     with app.app_context():
         from .models import workout, users, userinfo, macro_tracker # noqa: F401
 
-        db.drop_all()
+        # db.drop_all()
         # db.drop_all() # Keep commented unless needed
         db.create_all()
 

@@ -8,7 +8,9 @@ import { APIClient } from "../api/APIClient"
 
 const get_user_profile = async() => {
     try {
+        console.log("get_user_profile starting...");
         const response = await APIClient.get("/userinfo", {sendAccess:true});
+        console.log(`UserProfileRequests: ${response.data}`);
         return response.data;
     }
     catch(error){

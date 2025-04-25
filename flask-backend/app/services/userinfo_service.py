@@ -4,7 +4,7 @@ from app.logging_config import logger
 import json
 
 
-def add_or_update_userinfo(user_id: str, userinfo_data: dict):
+def add_or_update_userinfo(user_id: int, userinfo_data: dict):
     logger.info("📦 user_data:\n" + json.dumps(userinfo_data, indent=2))
     try:
         existing = get_userinfo_by_user(user_id)
@@ -22,7 +22,9 @@ def add_or_update_userinfo(user_id: str, userinfo_data: dict):
         raise e
 
 
-def fetch_userinfo(user_id: str):
+def fetch_userinfo(user_id: int):
+    logger.info(type(user_id))
+    logger.info(user_id)
     try:
         return get_userinfo_by_user(user_id)
     except Exception as e:

@@ -1,22 +1,25 @@
 from app.extensions import db
 from app.logging_config import logger
 from app.models.userinfo import Userinfo
+from app.models.users import User
 import json
 
 
-def get_userinfo_by_user(user_id: str):
+def get_userinfo_by_user(user_id: int):
     try:
+        logger.info(User.query.all())
         return Userinfo.query.filter_by(user_id=user_id).first()
     except Exception as e:
         logger.error(f"Error fetching user info for user '{user_id}': {e}")
         raise
 
 
-def create_userinfo(user_id: str, userinfo_data: dict):
+def create_userinfo(user_id: int, userinfo_data: dict):
     """
     userinfo_data: dict with keys - user_id, weight, weight_unit, height_ft, height_in, height_unit, gender, training_intensity, goal
     """
     logger.info("📦 user_data:\n" + json.dumps(userinfo_data, indent=2))
+    print(f'user_id type: {type(user_id)}')
     try:
         new_userinfo = Userinfo(
             user_id=user_id,
@@ -39,7 +42,7 @@ def create_userinfo(user_id: str, userinfo_data: dict):
         raise
 
 
-def update_userinfo(user_id: str, update_data: dict):
+def update_userinfo(user_id: int, update_data: dict):
     try:
         userinfo = get_userinfo_by_user(user_id)
         if not userinfo:
