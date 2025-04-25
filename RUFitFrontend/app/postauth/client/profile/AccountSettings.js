@@ -1,32 +1,18 @@
-import { View, Button, StyleSheet, Text } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { View, Text } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import { styles } from "./styles";
 
-export default function AccountSettings() {
-
-    const route = useRoute();
-    const navigation = route.params.navigation;
-
+export default function AccountSettingsScreen() {
     return (
         <View style={styles.container}>
-            <Button title="go back"
-                onPress={() => navigation.goBack()}>
-            </Button>
-            <Text>hi</Text>
+            <LinearGradient colors={['#CC0033', 'darkred']} style={styles.header}>
+                <Text style={styles.headerText}>Account Settings</Text>
+            </LinearGradient>
+            <View style={styles.contentContainer}>
+                <Text style={styles.dataLabel}>Account Type: <Text style={styles.dataValue}>Premium</Text></Text>
+                <Text style={styles.dataLabel}>Member Since: <Text style={styles.dataValue}>Jan 2024</Text></Text>
+                <Text style={styles.dataLabel}>Subscription Status: <Text style={styles.dataValue}>Active</Text></Text>
+            </View>
         </View>
     );
-
-
 }
-
-const styles = StyleSheet.create({
-    container: {
-        //flex: 1,
-        //flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 50,
-        backgroundColor: 'black',
-        //borderColor: 'pink',
-        //borderWidth: 2,
-    },
-});

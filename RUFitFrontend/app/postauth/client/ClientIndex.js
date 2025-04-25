@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator, AuthenticatedExerciseNavigator, AuthenticatedMacroTrackerNavigator } from '../../../components/authentication/AuthenticatedScreens';
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
 import ScreenHeader from './ScreenHeader';
+import ProfileNavigator from './profile/ProfileNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -109,8 +110,8 @@ export default function ClientIndex() {
       />
       <Tab.Screen
         name="Profile"
-        component={AuthenticatedClientProfileScreen}
-        initialParams={{ userData: userData, navigation: navigation }}
+        component={ProfileNavigator}
+        initialParams={{ userData: userData }}
         options={{ title: 'Profile' }}
       />
       

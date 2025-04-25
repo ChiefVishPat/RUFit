@@ -1,28 +1,24 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from "react-native";
-import ModalAlert from "../../../../components/ui/alerts/ModalAlert";
-import { get_user_profile } from "../../../../components/user_data/UserProfileRequests";
-import { GradientScreen } from "../../../GlobalStyles"
+import { View, StyleSheet, Text, Dimensions, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal";
 import { user_logout } from "../../../../components/authentication/user_auth/UserAuthActions";
 import { API_REQUEST_SUCCESS } from "../../../../constants/StatusConstants";
-import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal";
+import { background_color, GradientScreen } from "../../../GlobalStyles";
 
 export default function ClientProfileScreen() {
     const route = useRoute();
     const userData = route.params.userData;
-    console.log(`user data in clientProfileScreen: ${userData}`);
-    const navigation = route.params.navigation;
+    const navigation = useNavigation();
 
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-    // const [logoutConfirm, setLogoutConfirm] = useState(false);
 
     const handleLogOut = async () => {
         try {
             const logoutResponse = await user_logout();
             if (logoutResponse === API_REQUEST_SUCCESS) {
-                setShowLogoutAlert(true); // Show modal and WAIT for user choice
+                setShowLogoutAlert(true);
             }
         } catch (error) {
             console.error(error);
@@ -40,146 +36,130 @@ export default function ClientProfileScreen() {
     };
 
     return (
-        <GradientScreen>
-            <View style={styles.container}>
+        <View style={styles.container}>
 
-                {showLogoutAlert ?
-                    <ChoiceAlertModal
-                        isVisible={true}
-                        title={"Logout"}
-                        message={"Are you sure you want to logout?"}
-                        onConfirm={() => { handleLogoutConfirmation(true) }}
-                        onCancel={() => { handleLogoutConfirmation(false) }} />
-                    : null
-                }
+            {showLogoutAlert && (
+                <ChoiceAlertModal
+                    isVisible={true}
+                    title={"Logout"}
+                    message={"Are you sure you want to logout?"}
+                    onConfirm={() => handleLogoutConfirmation(true)}
+                    onCancel={() => handleLogoutConfirmation(false)}
+                />
+            )}
 
-                <LinearGradient
-                    colors={['#1a1717', '#CC0033']} // Array of gradient colors
-                    style={styles.welcomeTitle}
-                    start={{ x: 1, y: 0 }} // Gradient start point (top-left)
-                    end={{ x: 0, y: 1 }}   // Gradient end point (bottom-right)
-                >
-                    <Text style={styles.welcomeText}>Hello, {userData.username}!</Text>
-                </LinearGradient>
+            <LinearGradient
+                colors={['#CC0033', 'darkred']} // Adjust colors as needed
+                style={styles.welcomeBanner}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            >
+                <Text style={styles.greeting}>Welcome Back,</Text>
+                <Text style={styles.username}>{userData.username}</Text>
 
-                <View style={styles.profileOptionsContainer}>
+            </LinearGradient>
 
+            <View style={styles.optionsGrid}>
 
-                    <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => { navigation.navigate('AuthenticatedMyBodyDataScreen', { navigation }) }}>
-                        <Text style={styles.optionText}>My Body Data</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity style={styles.optionCard}
+                    onPress={() => navigation.navigate('MyBodyData', { navigation })}>
+                    <Text style={styles.cardText}>My Body Data</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => { navigation.navigate('AuthenticatedProfileSettingsScreen', { navigation }) }}>
-                        <Text style={styles.optionText}>Profile Settings</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity style={styles.optionCard}
+                    onPress={() => navigation.navigate('ProfileSettings', { navigation })}>
+                    <Text style={styles.cardText}>Profile Settings</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={() => { navigation.navigate('AuthenticatedAccountSettingsScreen', { navigation }) }}>
-                        <Text style={styles.optionText}>Account Settings</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.profileOptionCard}
-                        onPress={handleLogOut}>
-                        <Text style={styles.optionText}>Log Out</Text>
-                    </TouchableOpacity>
-
-                </View>
+                <TouchableOpacity style={styles.optionCard}
+                    onPress={() => navigation.navigate('AccountSettings', { navigation })}>
+                    <Text style={styles.cardText}>Account Settings</Text>
+                </TouchableOpacity>
             </View>
-
-        </GradientScreen>
+            <TouchableOpacity style={[styles.optionCard, styles.logoutCard]}
+                onPress={handleLogOut}>
+                <Text style={[styles.cardText, styles.logoutText]}>Log Out</Text>
+            </TouchableOpacity>
+        </View>
     );
-
 }
+
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0.9,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        marginTop: 60,
-        width: Dimensions.get('window').width * 0.9,
+        backgroundColor: background_color,
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingHorizontal: 20,
+        width: '100%',
+        justifyContent: 'space-between'
         // borderColor: 'white',
-        // borderWidth:2,
+        // borderWidth: 2,
     },
-    spacer: {
-        marginVertical: 100,
+    topSection: {
+        width: '100%',
+        flexDirection: 'row',
+        borderColor: 'white',
+        borderWidth: 2,
     },
-    welcomeTitle: {
-        height: 80,
-        marginHorizontal: 20,
-        //marginBottom: 60,
-        width: Dimensions.get('window').width * 0.8,
-        justifyContent: 'center',
-
-        shadowColor: '#1a1717',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
+    welcomeBanner: {
+        width: '100%',
+        borderRadius: 20,
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        marginBottom: 30,
+        paddingLeft: 20,
+        alignItems: 'flex-start',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
         shadowRadius: 6,
-
-        //borderColor: 'white',
-        //borderWidth: 0.5,
-        borderRadius: 10,
+        elevation: 5,
     },
-    welcomeText: {
-        fontSize: 30,
+    greeting: {
+        fontSize: 20,
+        color: 'white',
+        marginBottom: 5,
+        fontWeight: '600',
+    },
+    username: {
+        fontSize: 28,
         color: 'white',
         fontWeight: 'bold',
-        alignSelf: 'center',
     },
-    progressChart: {
-        height: 250,
-        width: Dimensions.get('window').width * 0.8,
+    optionsGrid: {
+        width: '100%',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        margin: 40,
-
-
-        borderColor: 'white',
-        borderWidth: 0.5,
+        flex: 1,
     },
-    profileOptionCard: {
-        width: Dimensions.get('window').width * 0.8,
-        paddingVertical: 16,
-        marginBottom: 30,
-        backgroundColor: 'rgba(255, 255, 255, 0.06)',
-        borderRadius: 12,
-        alignItems: 'center',
+    optionCard: {
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        paddingVertical: 18,
+        width: '100%',
+        borderRadius: 16,
+        marginBottom: 20,
+        paddingLeft: 20,
+        alignItems: 'flex-start',
         justifyContent: 'center',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
         elevation: 3,
-        
-        
-        
-        
-        // alignItems: 'center',
-        // alignSelf: 'flex-end',
-        // height: 50,
-        // marginHorizontal: 20,
-        
-        // width: Dimensions.get('window').width * 0.8,
-        // justifyContent: 'center',
-        // //backgroundColor: '#CC0033',
-
-        // // Shadow for iOS
-        // shadowColor: '#1a1717',
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowOpacity: 0.5,
-        // shadowRadius: 6,
-
-        // borderColor: 'white',
-        // borderWidth: 0.5,
-        // borderRadius: 10,
     },
-    optionText: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        // color: '#CC0033',
-        color: "white",
-    }
+    logoutCard: {
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        marginBottom: 50,
+    },
+    cardText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#ffffff',
+    },
+    logoutText: {
+        color: 'white',
+    },
 });

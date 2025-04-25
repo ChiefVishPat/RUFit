@@ -81,7 +81,7 @@ function MainStackScreen({ isAuthenticated }) {
                 options={{ headerShown: false, gestureEnabled: false }}
             />
 
-            <MainStack.Screen
+            {/* <MainStack.Screen
                 name="AuthenticatedMyBodyDataScreen"
                 component={authenticated_screens.AuthenticatedMyBodyDataScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
@@ -99,7 +99,7 @@ function MainStackScreen({ isAuthenticated }) {
                     authenticated_screens.AuthenticatedProfileSettingsScreen
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
-            />
+            /> */}
 
         </MainStack.Navigator>
     );

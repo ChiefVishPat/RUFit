@@ -7,9 +7,9 @@ import ClientHomeScreen from '../../app/postauth/client/ClientHomeScreen';
 import WorkoutNavigator from '../../app/postauth/client/workouts/WorkoutNavigator';
 // import WorkoutDetailScreen from '../../app/postauth/client/WorkoutDetailScreen';
 import ClientProfileScreen from '../../app/postauth/client/profile/ClientProfileScreen';
-import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
-import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
-import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
+// import MyBodyData from '../../app/postauth/client/profile/MyBodyData';
+// import AccountSettings from '../../app/postauth/client/profile/AccountSettings';
+// import ProfileSettings from '../../app/postauth/client/profile/ProfileSettings';
 import ExerciseNavigator from '../../app/postauth/client/exercises/ExerciseNavigator';
 import BarcodeScanner from '../../app/postauth/client/macrotrackerBC/ScanMacroScreen';
 import MacroTrackerNavigator from '../../app/postauth/client/macrotrackerBC/MacroTrackerNavigator';
@@ -63,23 +63,23 @@ export const AuthenticatedClientProfileScreen = () => (
     </AuthenticationWrapper>
 );
 
-export const AuthenticatedMyBodyDataScreen = () => (
-    <AuthenticationWrapper>
-        <MyBodyData />
-    </AuthenticationWrapper>
-);
+// export const AuthenticatedMyBodyDataScreen = () => (
+//     <AuthenticationWrapper>
+//         <MyBodyData />
+//     </AuthenticationWrapper>
+// );
 
-export const AuthenticatedAccountSettingsScreen = () => (
-    <AuthenticationWrapper>
-        <AccountSettings />
-    </AuthenticationWrapper>
-);
+// export const AuthenticatedAccountSettingsScreen = () => (
+//     <AuthenticationWrapper>
+//         <AccountSettings />
+//     </AuthenticationWrapper>
+// );
 
-export const AuthenticatedProfileSettingsScreen = () => (
-    <AuthenticationWrapper>
-        <ProfileSettings />
-    </AuthenticationWrapper>
-);
+// export const AuthenticatedProfileSettingsScreen = () => (
+//     <AuthenticationWrapper>
+//         <ProfileSettings />
+//     </AuthenticationWrapper>
+// );
 
 export const AuthenticatedMacroTrackerNavigator = () => (
     <AuthenticationWrapper>
