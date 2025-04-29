@@ -98,7 +98,7 @@ def refresh():
         # 💥 Check that user still exists in the database
         user = db.session.get(User, int(current_user))
         if not user:
-            logger.warning(f"Token refresh attempted for non-existent user {current_user_id}")
+            logger.warning(f"Token refresh attempted for non-existent user {current_user}")
             return jsonify({'message': 'User does not exist'}), 401
 
 

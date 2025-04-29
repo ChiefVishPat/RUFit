@@ -11,9 +11,38 @@ from app.services.workout_service import (
     remove_workout_session,
     update_workout_session,
 )
+from datetime import datetime, timedelta
 
 workouts_bp = Blueprint('workouts', __name__, url_prefix='/workout')
 
+@workouts_bp.route('/streak', methods=['GET'])
+@jwt_required()
+def get_streak():
+    user_id = get_jwt_identity()
+    try:
+        workouts = get_user_workouts(user_id)
+        if not workouts:
+            return jsonify({"streak": 0}), 200
+
+        # Extract unique workout dates (just the date part)
+        workout_dates = sorted(
+            {w.date.date() for w in workouts},
+            reverse=True
+        )
+
+        # Calculate streak
+        streak = 0
+        today = datetime.utcnow().date()
+        for i, date in enumerate(workout_dates):
+            if date == today - timedelta(days=streak):
+                streak += 1
+            else:
+                break
+
+        return jsonify({"streak": streak}), 200
+    except Exception as e:
+        print(f"[STREAK ERROR] {e}")
+        return jsonify({"error": "Could not compute streak."}), 500
 
 @workouts_bp.route('', methods=['POST'])
 @jwt_required()
