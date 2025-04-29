@@ -10,6 +10,7 @@ import { background_color, GradientScreen } from "../../../GlobalStyles";
 export default function ClientProfileScreen() {
     const route = useRoute();
     const userData = route.params.userData;
+    // console.log(userData);
     const navigation = useNavigation();
 
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
@@ -54,7 +55,7 @@ export default function ClientProfileScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
-                <Text style={styles.greeting}>Welcome Back,</Text>
+                <Text style={styles.greeting}>Welcome back,</Text>
                 <Text style={styles.username}>{userData.username}</Text>
 
             </LinearGradient>
@@ -62,17 +63,17 @@ export default function ClientProfileScreen() {
             <View style={styles.optionsGrid}>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('MyBodyData', { navigation })}>
-                    <Text style={styles.cardText}>My Body Data</Text>
+                    onPress={() => navigation.navigate('MyBodyData', { navigation, userData })}>
+                <Text style={styles.cardText}>My Body Data</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('ProfileSettings', { navigation })}>
+                    onPress={() => navigation.navigate('ProfileSettings', { navigation, userData })}>
                     <Text style={styles.cardText}>Profile Settings</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('AccountSettings', { navigation })}>
+                    onPress={() => navigation.navigate('AccountSettings', { navigation, userData })}>
                     <Text style={styles.cardText}>Account Settings</Text>
                 </TouchableOpacity>
             </View>
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        paddingTop: 40,
+        paddingTop: 30,
         paddingHorizontal: 20,
         width: '100%',
         justifyContent: 'space-between'
@@ -117,6 +118,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5,
+        // borderColor: 'white',
+        // borderWidth: 2,
     },
     greeting: {
         fontSize: 20,

@@ -11,6 +11,7 @@ import UserProfileSetup from './app/preauth/signup_flow/UserProfileSetup';
 import PreAuthLanding from './app/preauth/preauth_landing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectWorkout from './app/postauth/client/workouts/SelectWorkout';
+import MyBodyDataScreen from './app/postauth/client/profile/MyBodyData';
 
 const Stack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -79,6 +80,14 @@ function MainStackScreen({ isAuthenticated }) {
                     authenticated_screens.AuthenticatedMacroTrackerNavigator
                 }
                 options={{ headerShown: false, gestureEnabled: false }}
+            />
+
+             <MainStack.Screen
+                name="MyBodyData"
+                component={
+                    MyBodyDataScreen
+                }
+                // options={{ headerShown: false, gestureEnabled: false }}
             />
 
             {/* <MainStack.Screen

@@ -42,6 +42,7 @@ APIClient.interceptors.request.use(
                 }
             }
 
+            console.log('Sending request:', config.url, config.data);
             return config;
         } catch (error) {
             console.error('Token retrieval failed:', error);

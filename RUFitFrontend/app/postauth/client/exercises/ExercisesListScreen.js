@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
         borderColor: '#444',
         borderRadius: 10,
         paddingHorizontal: 12,
-        paddingVertical: 10,
+        paddingVertical: 15,
     },
     dropdownButtonText: {
         color: 'white',
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3A3A3A',
         borderRadius: 8,
         paddingHorizontal: 10,
-        paddingVertical: 6,
+        paddingVertical: 10,
         marginBottom: 10,
     },
     searchInput: {

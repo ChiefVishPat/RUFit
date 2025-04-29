@@ -124,11 +124,11 @@ export default function SaveWorkoutScreen() {
             let response;
             if (existingSession && !newWorkout) {
                 // Update the existing session using PUT with the session_id
-                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload, {sendAccess: true});
+                response = await APIClient.put(`/workout/${existingSession.session_id}`, payload, { sendAccess: true });
             } else {
                 // Create a new workout session
                 console.log("session id does not exist");
-                response = await APIClient.post('/workout', payload, {sendAccess: true});
+                response = await APIClient.post('/workout', payload, { sendAccess: true });
             }
             console.log(response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
@@ -253,29 +253,46 @@ export default function SaveWorkoutScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#1F1F1F', paddingTop: 15, },
-    formContainer: { padding: 20 },
-    label: { color: 'white', fontSize: 16, marginBottom: 5 },
-    input: {
-        backgroundColor: '#333',
-        padding: 10,
-        borderRadius: 5,
-        color: 'white',
+    container: {
+        flex: 1,
+        backgroundColor: '#1F1F1F',
+        paddingTop: 15,
+    },
+    formContainer: {
+        padding: 20,
+    },
+    label: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600',
         marginBottom: 10,
     },
-    divider: { height: 1, backgroundColor: '#555', marginVertical: 20 },
+    input: {
+        backgroundColor: '#333',
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        color: '#fff',
+        fontSize: 16,
+        marginBottom: 12,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#555',
+        marginVertical: 20,
+    },
     sectionTitle: {
-        color: '#FFFFFF',
-        fontSize: 18,
+        color: '#fff',
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     exerciseContainer: {
         marginBottom: 20,
-        padding: 10,
+        padding: 15,
         borderWidth: 1,
         borderColor: '#444',
-        borderRadius: 5,
+        borderRadius: 10,
     },
     exerciseRow: {
         flexDirection: 'row',
@@ -287,41 +304,44 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#CC0033',
         padding: 15,
-        borderRadius: 5,
+        borderRadius: 8,
         marginBottom: 10,
-
-        shadowColor: 'black', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 0.5, // IOS
-        shadowRadius: 8, //IOS
-        elevation: 2, // Android
+        shadowColor: '#000',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
+        elevation: 2,
     },
     addExerciseButtonText: {
-        color: 'white',
+        color: '#fff',
         marginLeft: 10,
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '600',
     },
     saveWorkoutButton: {
         backgroundColor: '#CC0033',
         padding: 15,
-        borderRadius: 5,
+        borderRadius: 8,
         marginTop: 10,
-
-        shadowColor: 'black', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 0.5, // IOS
-        shadowRadius: 8, //IOS
-        elevation: 2, // Android
+        shadowColor: '#000',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
+        elevation: 2,
     },
     saveWorkoutButtonText: {
-        color: 'white',
+        color: '#fff',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '600',
     },
-    cancelButton: { marginTop: 10 },
+    cancelButton: {
+        marginTop: 10,
+    },
     cancelButtonText: {
         color: '#FF5E5E',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '600',
     },
 });

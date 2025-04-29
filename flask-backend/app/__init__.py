@@ -10,6 +10,17 @@ from .routes.exercises import exercises_bp
 from .routes.recommendations import recommendations_bp # <-- new import
 from .logging_config import logger
 
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import sqlite3
+
+
+@event.listens_for(Engine, "connect")
+def enable_sqlite_foreign_keys(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 def create_app(config_class=Config):
     load_dotenv()
@@ -25,7 +36,7 @@ def create_app(config_class=Config):
     with app.app_context():
         from .models import workout, users, userinfo, macro_tracker # noqa: F401
 
-        # db.drop_all()
+        db.drop_all()
         # db.drop_all() # Keep commented unless needed
         db.create_all()
 

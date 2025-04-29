@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         position: 'relative',
+        paddingTop: 10,
     },
     listContainer: {
         padding: 20,
@@ -153,6 +154,7 @@ const styles = StyleSheet.create({
     workoutCard: {
         backgroundColor: '#333',
         padding: 15,
+        paddingVertical: 20,
         borderRadius: 8,
         marginBottom: 15,
         flexDirection: 'row',

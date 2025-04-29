@@ -31,7 +31,37 @@ def register():
         return jsonify({'message': 'User registered successfully'}), 201
 
     except Exception as e:
+        logger.error(e.message)
         logger.error(f'Error during registration for user {username}: {e}')
+        return jsonify({'message': 'Internal Server Error'}), 500
+
+
+@auth_bp.route('/account', methods=['DELETE'])
+@jwt_required()
+def delete_account():
+    from flask_jwt_extended import get_jwt_identity, get_jwt
+    from flask_jwt_extended import unset_jwt_cookies
+
+    user_id = get_jwt_identity()
+    try:
+        user = db.session.get(User, int(user_id))
+        if not user:
+            logger.warning(f"Account deletion attempted for non-existent user {user_id}")
+            return jsonify({'message': 'User not found'}), 404
+
+        db.session.delete(user)
+        db.session.commit()
+
+        logger.info(f"User {user.username} (ID {user_id}) deleted their account.")
+
+        # Invalidate the current JWT by unsetting cookies (useful for frontend cookie storage)
+        response = jsonify({'message': 'Account deleted successfully'})
+        unset_jwt_cookies(response)
+        return response, 200
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error deleting account for user {user_id}: {e}")
         return jsonify({'message': 'Internal Server Error'}), 500
 
 

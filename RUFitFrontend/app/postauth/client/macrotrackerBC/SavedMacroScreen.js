@@ -18,7 +18,7 @@ export default function SavedMacroScreen() {
 
   const fetchLogs = async () => {
     try {
-      const response = await APIClient.get('/tracker', {sendAccess: true});
+      const response = await APIClient.get('/tracker', { sendAccess: true });
       setLogs(response.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ export default function SavedMacroScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
-            await APIClient.delete(`/tracker/${id}`, {sendAccess: true});
+            await APIClient.delete(`/tracker/${id}`, { sendAccess: true });
             fetchLogs();
           } catch (error) {
             console.error(error);
@@ -69,6 +69,9 @@ export default function SavedMacroScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+
+      </View>
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id.toString()}
@@ -87,11 +90,15 @@ export default function SavedMacroScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingTop: 10,
+  },
   safeArea: { flex: 1, backgroundColor: '#1F1F1F' },
   listContainer: { padding: 20, paddingBottom: 100 },
   card: {
     backgroundColor: '#333',
     padding: 15,
+    paddingVertical: 20,
     borderRadius: 8,
     marginBottom: 15,
     flexDirection: 'row',
