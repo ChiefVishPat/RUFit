@@ -37,7 +37,7 @@ def create_app(config_class=Config):
         from .models import workout, users, userinfo, macro_tracker # noqa: F401
 
         #dbtest.drop_all()
-        # db.drop_all() # Keep commented unless needed
+        db.drop_all() # Keep commented unless needed
         db.create_all()
 
     app.register_blueprint(auth_bp)

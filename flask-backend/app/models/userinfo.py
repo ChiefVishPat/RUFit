@@ -14,6 +14,7 @@ class Userinfo(db.Model):
     height_unit = db.Column(db.Enum(HeightUnits, name='height_unit'), nullable=False)
     training_intensity = db.Column(db.Enum(TrainingIntensityLevels, name='training_intensity'), nullable=False)
     goal = db.Column(db.Enum(TrainingGoals, name='training_goal'), nullable=False)
+    streak_goal = db.Column(db.Integer, nullable=True)
     # age = db.Column(db.Integer, nullable=False)
 
     user = db.user = db.relationship(

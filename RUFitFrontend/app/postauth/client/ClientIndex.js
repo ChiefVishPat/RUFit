@@ -7,42 +7,54 @@ import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, Authen
 import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
 import ScreenHeader from './ScreenHeader';
 import ProfileNavigator from './profile/ProfileNavigator';
+import { UserProvider } from '../../../components/user_data/UserContext';
+import { useUser } from '../../../components/user_data/UserContext';
+
 
 const Tab = createBottomTabNavigator();
 
 export default function ClientIndex() {
 
+  console.log('navigated to ClientIndex');
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     title: '',
     message: '',
   });
 
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
+  let context;
+  try {
+    context = useUser();
+  } catch (err) {
+    // If called outside a provider — e.g. before UserProvider is mounted
+    return null;
+  }
 
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await get_user_profile();
-        console.log(`User profile response: ${response}`);
-        setUserData(response);
-      }
-      catch (error) {
-        console.error(error);
-        setShowAlert(true);
-        setAlertConfig({
-          title: "Error",
-          message: "Unable to retrieve user data",
-        })
-      }
-      finally {
-        setLoading(false);
-      }
-    }
-    getUserData();
-  }, []);
+  const { userData, loading } = context;
+
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     try {
+  //       const response = await get_user_profile();
+  //       console.log(`User profile response: ${response}`);
+  //       setUserData(response.data);
+  //     }
+  //     catch (error) {
+  //       console.error(error);
+  //       setShowAlert(true);
+  //       setAlertConfig({
+  //         title: "Error",
+  //         message: "Unable to retrieve user data",
+  //       })
+  //     }
+  //     finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   getUserData();
+  // }, []);
 
   /*
   const [isReady, setIsReady] = React.useState(false);
@@ -53,7 +65,7 @@ export default function ClientIndex() {
   }, []);
   */
 
-  if (loading) return null;
+  if (loading || !userData) return null;
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -68,9 +80,9 @@ export default function ClientIndex() {
             iconName = focused ? 'barbell' : 'barbell-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
-          }else if (route.name === 'MacroTracker') {
+          } else if (route.name === 'MacroTracker') {
             iconName = focused ? 'nutrition' : 'nutrition-outline';
-          } 
+          }
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
@@ -102,11 +114,11 @@ export default function ClientIndex() {
         initialParams={{ userData: userData }}
         options={{ headerShown: false, title: 'Exercises' }}
       />
-      <Tab.Screen 
-          name="MacroTracker" 
-          component={AuthenticatedMacroTrackerNavigator} 
-          initialParams={{ userData }} 
-          options={{ headerShown: false, title: 'Macros' }} 
+      <Tab.Screen
+        name="MacroTracker"
+        component={AuthenticatedMacroTrackerNavigator}
+        initialParams={{ userData }}
+        options={{ headerShown: false, title: 'Macros' }}
       />
       <Tab.Screen
         name="Profile"
@@ -114,7 +126,7 @@ export default function ClientIndex() {
         initialParams={{ userData: userData }}
         options={{ title: 'Profile' }}
       />
-      
+
     </Tab.Navigator>
   );
 }

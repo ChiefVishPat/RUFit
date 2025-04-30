@@ -7,7 +7,6 @@ import { APIClient } from "../../../../components/api/APIClient";
 export default function AccountSettingsScreen() {
     const route = useRoute();
     const navigation = useNavigation();
-    const userData = route.params?.userData;
 
     const handleDeleteAccount = async () => {
         try {

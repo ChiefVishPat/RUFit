@@ -134,10 +134,17 @@ export const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 2,
         borderRadius: 16,
-      },
-      addButtonText: {
+    },
+    addButtonText: {
         color: 'white',
         marginLeft: 10,
         fontWeight: 'bold',
-      },    
+    },
+    picker: {
+        width: 200,
+        color: 'white',
+    },
+    pickerItem: {
+        color: 'white',
+    },
 });

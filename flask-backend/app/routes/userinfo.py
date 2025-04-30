@@ -50,6 +50,7 @@ def get_userinfo():
             'height_unit': userinfo.height_unit.value,
             'training_intensity': userinfo.training_intensity.value,
             'goal': userinfo.goal.value,
+            'streak_goal': userinfo.streak_goal,
         }
         logger.info(f'Fetched user info for user {user_id}')
         return jsonify(response), 200

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { checkAuthentication } from '../authentication/user_auth/UserTokenValidation';
+import { AUTHENTICATED } from '../../constants/StatusConstants';
 
 export const APIClient = axios.create({
     baseURL: 'http://127.0.0.1:5000',
@@ -21,15 +23,30 @@ APIClient.interceptors.request.use(
         }
 
         try {
+
             if (sendAccess) {
-                console.log("access is being sent");
-                const accessToken = await AsyncStorage.getItem('access_token');
-                if (accessToken) {
-                    config.headers.Authorization = `Bearer ${accessToken}`;
-                } else {
-                    console.warn('No access token found in AsyncStorage');
-                    return Promise.reject(new Error('Access token not found'));
+                const auth_response = await checkAuthentication();
+                console.log(`api client: ${auth_response}`);
+                if (auth_response === AUTHENTICATED) {
+
+                    console.log("access is being sent");
+                    const accessToken = await AsyncStorage.getItem('access_token');
+
+                    if (accessToken) {
+                        config.headers.Authorization = `Bearer ${accessToken}`;
+                    } else {
+                        console.warn('No access token found in AsyncStorage');
+                        const error = new Error('Access token not found');
+                        error.status = 401;
+                        return Promise.reject(error);
+                    }
                 }
+                else {
+                    const error = new Error('Current user no longer authenticated');
+                    error.status = 401;
+                    return Promise.reject(error);
+                }
+
             }
 
             if (sendRefresh) {

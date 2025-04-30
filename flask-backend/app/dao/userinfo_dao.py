@@ -19,7 +19,7 @@ def create_userinfo(user_id: int, userinfo_data: dict):
     userinfo_data: dict with keys - user_id, weight, weight_unit, height_ft, height_in, height_unit, gender, training_intensity, goal
     """
     logger.info("📦 user_data:\n" + json.dumps(userinfo_data, indent=2))
-    print(f'user_id type: {type(user_id)}')
+    logger.info(f"User id: {user_id}")
     try:
         new_userinfo = Userinfo(
             user_id=user_id,
@@ -31,10 +31,11 @@ def create_userinfo(user_id: int, userinfo_data: dict):
             gender=userinfo_data.get('gender'),
             training_intensity=userinfo_data.get('trainingIntensity'),
             goal=userinfo_data.get('goal'),
+            streak_goal=0
         )
         db.session.add(new_userinfo)
         db.session.commit()
-        logger.info(f"User info created for user '{userinfo_data.get('user_id')}'")
+        logger.info(f"User info created for user '{user_id}'")
         return new_userinfo
     except Exception as e:
         db.session.rollback()

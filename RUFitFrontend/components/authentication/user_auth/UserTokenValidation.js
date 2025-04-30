@@ -66,7 +66,7 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
   } catch (error) {
     console.error("Token validation failed:", error);
     await clearTokens();
-    throw error;
+    return false;
   }
 };
 

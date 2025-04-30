@@ -1,36 +1,47 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
+import React, { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ScrollView,
+    Alert
+} from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from "./styles";
-import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { APIClient } from "../../../../components/api/APIClient";
+import { useUser } from "../../../../components/user_data/UserContext";
 
 export default function ProfileSettingsScreen() {
-    const route = useRoute();
-    const [userData, setUserData] = useState(route.params?.userData);
+    const { userData, refreshUser } = useUser();
 
+    // Only streak_goal is editable now
     const fieldsToShow = [
-        { key: 'email', label: 'Email', readonly: true },
-        { key: 'username', label: 'Username', readonly: false },
+        { key: 'email',       label: 'Email',       readonly: true  },
+        { key: 'username',    label: 'Username',    readonly: true  },
+        { key: 'streak_goal', label: 'Streak Goal', readonly: false },
     ];
 
     const [editingField, setEditingField] = useState(null);
-    const [editedValues, setEditedValues] = useState({ ...userData });
-    const [hasEdits, setHasEdits] = useState(false);
-    const [saving, setSaving] = useState(false);
+    const [editedValues, setEditedValues]   = useState({ streak_goal: '' });
+    const [hasEdits,     setHasEdits]       = useState(false);
+    const [saving,       setSaving]         = useState(false);
 
-    const handleEdit = (field) => {
-        setEditingField(field);
-    };
+    // Seed the streak_goal when userData changes
+    useEffect(() => {
+        if (!userData) return;
+        setEditedValues({
+            streak_goal: (userData.streak_goal ?? 0).toString(),
+        });
+        setHasEdits(false);
+    }, [userData]);
 
+    const handleEdit   = (field) => setEditingField(field);
+    const handleBlur   = ()      => setEditingField(null);
     const handleChange = (field, value) => {
-        setEditedValues(prev => ({ ...prev, [field]: value }));
+        setEditedValues(v => ({ ...v, [field]: value }));
         setHasEdits(true);
-    };
-
-    const handleBlur = () => {
-        setEditingField(null);
     };
 
     const handleSave = async () => {
@@ -39,19 +50,24 @@ export default function ProfileSettingsScreen() {
             const payload = {
                 user_data: {
                     ...userData,
-                    ...editedValues,
+                    streak_goal: Number(editedValues.streak_goal),
                 }
             };
-
+            console.log('PROFILE UPDATE PAYLOAD:', payload.user_data);
             await APIClient.post('/userinfo', payload, { sendAccess: true });
 
-            setUserData(editedValues);
-            setEditingField(null);
-            setHasEdits(false);
+            const updated = await refreshUser();
+            if (updated) {
+                setEditedValues({
+                    streak_goal: String(updated.streak_goal),
+                });
+                setHasEdits(false);
+            }
 
+            setEditingField(null);
             Alert.alert('Success', 'Profile settings updated.');
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
             Alert.alert('Error', 'Failed to save changes.');
         } finally {
             setSaving(false);
@@ -62,50 +78,47 @@ export default function ProfileSettingsScreen() {
         <View style={styles.container}>
             <LinearGradient
                 colors={['#CC0033', 'darkred']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
                 style={styles.header}
             >
                 <Text style={styles.headerText}>Profile Settings</Text>
             </LinearGradient>
 
-            <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={{ width: '100%' }}>
-                {fieldsToShow.map((field) => {
-                    const { key, label, readonly } = field;
-
-                    return (
-                        <View key={key} style={styles.bodyDataContainer}>
-                            <View style={styles.row}>
-                                <Text style={styles.dataLabel}>{label}</Text>
-                                <View style={styles.rightGroup}>
-                                    {readonly ? (
-                                        <Text style={[styles.dataLabel, styles.dataValue]}>
-                                            {userData[key]}
-                                        </Text>
-                                    ) : editingField === key ? (
-                                        <TextInput
-                                            style={[styles.dataLabel, styles.dataValueInput]}
-                                            value={editedValues[key]}
-                                            onChangeText={(text) => handleChange(key, text)}
-                                            autoFocus
-                                            onBlur={handleBlur}
-                                            autoCapitalize="none"
-                                        />
-                                    ) : (
-                                        <Text style={[styles.dataLabel, styles.dataValue]}>
-                                            {userData[key]}
-                                        </Text>
-                                    )}
-                                    {!readonly && (
-                                        <TouchableOpacity onPress={() => handleEdit(key)}>
-                                            <Ionicons name="create-outline" size={20} color="#fff" />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 100 }}
+                style={{ width: '100%' }}
+            >
+                {fieldsToShow.map(({ key, label, readonly }) => (
+                    <View key={key} style={styles.bodyDataContainer}>
+                        <View style={styles.row}>
+                            <Text style={styles.dataLabel}>{label}</Text>
+                            <View style={styles.rightGroup}>
+                                {/* Always show readonly text for email & username */}
+                                {readonly || editingField !== key ? (
+                                    <Text style={[styles.dataLabel, styles.dataValue]}>
+                                        {userData[key]}
+                                    </Text>
+                                ) : (
+                                    <TextInput
+                                        style={[styles.dataLabel, styles.dataValueInput]}
+                                        value={editedValues[key]}
+                                        onChangeText={text => handleChange(key, text)}
+                                        autoFocus
+                                        onBlur={handleBlur}
+                                        autoCapitalize="none"
+                                        keyboardType={ key === 'streak_goal' ? 'numeric' : 'default' }
+                                    />
+                                )}
+                                {/* Only allow edit icon on streak_goal */}
+                                {!readonly && editingField !== key && (
+                                    <TouchableOpacity onPress={() => handleEdit(key)}>
+                                        <Ionicons name="create-outline" size={20} color="#fff" />
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         </View>
-                    );
-                })}
+                    </View>
+                ))}
             </ScrollView>
 
             {hasEdits && (

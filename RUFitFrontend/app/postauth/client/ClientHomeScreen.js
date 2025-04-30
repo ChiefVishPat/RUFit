@@ -3,6 +3,14 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../components/api/APIClient';
 import { background_color } from '../../GlobalStyles';
+import WeeklyStreakProgress from './WeeklyStreakProgress';
+import { Navigation } from 'react-native-navigation';
+import { user_logout } from '../../../components/authentication/user_auth/UserAuthActions';
+import { API_REQUEST_SUCCESS } from '../../../constants/StatusConstants';
+import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
+import { useUser } from '../../../components/user_data/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function ClientHomeScreen() {
 
@@ -11,37 +19,86 @@ export default function ClientHomeScreen() {
     const [streak, setStreak] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const userData = route.params?.userData;
+    const userData = useUser().userData;
+
+    const handleStreakChange = () => {
+        navigation.navigate('Profile');
+
+        requestAnimationFrame(() => {
+        navigation.navigate('ProfileSettings');
+    });
+}
 
 
-    useEffect(() => {
-        const fetchStreak = async () => {
-            try {
-                const response = await APIClient.get('/workout/streak', { sendAccess: true });
+useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      
+      const fetchStreak = async () => {
+        try {
+          const response = await APIClient.get('/workout/streak', { sendAccess: true });
+          if (isActive) {
             setStreak(response.data.streak);
             setLoading(false);
+          }
+        } catch (error) {
+          if (error.status === 401) {
+            const result = user_logout();
+            if (result === API_REQUEST_SUCCESS) {
+              Alert.alert(
+                'Logged out',
+                "You've been logged out. Please sign in again.",
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'PreAuthLanding' }],
+                      });
+                    },
+                  },
+                ]
+              );
             }
-            catch(error){
-                console.error(error);
-            }
+          } else {
+            console.error(error);
+          }
         }
+      };
+  
+      fetchStreak();
+  
+      // cleanup to avoid setting state on unmounted screen
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+  
 
-        fetchStreak();
-    }, []);
+if (loading) {
+    return <ActivityIndicator style={styles.loader} />;
+}
 
-    if (loading) {
-        return <ActivityIndicator style={styles.loader} />;
-    }
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.welcomeBanner}>
-                <Text style={styles.greeting}>Welcome back, {userData.username}!</Text>
-            </View>
-
-            <Text style={styles.streak}>🔥 Current Streak: {streak} day{streak !== 1 ? 's' : ''}</Text>
+return (
+    <View style={styles.container}>
+        <View style={styles.welcomeBanner}>
+            <Text style={styles.greeting}>Welcome back, {userData.username}!</Text>
         </View>
-    );
+
+        <Text style={styles.sub}>You're on a <Text style={styles.streakCount}>{streak}</Text> day streak!</Text>
+        <View style={styles.progressContainer}>
+            <WeeklyStreakProgress progress={2} goal={userData.streak_goal} />
+        </View>
+
+
+        <Text style={styles.sub}>Your goal is {userData.streak_goal} days - let's go!🔥</Text>
+
+        <ScarletPressable onPress={handleStreakChange}></ScarletPressable>
+
+    </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -50,14 +107,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: background_color,
-        borderColor: "white",
-        borderWidth: 2,
+        // borderColor: "white",
+        // borderWidth: 2,
     },
     welcomeBanner: {
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: "white",
-        borderWidth: 2,
+        // borderColor: "white",
+        // borderWidth: 2,
         marginTop: 40,
     },
     greeting: {
@@ -75,5 +132,26 @@ const styles = StyleSheet.create({
     loader: {
         flex: 1,
         justifyContent: 'center',
+    },
+    progressContainer: {
+        marginTop: 10,
+        width: 250,
+        height: 250,
+        // borderColor: "white",
+        // borderWidth: 2,
+    },
+    sub: {
+        marginTop: 20,
+        fontSize: 25,
+        fontWeight: '600',
+        marginBottom: 12,
+        color: "white",
+    },
+    streakCount: {
+        marginTop: 10,
+        fontSize: 28,
+        fontWeight: '600',
+        marginBottom: 12,
+        color: "orange",
     },
 });

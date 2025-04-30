@@ -6,10 +6,11 @@ import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal"
 import { user_logout } from "../../../../components/authentication/user_auth/UserAuthActions";
 import { API_REQUEST_SUCCESS } from "../../../../constants/StatusConstants";
 import { background_color, GradientScreen } from "../../../GlobalStyles";
+import { useUser } from "../../../../components/user_data/UserContext";
 
 export default function ClientProfileScreen() {
     const route = useRoute();
-    const userData = route.params.userData;
+    const userData = useUser().userData;
     // console.log(userData);
     const navigation = useNavigation();
 
@@ -63,17 +64,17 @@ export default function ClientProfileScreen() {
             <View style={styles.optionsGrid}>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('MyBodyData', { navigation, userData })}>
+                    onPress={() => navigation.navigate('MyBodyData', { navigation })}>
                 <Text style={styles.cardText}>My Body Data</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('ProfileSettings', { navigation, userData })}>
+                    onPress={() => navigation.navigate('ProfileSettings', { navigation })}>
                     <Text style={styles.cardText}>Profile Settings</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('AccountSettings', { navigation, userData })}>
+                    onPress={() => navigation.navigate('AccountSettings', { navigation })}>
                     <Text style={styles.cardText}>Account Settings</Text>
                 </TouchableOpacity>
             </View>
