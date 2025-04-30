@@ -2,9 +2,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const APIClient = axios.create({
-    baseURL: 'http://127.0.0.1:5000',
+    // baseURL: 'http://127.0.0.1:5000',
     // for testing with expo app
-    // baseURL: 'http://192.168.1.50:5000',
+    baseURL: 'http://192.168.1.50:5000',
     headers: { 'Content-Type': 'application/json' },
 });
 

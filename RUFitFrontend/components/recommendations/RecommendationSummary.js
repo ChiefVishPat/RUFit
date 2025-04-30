@@ -33,13 +33,18 @@ export default function RecommendationSummary({ recommendations, onPress, isLoad
 
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.touchableContainer}>
-            {exerciseNames.map((exerciseName) => {
+        {exerciseNames.map((exerciseName) => {
                 const rec = recommendations[exerciseName];
+                // Add checks for potentially missing recommendation details
+                const sets = rec?.sets ?? '?'; // Use '??' for nullish coalescing (defaults if null or undefined)
+                const reps = rec?.reps ?? '?';
+                const weightDisplay = (rec?.weight !== undefined && rec?.weight !== null) ? formatWeight(rec.weight) : 'N/A'; // Check weight specifically
+
                 return (
                     <View key={exerciseName} style={styles.row}>
                         <Text style={styles.exerciseName}>{exerciseName}</Text>
                         <Text style={styles.detailsText}>
-                            {rec.sets}x{rec.reps} @ {formatWeight(rec.weight)}
+                            {sets}x{reps} @ {weightDisplay}
                         </Text>
                     </View>
                 );
