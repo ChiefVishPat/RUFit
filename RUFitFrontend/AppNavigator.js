@@ -18,7 +18,7 @@ const RootStack = createStackNavigator();
 function MainStackScreen({ route }) {
     const isAuthenticated = route.params?.isAuthenticated;
 
-    return (
+    const screens = (
         <MainStack.Navigator
             initialRouteName={isAuthenticated ? 'ClientIndex' : 'PreAuthLanding'}
         >
@@ -78,7 +78,7 @@ function MainStackScreen({ route }) {
         </MainStack.Navigator>
     );
 
-    // return isAuthenticated ? <UserProvider>{screens}</UserProvider> : screens;
+    return isAuthenticated ? <UserProvider>{screens}</UserProvider> : screens;
 }
 
 const AppNavigator = ({ isAuthenticated }) => {

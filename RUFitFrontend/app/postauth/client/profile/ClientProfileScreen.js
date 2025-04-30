@@ -18,22 +18,22 @@ export default function ClientProfileScreen() {
 
     const handleLogOut = async () => {
         try {
-            const logoutResponse = await user_logout();
-            if (logoutResponse === API_REQUEST_SUCCESS) {
-                setShowLogoutAlert(true);
-            }
+            setShowLogoutAlert(true);
         } catch (error) {
             console.error(error);
         }
     };
 
-    const handleLogoutConfirmation = (confirmed) => {
+    const handleLogoutConfirmation = async(confirmed) => {
         setShowLogoutAlert(false);
         if (confirmed) {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: "LoginScreen" }]
-            });
+            const logoutResponse = await user_logout();
+            if (logoutResponse === API_REQUEST_SUCCESS) {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: "LoginScreen" }]
+                });
+            }
         }
     };
 
@@ -65,7 +65,7 @@ export default function ClientProfileScreen() {
 
                 <TouchableOpacity style={styles.optionCard}
                     onPress={() => navigation.navigate('MyBodyData', { navigation })}>
-                <Text style={styles.cardText}>My Body Data</Text>
+                    <Text style={styles.cardText}>My Body Data</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.optionCard}

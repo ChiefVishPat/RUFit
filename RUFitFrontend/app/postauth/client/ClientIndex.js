@@ -99,31 +99,31 @@ export default function ClientIndex() {
       <Tab.Screen
         name="Home"
         component={AuthenticatedClientHomeScreen}
-        initialParams={{ userData: userData, alertConfig: alertConfig }}
+        initialParams={{ alertConfig: alertConfig }}
 
       />
       <Tab.Screen
         name="WorkoutNavigator"
         component={AuthenticatedWorkoutNavigator}
-        initialParams={{ userData: userData }}
+        // initialParams={{ userData: userData }}
         options={{ headerShown: false, title: 'Workouts' }}
       />
       <Tab.Screen
         name="ExerciseNavigator"
         component={AuthenticatedExerciseNavigator}
-        initialParams={{ userData: userData }}
+        // initialParams={{ userData: userData }}
         options={{ headerShown: false, title: 'Exercises' }}
       />
       <Tab.Screen
         name="MacroTracker"
         component={AuthenticatedMacroTrackerNavigator}
-        initialParams={{ userData }}
+        // initialParams={{ userData }}
         options={{ headerShown: false, title: 'Macros' }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileNavigator}
-        initialParams={{ userData: userData }}
+        // initialParams={{ userData: userData }}
         options={{ title: 'Profile' }}
       />
 

@@ -95,7 +95,7 @@ return (
 
         <Text style={styles.sub}>Your goal is {userData.streak_goal} days - let's go!🔥</Text>
 
-        <ScarletPressable onPress={handleStreakChange}></ScarletPressable>
+        <ScarletPressable style={styles.editStreakButton} onPress={handleStreakChange}></ScarletPressable>
 
     </View>
 );
@@ -153,5 +153,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginBottom: 12,
         color: "orange",
+    },
+    editStreakButton: {
+        width: "80%",
     },
 });
