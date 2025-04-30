@@ -16,3 +16,6 @@ if __name__ == '__main__':
         print('Running in PRODUCTION mode with MySQL database')
 
     app.run(debug=args.dev)
+    """for testing with expo app"""
+    """ app.run(debug=args.dev, host='0.0.0.0')
+    """
