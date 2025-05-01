@@ -16,9 +16,11 @@ import {
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { user_login, set_user_pref } from "../../../components/authentication/user_auth/UserAuthActions";
+import { useUser } from "../../../components/user_data/UserContext";
 
 const SetGoalsScreen = ({ navigation, route }) => {
-
+    
+    const { refreshUser } = useUser();
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
@@ -47,6 +49,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
             const loginResult = await user_login({ username, password });
 
             if (loginResult !== status_constants.API_REQUEST_SUCCESS) {
+                await refreshUser();
                 console.error("❌ Login failed:", loginResult);
                 return; // Exit early — don’t proceed to set prefs or navigate
             }

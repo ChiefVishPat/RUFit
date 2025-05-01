@@ -10,9 +10,11 @@ import { user_login } from '../../components/authentication/user_auth/UserAuthAc
 import * as status_constants from '../../constants/StatusConstants';
 import SignupScreen from './signup_flow/SignupScreen';
 import { global_styles, GradientScreen } from '../GlobalStyles';
-
+import { useUser } from '../../components/user_data/UserContext';
 
 export default function LoginScreen() {
+    
+    const { refreshUser } = useUser();
     // Ensure fonts load before display
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
@@ -37,6 +39,7 @@ export default function LoginScreen() {
             try {
                 const loginResponse = await user_login({ username, password })
                 if (loginResponse == status_constants.API_REQUEST_SUCCESS) {
+                    await refreshUser();
                     navigation.reset({
                         index: 0,
                         routes: [{ name: 'ClientIndex' }]
