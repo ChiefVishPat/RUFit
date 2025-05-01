@@ -90,7 +90,7 @@ const SetGoalsScreen = ({ navigation, route }) => {
         // ^ needs to be sent to a frontend func that handles userpref set
 
         // before navigating, log in User. user login should handle access and refresh token setting
-        navigation.navigate('AuthenticatedClientHomeScreen',);
+        //navigation.navigate('AuthenticatedClientHomeScreen',);
     }
 
     if (!fontsLoaded) {

@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     },
     scarletPressableBtnText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: 'bold',
         fontFamily: 'Kanit_400Regular',
     },
