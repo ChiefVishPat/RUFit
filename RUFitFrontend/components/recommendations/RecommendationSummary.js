@@ -62,6 +62,7 @@ export default function RecommendationSummary({ recommendations, onPress, isLoad
 // Styles based on ClientHomeScreen.js patterns
 const styles = StyleSheet.create({
     touchableContainer: {
+        width: "100%",
         marginHorizontal: 20, // Match performanceGrid padding
         marginTop: 15,
         marginBottom: 10,

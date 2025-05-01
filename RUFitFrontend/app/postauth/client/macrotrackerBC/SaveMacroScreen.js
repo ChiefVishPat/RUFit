@@ -118,7 +118,7 @@ export default function SaveMacroScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#1F1F1F', padding: 20, paddingBottom: 80 },
+  container: { backgroundColor: '#1F1F1F', padding: 20, paddingBottom: 90 },
   inputGroup: { marginBottom: 15 },
   label: { color: '#aaa', marginBottom: 5 },
   input: {

@@ -9,6 +9,8 @@ import ScreenHeader from './ScreenHeader';
 import ProfileNavigator from './profile/ProfileNavigator';
 import { UserProvider } from '../../../components/user_data/UserContext';
 import { useUser } from '../../../components/user_data/UserContext';
+import { LinearGradient } from 'expo-linear-gradient';
+import AnimatedTabBarBackground from './AnimatedTabBarBackground';
 
 
 const Tab = createBottomTabNavigator();
@@ -86,15 +88,30 @@ export default function ClientIndex() {
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
+
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'white',
-        tabBarStyle: styles.tabBar,
-        tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
+        tabBarItemStyle: styles.tabBarItem,
+        tabBarStyle: {
+          backgroundColor: 'transparent', // make transparent so gradient shows
+          borderTopWidth: 0,
+          elevation: 0,
+          position: 'absolute',
+        },
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={['#CC0033', 'darkred']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ flex: 1 }}
+          />
+        ),
 
-        header: () => <ScreenHeader title={route.name} />
+        header: () => <ScreenHeader title={route.name} />,
       })}
     >
+
 
       <Tab.Screen
         name="Home"

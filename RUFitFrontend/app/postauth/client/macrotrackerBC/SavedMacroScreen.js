@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   details: { color: '#aaa', fontSize: 14 },
   addButton: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 110,
     left: 20,
     right: 20,
     flexDirection: 'row',

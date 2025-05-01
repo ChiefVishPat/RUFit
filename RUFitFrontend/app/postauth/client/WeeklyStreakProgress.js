@@ -20,6 +20,13 @@ export default function WeeklyStreakProgress({ progress, goal }) {
         return (
             <View style={styles.container}>
                 <Svg width="100%" height="100%" viewBox="0 0 140 140">
+                    <Defs>
+                        <LinearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+                            <Stop offset="0%" stopColor="#CC0033" />
+                            <Stop offset="100%" stopColor="darkred" />
+                        </LinearGradient>
+                    </Defs>
+
                     <Circle
                         stroke="#e0e0e0"
                         fill="none"
@@ -36,6 +43,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
             </View>
         );
     }
+
 
     const progressPercent = Math.min(Math.max(progress, 0), goal) / goal;
     const animatedProgress = useSharedValue(0);
@@ -94,6 +102,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
         </View>
     );
 }
+
 
 
 const styles = StyleSheet.create({

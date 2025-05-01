@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     },
     logoutCard: {
         backgroundColor: 'rgba(255, 255, 255, 0.08)',
-        marginBottom: 50,
+        marginBottom: 120,
     },
     cardText: {
         fontSize: 20,
