@@ -17,10 +17,6 @@ export default function ClientHomeScreen({ route }) {
 
     const navigation = useNavigation();
 
-    // State for user data
-    const [internalUserData, setInternalUserData] = useState(null);
-    const [isLoadingUserData, setIsLoadingUserData] = useState(true);
-
     // Logout Alert State
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
@@ -30,73 +26,50 @@ export default function ClientHomeScreen({ route }) {
     const [recommendationsError, setRecommendationsError] = useState(null);
     const [isRecModalVisible, setIsRecModalVisible] = useState(false);
 
-    // --- Fetch User Data (runs once) ---
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            setIsLoadingUserData(true);
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate fetch
-            setInternalUserData({ username: 'Test User' }); // Placeholder
-            setIsLoadingUserData(false);
-        };
-        fetchInitialData();
-    }, []);
-
-
     // --- Fetch Recommendations using useFocusEffect ---
-    useFocusEffect(
-        // useCallback ensures the function identity is stable across renders
-        // preventing unnecessary effect runs if dependencies are the same.
-        useCallback(() => {
-            const fetchRecommendations = async () => {
-                // Only fetch if user data is loaded
-                if (internalUserData) {
-                    console.log("HomeScreen focused, fetching recommendations..."); // Log focus/fetch
-                    setRecommendationsLoading(true);
-                    setRecommendationsError(null);
-                    // Don't reset recommendations here if you want to show stale data while loading
-                    // setRecommendations(null);
-                    try {
-                        const response = await APIClient.get('/recommendations', { sendAccess: true });
-                        console.log("Recommendations Response:", response.data);
-                        if (response.data && Object.keys(response.data).length > 0) {
-                             setRecommendations(response.data);
-                        } else {
-                            setRecommendations(null);
-                            console.log("No recommendations data received.");
-                        }
-                    } catch (err) {
-                        console.error("Error fetching recommendations:", err);
-                        if (err.message === 'Network Error') {
-                             setRecommendationsError("Network Error: Could not connect to server.");
-                        } else if (err.message === 'Access token not found') {
-                             setRecommendationsError("Authentication error. Please log in again.");
-                        } else {
-                            setRecommendationsError("Failed to load recommendations.");
-                        }
-                         setRecommendations(null); // Ensure recommendations are null on error
-                    } finally {
-                        setRecommendationsLoading(false);
+useFocusEffect(
+    useCallback(() => {
+        const fetchRecommendations = async () => {
+            // Only fetch if ACTUAL user data is loaded
+            if (userData) { // <--- MODIFIED Check
+                console.log("HomeScreen focused, fetching recommendations...");
+                setRecommendationsLoading(true);
+                setRecommendationsError(null);
+                try {
+                    const response = await APIClient.get('/recommendations', { sendAccess: true });
+                    console.log("Recommendations Response:", response.data);
+                    if (response.data && Object.keys(response.data).length > 0) {
+                         setRecommendations(response.data);
+                    } else {
+                        setRecommendations(null);
+                        console.log("No recommendations data received.");
                     }
-                } else {
-                    console.log("HomeScreen focused, but no user data yet.");
-                    // Ensure state is clear if no user data
-                    setRecommendations(null);
-                    setRecommendationsError(null);
+                } catch (err) {
+                    console.error("Error fetching recommendations:", err);
+                    if (err.message === 'Network Error') {
+                         setRecommendationsError("Network Error: Could not connect to server.");
+                    } else if (err.message === 'Access token not found') {
+                         setRecommendationsError("Authentication error. Please log in again.");
+                    } else {
+                        setRecommendationsError("Failed to load recommendations.");
+                    }
+                     setRecommendations(null);
+                } finally {
                     setRecommendationsLoading(false);
                 }
-            };
+            } else {
+                console.log("HomeScreen focused, but no user data yet.");
+                setRecommendations(null);
+                setRecommendationsError(null);
+                setRecommendationsLoading(false);
+            }
+        };
 
-            fetchRecommendations();
+        fetchRecommendations();
 
-            // Optional: Cleanup function if needed when screen loses focus
-            // return () => {
-            //   console.log("HomeScreen unfocused");
-            //   // e.g., cancel fetches, clear timers
-            // };
-        }, [internalUserData]) // Dependency: re-run if internalUserData changes while screen is focused
-    );
-    // --- End useFocusEffect ---
-
+    }, [userData]) // <--- MODIFIED Dependency Array
+);
+// --- End useFocusEffect ---
 
     // --- Logout Handlers (Unchanged) ---
     const handleLogOut = async () => {
@@ -118,15 +91,6 @@ export default function ClientHomeScreen({ route }) {
             }
         }
     };
-
-    // --- Loading State ---
-    if (isLoadingUserData) {
-        return (
-            <View style={[styles.container, styles.centered]}>
-                <ActivityIndicator size="large" color="#fff" />
-            </View>
-        );
-    }
 
     // --- Render ---
     return (
@@ -202,7 +166,7 @@ export default function ClientHomeScreen({ route }) {
     );
 }
 
-// --- Styles (Keep existing styles from previous step) ---
+// --- Styles ---
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -232,7 +196,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 10,
         marginTop: 10,
-        // Removed marginBottom: 10
     },
     card: {
         width: '44%',
@@ -259,7 +222,7 @@ const styles = StyleSheet.create({
     },
     logoutButtonWrapper: {
         marginHorizontal: 30,
-        marginTop: 10, // Reduced from 15 - adjust if needed
+        marginTop: 10,
         marginBottom: 20,
     },
     logoutButton: {

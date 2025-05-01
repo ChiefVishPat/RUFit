@@ -16,14 +16,14 @@ export default function RecommendationDetailModal({ isVisible, onClose, recommen
     return (
         <Modal
             animationType="slide"
-            transparent={false} // Non-transparent background
+            transparent={false} 
             visible={isVisible}
-            onRequestClose={onClose} // Allows closing with back button on Android
+            onRequestClose={onClose} 
         >
             {/* SafeAreaView for notches/status bars */}
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.modalContainer}>
-                    {/* Simple Header */}
+                    {/* Header */}
                     <View style={styles.header}>
                         <Text style={styles.headerTitle}>Recommendations</Text>
                         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -53,7 +53,7 @@ export default function RecommendationDetailModal({ isVisible, onClose, recommen
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#1F1F1F', // Match ClientHomeScreen background
+        backgroundColor: '#1F1F1F', 
     },
     modalContainer: {
         flex: 1,
@@ -63,15 +63,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 15, // Padding for header content
+        paddingTop: 15, 
         paddingBottom: 10,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.2)', // Slightly more visible separator
+        borderBottomColor: 'rgba(255, 255, 255, 0.2)', 
     },
     headerTitle: {
-        fontSize: 20, // Slightly larger title
+        fontSize: 20,
         fontWeight: 'bold',
-        color: '#fff', // White text
+        color: '#fff', 
     },
     closeButton: {
         paddingVertical: 5,
@@ -79,34 +79,34 @@ const styles = StyleSheet.create({
     },
     closeButtonText: {
         fontSize: 16,
-        color: '#CC0033', // Use app's accent color for close action
+        color: '#CC0033', 
         fontWeight: '500',
     },
     scrollContent: {
         paddingVertical: 15,
-        paddingHorizontal: 20, // Consistent horizontal padding
+        paddingHorizontal: 20, 
     },
     itemContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.08)', // Same subtle background as summary box
-        borderRadius: 8, // Slightly smaller radius for items
+        backgroundColor: 'rgba(255, 255, 255, 0.08)', 
+        borderRadius: 8, 
         padding: 15,
-        marginBottom: 15, // Space between items
+        marginBottom: 15, 
     },
     exerciseTitle: {
-        fontSize: 17, // Title for each exercise
+        fontSize: 17,
         fontWeight: 'bold',
         color: '#fff',
         marginBottom: 8,
     },
     detailText: {
         fontSize: 15,
-        color: '#eee', // Very light grey
+        color: '#eee', 
         marginBottom: 5,
-        lineHeight: 20, // Improve readability
+        lineHeight: 20, 
     },
     notesText: {
         fontSize: 14,
-        color: '#ccc', // Light grey for notes
+        color: '#ccc', 
         fontStyle: 'italic',
         lineHeight: 18,
     },

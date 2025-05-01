@@ -62,11 +62,11 @@ export default function RecommendationSummary({ recommendations, onPress, isLoad
 // Styles based on ClientHomeScreen.js patterns
 const styles = StyleSheet.create({
     touchableContainer: {
-        marginHorizontal: 20, // Match performanceGrid padding
+        marginHorizontal: 20,
         marginTop: 15,
         marginBottom: 10,
-        backgroundColor: 'rgba(255, 255, 255, 0.08)', // Subtle background like profile cards potentially use elsewhere
-        borderRadius: 10, // Rounded corners
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        borderRadius: 10, 
         paddingVertical: 10,
         paddingHorizontal: 15,
     },
@@ -74,23 +74,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 8, // Vertical padding for rows
+        paddingVertical: 8, 
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.15)', // Subtle separator
+        borderBottomColor: 'rgba(255, 255, 255, 0.15)', 
     },
     exerciseName: {
-        color: '#fff', // White text
+        color: '#fff', 
         fontSize: 15,
-        fontWeight: '500', // Medium weight
-        flex: 1, // Allow text to wrap if needed
+        fontWeight: '500', 
+        flex: 1, 
         marginRight: 10,
     },
     detailsText: {
-        color: '#ccc', // Lighter grey text for details
+        color: '#ccc',
         fontSize: 14,
     },
     moreText: {
-        color: '#aaa', // Dimmer grey text
+        color: '#aaa', 
         fontSize: 13,
         textAlign: 'center',
         marginTop: 10,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     errorText: {
-        color: '#ff8a8a', // Light red for errors
+        color: '#ff8a8a', 
         fontSize: 14,
         textAlign: 'center',
         marginHorizontal: 20,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
      infoText: {
-        color: '#ccc', // Light grey for info
+        color: '#ccc', 
         fontSize: 14,
         textAlign: 'center',
         marginHorizontal: 20,
