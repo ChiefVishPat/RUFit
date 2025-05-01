@@ -66,7 +66,13 @@ export default function ClientIndex() {
   }, []);
   */
 
-  if (loading || !userData) return null;
+  // if (loading || !userData) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+  //       <Text style={{ color: 'white' }}>Loading...</Text>
+  //     </View>
+  //   );
+  // }
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -111,37 +117,40 @@ export default function ClientIndex() {
       })}
     >
 
+      {userData && (
+        <>
+          <Tab.Screen
+            name="Home"
+            component={AuthenticatedClientHomeScreen}
+            initialParams={{ alertConfig: alertConfig }}
 
-      <Tab.Screen
-        name="Home"
-        component={AuthenticatedClientHomeScreen}
-        initialParams={{ alertConfig: alertConfig }}
-
-      />
-      <Tab.Screen
-        name="WorkoutNavigator"
-        component={AuthenticatedWorkoutNavigator}
-        // initialParams={{ userData: userData }}
-        options={{ headerShown: false, title: 'Workouts' }}
-      />
-      <Tab.Screen
-        name="ExerciseNavigator"
-        component={AuthenticatedExerciseNavigator}
-        // initialParams={{ userData: userData }}
-        options={{ headerShown: false, title: 'Exercises' }}
-      />
-      <Tab.Screen
-        name="MacroTracker"
-        component={AuthenticatedMacroTrackerNavigator}
-        // initialParams={{ userData }}
-        options={{ headerShown: false, title: 'Macros' }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileNavigator}
-        // initialParams={{ userData: userData }}
-        options={{ title: 'Profile' }}
-      />
+          />
+          <Tab.Screen
+            name="WorkoutNavigator"
+            component={AuthenticatedWorkoutNavigator}
+            // initialParams={{ userData: userData }}
+            options={{ headerShown: false, title: 'Workouts' }}
+          />
+          <Tab.Screen
+            name="ExerciseNavigator"
+            component={AuthenticatedExerciseNavigator}
+            // initialParams={{ userData: userData }}
+            options={{ headerShown: false, title: 'Exercises' }}
+          />
+          <Tab.Screen
+            name="MacroTracker"
+            component={AuthenticatedMacroTrackerNavigator}
+            // initialParams={{ userData }}
+            options={{ headerShown: false, title: 'Macros' }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={ProfileNavigator}
+            // initialParams={{ userData: userData }}
+            options={{ title: 'Profile' }}
+          />
+        </>
+      )}
 
     </Tab.Navigator>
   );

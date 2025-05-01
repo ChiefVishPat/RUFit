@@ -62,8 +62,8 @@ const user_login = async ({username, password}) => {
         await setRefreshToken(response.data?.refresh_token);
         return status_constants.API_REQUEST_SUCCESS;
     } catch (error) {
-        console.error(`user_login error: ${error}`);
-        throw error;
+        // console.error(`user_login error: ${error}`);
+        return error;
     }
 }
 

@@ -46,7 +46,10 @@ export default function LoginScreen() {
                       });
                 }
                 else {
-                    setSignUpError(loginResponse); // will be appropriate error message
+                    if (loginResponse.status === 401){
+                        setSignUpError("Invalid credentials")
+                    }
+                    // ; // will be appropriate error message
                 }
             }
             catch (error) {

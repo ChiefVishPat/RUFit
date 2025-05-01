@@ -25,7 +25,12 @@ export default function ClientHomeScreen({ route }) {
   // User workout streak data
   const [streak, setStreak] = useState(null);
   const [loading, setLoading] = useState(null);
-  const userData = useUser().userData;
+  const { userData, refreshUser } = useUser();
+
+
+  useEffect(() => {
+    async() => {await refreshUser();}
+  }), [];
 
   const handleStreakChange = () => {
     navigation.navigate('Profile');
