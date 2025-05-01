@@ -141,14 +141,14 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    // marginTop: 10,
     width: 250,
     height: 250,
     // borderColor: "white",
     // borderWidth: 2,
   },
   sub: {
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 25,
     fontWeight: '600',
     marginBottom: 12,
