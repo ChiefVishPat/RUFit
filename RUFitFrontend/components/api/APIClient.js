@@ -4,7 +4,9 @@ import { checkAuthentication } from '../authentication/user_auth/UserTokenValida
 import { AUTHENTICATED } from '../../constants/StatusConstants';
 
 export const APIClient = axios.create({
-    baseURL: 'http://127.0.0.1:5000',
+    // baseURL: 'http://127.0.0.1:5000',
+    // for testing with expo app
+    baseURL: 'http://192.168.1.50:5000',
     headers: { 'Content-Type': 'application/json' },
 });
 
