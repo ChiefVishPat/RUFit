@@ -10,7 +10,6 @@ import ProfileNavigator from './profile/ProfileNavigator';
 import { UserProvider } from '../../../components/user_data/UserContext';
 import { useUser } from '../../../components/user_data/UserContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import AnimatedTabBarBackground from './AnimatedTabBarBackground';
 
 
 const Tab = createBottomTabNavigator();

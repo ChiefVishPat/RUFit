@@ -3,7 +3,8 @@ from app.extensions import db
 
 class Tracker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+
     food_name = db.Column(db.String(255), nullable=False)
     date = db.Column(db.Date, nullable=False)
 
@@ -17,4 +18,5 @@ class Tracker(db.Model):
 
     barcode = db.Column(db.String(50), nullable= True, default=None) #im setting nullable to true so that users can optionally enter a barcode
 
-    user = db.relationship('User', backref=db.backref('tracker', lazy=True))
+    user = db.relationship('User', backref=db.backref('tracker', lazy=True, cascade='all, delete-orphan', passive_deletes=True))
+
