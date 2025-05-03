@@ -1,145 +1,39 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
-from app.extensions import db
-from app.logging_config import logger
-from app.models.users import User
-from app.services.auth_service import login_user, register_user
+from flask_jwt_extended import get_jwt_identity, jwt_required, unset_jwt_cookies
+
+from app.services.auth_service import delete_account, login_user, register_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    print(data)
-    if not data:
-        return jsonify({'message': 'Invalid or missing JSON payload'}), 400
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
-
+    data = request.get_json() or {}
+    username, password, email = data.get('username'), data.get('password'), data.get('email')
     if not username or not password:
-        logger.warning('Registration failed: Missing username or password')
-        return jsonify({'message': 'Username and password are required'}), 400
+        return jsonify(message='Username and password are required'), 400
 
-    try:
-        user, err = register_user(username, password, email)
-        if err:
-            logger.warning(f'Registration failed: {err}')
-            return jsonify({'message': err}), 400
-        logger.info(f'User {username} registered successfully')
-        return jsonify({'message': 'User registered successfully'}), 201
-
-    except Exception as e:
-        logger.error(e.message)
-        logger.error(f'Error during registration for user {username}: {e}')
-        return jsonify({'message': 'Internal Server Error'}), 500
-
-
-@auth_bp.route('/account', methods=['DELETE'])
-@jwt_required()
-def delete_account():
-    from flask_jwt_extended import get_jwt_identity, get_jwt
-    from flask_jwt_extended import unset_jwt_cookies
-
-    user_id = get_jwt_identity()
-    try:
-        user = db.session.get(User, int(user_id))
-        if not user:
-            logger.warning(f"Account deletion attempted for non-existent user {user_id}")
-            return jsonify({'message': 'User not found'}), 404
-
-        db.session.delete(user)
-        db.session.commit()
-
-        logger.info(f"User {user.username} (ID {user_id}) deleted their account.")
-
-        # Invalidate the current JWT by unsetting cookies (useful for frontend cookie storage)
-        response = jsonify({'message': 'Account deleted successfully'})
-        unset_jwt_cookies(response)
-        return response, 200
-
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Error deleting account for user {user_id}: {e}")
-        return jsonify({'message': 'Internal Server Error'}), 500
+    user, err = register_user(username, password, email)
+    if err:
+        return jsonify(message=err), 400
+    return jsonify(message='User registered successfully'), 201
 
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-    try:
-        tokens, err = login_user(username, password)
-        if err:
-            logger.warning(f'Login failed for user: {username}')
-            return jsonify({'message': err}), 401
-        logger.info(f'User {username} logged in successfully')
-        return jsonify(tokens), 200
-
-    except Exception as e:
-        logger.error(f'Error during login for user {username}: {e}')
-        return jsonify({'message': 'Internal Server Error'}), 500
+    data = request.get_json() or {}
+    tokens, err = login_user(data.get('username'), data.get('password'))
+    if err:
+        return jsonify(message=err), 401
+    return jsonify(tokens), 200
 
 
-@auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-    # This endpoint can simply call the refresh logic from your JWT settings
-    from flask import jsonify
-    from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
-
-    try:
-        # For refresh, the endpoint itself uses jwt_required(refresh=True)
-        # so that a valid refresh token is required.
-        # jwt_required(refresh=True)
-        current_user = get_jwt_identity()
-        # 💥 Check that user still exists in the database
-        user = db.session.get(User, int(current_user))
-        if not user:
-            logger.warning(f"Token refresh attempted for non-existent user {current_user}")
-            return jsonify({'message': 'User does not exist'}), 401
-
-
-        new_access_token = create_access_token(identity=current_user)
-        new_refresh_token = create_refresh_token(identity=current_user)
-        logger.info(f'User {current_user} token refreshed successfully')
-        return jsonify({'access_token': new_access_token, 'refresh_token': new_refresh_token}), 200
-    except Exception as e:
-        logger.error(f'Error during token refresh: {e}')
-        return jsonify({'message': 'Internal Server Error'}), 500
-
-
-@auth_bp.route('/is-token-expired', methods=['POST'])
-def is_token_expired():
-    data = request.get_json()
-    token = data.get('access_token')
-    if not token:
-        return jsonify({'error': 'Access token missing'}), 400
-    try:
-        from flask_jwt_extended import decode_token
-
-        decoded = decode_token(token)  # This will raise an exception if token is invalid or expired
-        user_id = decoded.get('sub')
-
-        user = db.session.get(User, int(user_id))
-        if not user:
-            return jsonify({'expired': True, 'reason': 'User no longer exists'}), 200
-
-        return jsonify({'expired': False}), 200
-    except Exception as e:
-        return jsonify({'expired': True, 'reason': str(e)}), 200
-
-
-# Custom error handlers for JWT
-from flask_jwt_extended import JWTManager
-
-jwt = JWTManager()
-
-
-@jwt.invalid_token_loader
-@jwt.expired_token_loader
-@jwt.unauthorized_loader
-def custom_error_response(reason):
-    return jsonify({'expired': True, 'reason': reason}), 200
+@auth_bp.route('/account', methods=['DELETE'])
+@jwt_required()
+def delete_user():
+    uid = int(get_jwt_identity())
+    if not delete_account(uid):
+        return jsonify(message='User not found'), 404
+    resp = jsonify(message='Account deleted')
+    unset_jwt_cookies(resp)
+    return resp, 200
