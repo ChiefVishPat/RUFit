@@ -14,6 +14,8 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 import sqlite3
 
+from flask_migrate import Migrate
+
 
 @event.listens_for(Engine, "connect")
 def enable_sqlite_foreign_keys(dbapi_connection, connection_record):
@@ -32,6 +34,9 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    
+    migrate = Migrate()
+    migrate.init_app(app, db)
 
     with app.app_context():
         from .models import workout, users, userinfo, macro_tracker # noqa: F401
