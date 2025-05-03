@@ -4,6 +4,7 @@ from app.dao.workout_dao import (
     delete_workouts_by_session,
     get_workouts_by_session,
     get_workouts_by_user,
+    get_workouts_by_user_and_exercise,
     update_workout,
 )
 from app.extensions import db
@@ -42,6 +43,45 @@ class TestWorkoutDAO:
         session_ws = get_workouts_by_session(uid, session_id)
         assert len(session_ws) == 1
         assert session_ws[0].exercise == 'Squat'
+
+    def test_get_workouts_by_user_and_exercise_empty(self):
+        # no records ⇒ should return empty list
+        assert get_workouts_by_user_and_exercise(user_id=9999, exercise_name='Nothing') == []
+
+    def test_get_workouts_by_user_and_exercise_respects_limit_and_order(self):
+        # seed a user and three dated workouts
+        from datetime import datetime, timedelta, timezone
+
+        user = User(username='u_test', email='u@test.com', password='pw')
+        db.session.add(user)
+        db.session.commit()
+        uid = user.id
+
+        base = datetime.now(timezone.utc)
+        # create 3 workouts on successive days
+        for days_ago in range(3):
+            w = Workout(
+                user_id=uid,
+                workout_name='W',
+                session_id=f's{days_ago}',
+                exercise='PushUp',
+                sets=1,
+                reps=1,
+                weight=0,
+                date=base - timedelta(days=days_ago),
+            )
+            db.session.add(w)
+        db.session.commit()
+
+        # without limit: all 3, newest first
+        all_three = get_workouts_by_user_and_exercise(uid, 'PushUp')
+        assert len(all_three) == 3
+        assert all_three[0].date > all_three[-1].date
+
+        # with limit=2: only the two most recent
+        two = get_workouts_by_user_and_exercise(uid, 'PushUp', limit=2)
+        assert len(two) == 2
+        assert two[0].date > two[1].date
 
     def test_update_workout(self):
         # 1) create & commit a user
