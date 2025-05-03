@@ -91,10 +91,10 @@ const refreshTokens = async () => {
     if (error.response?.status === 401) {
       // Refresh token expired or invalid
       if (error.response.data.msg){
-        console.error(error.response.data.msg);
+        // console.error(error.response.data.msg);
       }
       else if (error.response.data.message){
-        console.error(error.response.data.message);
+        // console.error(error.response.data.message);
       }
       await clearTokens();
     }

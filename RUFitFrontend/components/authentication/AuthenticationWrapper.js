@@ -36,7 +36,7 @@ const AuthenticationWrapper = ({ children }) => {
     useEffect(() => {
         const checkAuth = async() => {
             try {
-                const auth_response = checkAuthentication();
+                const auth_response = await checkAuthentication();
                 if (auth_response == NOT_AUTHENTICATED) {
                     await handleLogout({
                         alertTitle: 'Session Expired',

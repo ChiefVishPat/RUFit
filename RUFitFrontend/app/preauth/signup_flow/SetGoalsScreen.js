@@ -19,7 +19,7 @@ import { user_login, set_user_pref } from "../../../components/authentication/us
 import { useUser } from "../../../components/user_data/UserContext";
 
 const SetGoalsScreen = ({ navigation, route }) => {
-    
+
     const { refreshUser } = useUser();
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
@@ -48,30 +48,30 @@ const SetGoalsScreen = ({ navigation, route }) => {
         try {
             const loginResult = await user_login({ username, password });
 
-            if (loginResult !== status_constants.API_REQUEST_SUCCESS) {
-                await refreshUser();
+            if (loginResult === status_constants.API_REQUEST_SUCCESS) {
+                console.log("✅ User login successful");
+
+                // Now safely set user preferences
+                const prefResult = await set_user_pref({ user_data });
+                if (prefResult === status_constants.API_REQUEST_SUCCESS) {
+                    console.log("✅ User preferences saved to DB");
+
+                    // All done — navigate now
+                    await refreshUser();
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "ClientIndex" }]
+                    });
+                }
+                else {
+                    console.error("❌ Failed to save user preferences:", prefResult);
+                    return;
+                }
+            }
+            else {
                 console.error("❌ Login failed:", loginResult);
                 return; // Exit early — don’t proceed to set prefs or navigate
             }
-
-            console.log("✅ User login successful");
-
-            // Now safely set user preferences
-            const prefResult = await set_user_pref({ user_data });
-
-            if (prefResult !== status_constants.API_REQUEST_SUCCESS) {
-                console.error("❌ Failed to save user preferences:", prefResult);
-                return;
-            }
-
-            console.log("✅ User preferences saved to DB");
-
-            // All done — navigate now
-            navigation.reset({
-                index: 0,
-                routes: [{ name: "ClientIndex" }]
-            });
-
         }
         catch (error) {
             setIsAlertVisible(true);
