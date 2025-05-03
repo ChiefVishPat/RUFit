@@ -8,7 +8,7 @@ from app.config import TestingConfig
 def app():
     """
     Create and configure a new app instance for the entire test session
-    using TestingConfig (which uses an in‑memory SQLite DB).
+    using TestingConfig (which uses an in-memory SQLite DB).
     """
     app = create_app(TestingConfig)
     with app.app_context():
@@ -18,28 +18,39 @@ def app():
 @pytest.fixture(scope='session')
 def db(app):
     """
-    Yield the SQLAlchemy object registered in create_app.
-    Tables are created/dropped per-test by clean_db.
+    Create all tables once, then drop them at session end.
     """
-    yield _db
+    with app.app_context():
+        _db.create_all()
+        yield _db
+        _db.drop_all()
 
 
 @pytest.fixture(autouse=True)
-def clean_db(app, db):
+def clean_db(db):
     """
-    Drop & recreate all tables around each test, then remove session.
+    Before each test, rollback any open transaction and truncate all tables.
+    After each test, do the same cleanup again.
+    This ensures each test starts (and ends) with a completely empty DB.
     """
-    _db.drop_all()
-    _db.create_all()
+    # ---- before test ----
+    _db.session.rollback()
+    for table in reversed(_db.metadata.sorted_tables):
+        _db.session.execute(table.delete())
+    _db.session.commit()
+
     yield
-    _db.session.remove()
+
+    # ---- after test ----
+    _db.session.rollback()
+    for table in reversed(_db.metadata.sorted_tables):
+        _db.session.execute(table.delete())
+    _db.session.commit()
 
 
 @pytest.fixture
 def client(app):
-    """
-    Provide a Flask test client for all API tests.
-    """
+    """A test client for the app."""
     return app.test_client()
 
 

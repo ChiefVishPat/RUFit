@@ -3,8 +3,24 @@ import pytest
 
 def test_register_missing_fields(client):
     resp = client.post('/auth/register', json={})
+    data = resp.get_json()
     assert resp.status_code == 400
-    assert b'Username and password are required' in resp.data
+    assert data['message'] == 'Invalid or missing JSON payload'
+
+
+@pytest.mark.parametrize(
+    'payload',
+    [
+        ({'username': 'alice'}),  # missing password
+        ({'password': 'pw'}),  # missing username
+    ],
+)
+def test_register_missing_username_or_password(client, payload):
+    # JSON is present, but missing one of the required fields
+    resp = client.post('/auth/register', json=payload)
+    data = resp.get_json()
+    assert resp.status_code == 400
+    assert data['message'] == 'Username and password are required'
 
 
 def test_register_success(client):

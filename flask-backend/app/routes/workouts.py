@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timedelta
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -11,9 +12,9 @@ from app.services.workout_service import (
     remove_workout_session,
     update_workout_session,
 )
-from datetime import datetime, timedelta
 
 workouts_bp = Blueprint('workouts', __name__, url_prefix='/workout')
+
 
 @workouts_bp.route('/streak', methods=['GET'])
 @jwt_required()
@@ -22,13 +23,10 @@ def get_streak():
     try:
         workouts = get_user_workouts(user_id)
         if not workouts:
-            return jsonify({"streak": 0}), 200
+            return jsonify({'streak': 0}), 200
 
         # Extract unique workout dates (just the date part)
-        workout_dates = sorted(
-            {w.date.date() for w in workouts},
-            reverse=True
-        )
+        workout_dates = sorted({w.date.date() for w in workouts}, reverse=True)
 
         # Calculate streak
         streak = 0
@@ -39,10 +37,11 @@ def get_streak():
             else:
                 break
 
-        return jsonify({"streak": streak}), 200
+        return jsonify({'streak': streak}), 200
     except Exception as e:
-        print(f"[STREAK ERROR] {e}")
-        return jsonify({"error": "Could not compute streak."}), 500
+        print(f'[STREAK ERROR] {e}')
+        return jsonify({'error': 'Could not compute streak.'}), 500
+
 
 @workouts_bp.route('', methods=['POST'])
 @jwt_required()
@@ -101,9 +100,13 @@ def update_workout(session_id):
         return jsonify({'message': 'Exercises must be provided as a list'}), 400
 
     try:
-        update_workout_session(user_id, session_id, workout_name, exercises)
-        logger.info(f"Workout session '{workout_name}' updated successfully for user {user_id}")
-        return jsonify({'message': 'Workout session updated successfully'}), 200
+        success = update_workout_session(user_id, session_id, workout_name, exercises)
+        if success:
+            logger.info(f"Workout session '{workout_name}' updated successfully for user {user_id}")
+            return jsonify({'message': 'Workout session updated successfully'}), 200
+        else:
+            logger.warning(f"Workout session '{session_id}' not found for user {user_id}")
+            return jsonify({'message': 'Workout session failed to update'}), 404
 
     except Exception as e:
         db.session.rollback()

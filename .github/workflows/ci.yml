@@ -2,9 +2,9 @@ name: CI - Flask Backend
 
 on:
   push:
-    branches: [main, dev, SPR5-dev]
+    branches: [main, dev, 'SPR6*']
   pull_request:
-    branches: [main, dev, SPR5-dev]
+    branches: [main, dev, 'SPR6*']
 
 jobs:
   lint-and-test:
