@@ -1,10 +1,16 @@
 from flask_jwt_extended import create_access_token, create_refresh_token
 
-from app.dao.users_dao import create_user, get_user_by_email, get_user_by_username
+from app.dao.users_dao import (
+    create_user,
+    delete_user_by_id,
+    get_user_by_email,
+    get_user_by_username,
+)
 from app.extensions import bcrypt, db
+from app.models.users import User
 
 
-def register_user(username: str, password: str, email: str):
+def register_user(username: str, password: str, email: str) -> tuple[User | None, str | None]:
     # Check if user already exists
     if get_user_by_username(username):
         return None, 'Username already exists'
@@ -19,7 +25,7 @@ def register_user(username: str, password: str, email: str):
         raise e
 
 
-def login_user(username: str, password: str):
+def login_user(username: str, password: str) -> tuple[dict | None, str | None]:
     from app.dao.users_dao import get_user_by_username  # Lazy import if desired
 
     user = get_user_by_username(username)
@@ -28,3 +34,7 @@ def login_user(username: str, password: str):
     access_token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))
     return {'access_token': access_token, 'refresh_token': refresh_token}, None
+
+
+def delete_account(user_id: int) -> bool:
+    return delete_user_by_id(user_id)

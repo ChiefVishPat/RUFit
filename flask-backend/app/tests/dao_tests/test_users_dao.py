@@ -1,9 +1,5 @@
 import pytest
-from app.dao.users_dao import (
-    create_user,
-    get_user_by_email,
-    get_user_by_username,
-)
+from app.dao.users_dao import create_user, delete_user_by_id, get_user_by_email, get_user_by_username
 from app.extensions import db
 from app.models.users import User
 
@@ -40,3 +36,21 @@ class TestUsersDAO:
         from app.dao.users_dao import get_user_by_username
 
         assert get_user_by_username('jub').email == 'jub@x.com'
+
+    def test_delete_user_by_id_returns_false_when_missing(self):
+        # nothing in DB yet, should return False
+        assert delete_user_by_id(9999) is False
+
+    def test_delete_user_by_id_deletes_and_returns_true(self):
+        # seed a user
+        u = User(username='delme', email='delme@x.com', password='pw')
+        db.session.add(u)
+        db.session.commit()
+        uid = u.id
+
+        # delete should return True
+        result = delete_user_by_id(uid)
+        assert result is True
+
+        # and user should no longer exist
+        assert get_user_by_username('delme') is None
