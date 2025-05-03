@@ -34,13 +34,13 @@ def create_or_update_entry(user_id: int, payload: dict):
     food_name = payload.get('food_name')
     macros = {k: payload.get(k) for k in ('calories', 'protein', 'unsat_fat', 'sat_fat', 'fiber', 'carbs')}
 
-    if payload.get('barcode'):
+    if barcode := payload.get('barcode'):
         try:
-            bc_macros = _fetch_barcode_macros(payload['barcode'])
+            bc_macros = _fetch_barcode_macros(barcode)
             # fill in any missing fields
             for k, v in bc_macros.items():
                 macros[k] = macros[k] or v
-            food_name = food_name or payload.get('food_name') or payload.get('barcode')
+            food_name = food_name or barcode
             logger.info(f'Fetched barcode data for user {user_id}')
         except Exception as e:
             logger.error(f'Barcode lookup failed for {barcode}: {e}')
