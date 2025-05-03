@@ -118,7 +118,7 @@ export const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 30,
+        bottom: 110,
         left: 20,
         right: 20,
         flexDirection: 'row',

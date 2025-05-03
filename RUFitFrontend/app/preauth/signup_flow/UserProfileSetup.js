@@ -41,17 +41,11 @@ const UserProfileSetup = () => {
     const { username, password, email } = route.params
     // const { email, username, password } = route.params;
     return (
-        <Stack.Navigator initialRouteName="ChooseRole">
-            <Stack.Screen
-                name="ChooseRole"
-                component={ChooseRoleScreen}
-                initialParams={{ username, password, email  }}
-                options={{ headerShown: false,
-                           gestureEnabled: false}}
-            />
+        <Stack.Navigator initialRouteName="BodyData">
             <Stack.Screen
                 name="BodyData"
                 component={BodyDataScreen}
+                initialParams={{ username, password, email  }}
                 options={{ headerShown: false,
                            gestureEnabled: false}}
             />

@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
-import { AuthenticatedClientHomeScreen, AuthenticatedClientProfileScreen, AuthenticatedWorkoutNavigator, AuthenticatedExerciseNavigator, AuthenticatedMacroTrackerNavigator } from '../../../components/authentication/AuthenticatedScreens';
-import { get_user_profile } from '../../../components/user_data/UserProfileRequests';
+import {
+  AuthenticatedClientHomeScreen,
+  AuthenticatedWorkoutNavigator,
+  AuthenticatedExerciseNavigator,
+  AuthenticatedMacroTrackerNavigator
+} from '../../../components/authentication/AuthenticatedScreens';
 import ScreenHeader from './ScreenHeader';
 import ProfileNavigator from './profile/ProfileNavigator';
-import { UserProvider } from '../../../components/user_data/UserContext';
 import { useUser } from '../../../components/user_data/UserContext';
 import { LinearGradient } from 'expo-linear-gradient';
-
 
 const Tab = createBottomTabNavigator();
 
 export default function ClientIndex() {
-
-  console.log('navigated to ClientIndex');
   const navigation = useNavigation();
   const [showAlert, setShowAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
@@ -24,82 +24,42 @@ export default function ClientIndex() {
     message: '',
   });
 
-  // const [userData, setUserData] = useState(null);
   let context;
   try {
     context = useUser();
   } catch (err) {
-    // If called outside a provider — e.g. before UserProvider is mounted
-    return null;
+    return null; // Context not mounted yet
   }
 
   const { userData, loading } = context;
 
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const response = await get_user_profile();
-  //       console.log(`User profile response: ${response}`);
-  //       setUserData(response.data);
-  //     }
-  //     catch (error) {
-  //       console.error(error);
-  //       setShowAlert(true);
-  //       setAlertConfig({
-  //         title: "Error",
-  //         message: "Unable to retrieve user data",
-  //       })
-  //     }
-  //     finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   getUserData();
-  // }, []);
+  if (loading || !userData) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+        <Text style={{ color: 'white' }}>Loading...</Text>
+      </View>
+    );
+  }
 
-  /*
-  const [isReady, setIsReady] = React.useState(false);
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => setIsReady(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-  */
-
-  // if (loading || !userData) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
-  //       <Text style={{ color: 'white' }}>Loading...</Text>
-  //     </View>
-  //   );
-  // }
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'WorkoutNavigator') {
-            iconName = focused ? 'analytics' : 'analytics-outline';
-          } else if (route.name === 'ExerciseNavigator') {
-            iconName = focused ? 'barbell' : 'barbell-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          } else if (route.name === 'MacroTracker') {
-            iconName = focused ? 'nutrition' : 'nutrition-outline';
-          }
+          if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
+          else if (route.name === 'WorkoutNavigator') iconName = focused ? 'analytics' : 'analytics-outline';
+          else if (route.name === 'ExerciseNavigator') iconName = focused ? 'barbell' : 'barbell-outline';
+          else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
+          else if (route.name === 'MacroTracker') iconName = focused ? 'nutrition' : 'nutrition-outline';
 
           return <Ionicons name={iconName} size={28} color={color} />;
         },
-
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'white',
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarItemStyle: styles.tabBarItem,
         tabBarStyle: {
-          backgroundColor: 'transparent', // make transparent so gradient shows
+          backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
           position: 'absolute',
@@ -112,63 +72,39 @@ export default function ClientIndex() {
             style={{ flex: 1 }}
           />
         ),
-
         header: () => <ScreenHeader title={route.name} />,
       })}
     >
-
-      {userData && (
-        <>
-          <Tab.Screen
-            name="Home"
-            component={AuthenticatedClientHomeScreen}
-            initialParams={{ alertConfig: alertConfig }}
-
-          />
-          <Tab.Screen
-            name="WorkoutNavigator"
-            component={AuthenticatedWorkoutNavigator}
-            // initialParams={{ userData: userData }}
-            options={{ headerShown: false, title: 'Workouts' }}
-          />
-          <Tab.Screen
-            name="ExerciseNavigator"
-            component={AuthenticatedExerciseNavigator}
-            // initialParams={{ userData: userData }}
-            options={{ headerShown: false, title: 'Exercises' }}
-          />
-          <Tab.Screen
-            name="MacroTracker"
-            component={AuthenticatedMacroTrackerNavigator}
-            // initialParams={{ userData }}
-            options={{ headerShown: false, title: 'Macros' }}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={ProfileNavigator}
-            // initialParams={{ userData: userData }}
-            options={{ title: 'Profile' }}
-          />
-        </>
-      )}
-
+      <Tab.Screen
+        name="Home"
+        component={AuthenticatedClientHomeScreen}
+        initialParams={{ alertConfig: alertConfig }}
+      />
+      <Tab.Screen
+        name="WorkoutNavigator"
+        component={AuthenticatedWorkoutNavigator}
+        options={{ headerShown: false, title: 'Workouts' }}
+      />
+      <Tab.Screen
+        name="ExerciseNavigator"
+        component={AuthenticatedExerciseNavigator}
+        options={{ headerShown: false, title: 'Exercises' }}
+      />
+      <Tab.Screen
+        name="MacroTracker"
+        component={AuthenticatedMacroTrackerNavigator}
+        options={{ headerShown: false, title: 'Macros' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileNavigator}
+        options={{ title: 'Profile' }}
+      />
     </Tab.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    //position: 'absolute',
-    height: 80,
-    borderTopWidth: 0,
-    backgroundColor: '#CC0033',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
-    paddingBottom: 10,
-  },
   tabBarItem: {
     paddingVertical: 8,
   },

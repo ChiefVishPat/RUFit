@@ -13,7 +13,7 @@ if __name__ == '__main__':
         print('Running in DEVELOPMENT mode with SQLite database')
     else:
         app = create_app(Config)
-        print('Running in PRODUCTION mode with MySQL database')
+        print('Running in PRODUCTION mode with MariaDB database')
 
     """ app.run(debug=args.dev)
     for testing with expo app"""

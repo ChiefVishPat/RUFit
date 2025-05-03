@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import Animated, {
@@ -6,6 +6,8 @@ import Animated, {
     useAnimatedProps,
     withTiming,
     Easing,
+    useAnimatedReaction,
+    runOnJS,
 } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -16,37 +18,10 @@ const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function WeeklyStreakProgress({ progress, goal }) {
-    if (goal === 0) {
-        return (
-            <View style={styles.container}>
-                <Svg width="100%" height="100%" viewBox="0 0 140 140">
-                    <Defs>
-                        <LinearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-                            <Stop offset="0%" stopColor="#CC0033" />
-                            <Stop offset="100%" stopColor="darkred" />
-                        </LinearGradient>
-                    </Defs>
-
-                    <Circle
-                        stroke="#e0e0e0"
-                        fill="none"
-                        cx="70"
-                        cy="70"
-                        r={CIRCLE_RADIUS}
-                        strokeWidth={STROKE_WIDTH}
-                    />
-                </Svg>
-                <View style={styles.labelContainer}>
-                    <Text style={styles.progressText}>0</Text>
-                    <Text style={styles.label}>Days</Text>
-                </View>
-            </View>
-        );
-    }
-
-
-    const progressPercent = Math.min(Math.max(progress, 0), goal) / goal;
+    const [displayedProgress, setDisplayedProgress] = useState(0);
     const animatedProgress = useSharedValue(0);
+
+    const progressPercent = goal > 0 ? Math.min(Math.max(progress, 0), goal) / goal : 0;
 
     useFocusEffect(
         React.useCallback(() => {
@@ -55,7 +30,15 @@ export default function WeeklyStreakProgress({ progress, goal }) {
                 duration: 1000,
                 easing: Easing.out(Easing.ease),
             });
-        }, [progress, goal])
+        }, [progressPercent])
+    );
+
+    useAnimatedReaction(
+        () => animatedProgress.value,
+        (value) => {
+            runOnJS(setDisplayedProgress)(Math.round(value * goal));
+        },
+        [goal]
     );
 
     const animatedProps = useAnimatedProps(() => ({
@@ -81,29 +64,29 @@ export default function WeeklyStreakProgress({ progress, goal }) {
                     strokeWidth={STROKE_WIDTH}
                 />
 
-                <AnimatedCircle
-                    stroke="url(#grad)"
-                    fill="none"
-                    cx="70"
-                    cy="70"
-                    r={CIRCLE_RADIUS}
-                    strokeWidth={STROKE_WIDTH}
-                    strokeDasharray={`${CIRCUMFERENCE}, ${CIRCUMFERENCE}`}
-                    animatedProps={animatedProps}
-                    strokeLinecap="round"
-                    transform="rotate(-90 70 70)"
-                />
+                {goal > 0 && (
+                    <AnimatedCircle
+                        stroke="url(#grad)"
+                        fill="none"
+                        cx="70"
+                        cy="70"
+                        r={CIRCLE_RADIUS}
+                        strokeWidth={STROKE_WIDTH}
+                        strokeDasharray={`${CIRCUMFERENCE}, ${CIRCUMFERENCE}`}
+                        animatedProps={animatedProps}
+                        strokeLinecap="round"
+                        transform="rotate(-90 70 70)"
+                    />
+                )}
             </Svg>
 
             <View style={styles.labelContainer}>
-                <Text style={styles.progressText}>{progress}</Text>
-                <Text style={styles.label}>{progress === 1 ? 'Day' : 'Days'}</Text>
+                <Text style={styles.progressText}>{displayedProgress}</Text>
+                <Text style={styles.label}>{displayedProgress === 1 ? 'Day' : 'Days'}</Text>
             </View>
         </View>
     );
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
