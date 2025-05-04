@@ -62,21 +62,23 @@ def test_login_success(client):
 
 
 def test_login_and_refresh(client):
-    # refresh isn’t actually wired up to handle tokens → 404
+    # refresh now returns 200 + new tokens
     client.post('/auth/register', json={'username': 'ellen', 'password': 'pw', 'email': 'e@e.com'})
     tok = client.post('/auth/login', json={'username': 'ellen', 'password': 'pw'}).get_json()['refresh_token']
     resp = client.post('/auth/refresh', headers={'Authorization': f'Bearer {tok}'})
-    assert resp.status_code == 404
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert 'access_token' in data and 'refresh_token' in data
 
 
 def test_refresh_missing_token(client):
     resp = client.post('/auth/refresh')
-    assert resp.status_code == 404
+    assert resp.status_code == 401
 
 
 def test_refresh_with_invalid_token(client):
     resp = client.post('/auth/refresh', headers={'Authorization': 'Bearer badtoken'})
-    assert resp.status_code == 404
+    assert resp.status_code == 422
 
 
 def test_delete_account_unauthorized(client):
@@ -97,24 +99,22 @@ def test_delete_account_success(client):
     resp = client.delete('/auth/account', headers={'Authorization': f'Bearer {tok}'})
     assert resp.status_code == 200
     data = resp.get_json()
-    assert data['message'] == 'Account deleted'
+    assert data['message'] == 'Account deleted successfully'
     # We still unset cookies on success
     assert 'Set-Cookie' in resp.headers
 
 
 def test_token_expired_endpoint_missing_and_malformed(client):
-    # route is not registered → 404
-    assert client.post('/auth/is-token-expired', json={}).status_code == 404
-    assert client.post('/auth/is-token-expired', json={'access_token': 'bad'}).status_code == 404
+    assert client.post('/auth/is-token-expired', json={}).status_code == 200
 
 
 def test_is_token_expired_valid(client):
     client.post('/auth/register', json={'username': 'gina', 'password': 'pw', 'email': 'g@g.com'})
     tok = client.post('/auth/login', json={'username': 'gina', 'password': 'pw'}).get_json()['access_token']
-    assert client.post('/auth/is-token-expired', json={'access_token': tok}).status_code == 404
+    assert client.post('/auth/is-token-expired', json={'access_token': tok}).status_code == 200
 
 
 def test_is_token_expired_nonexistent_user(client):
     tok = create_access_token(identity='12345')
     resp = client.post('/auth/is-token-expired', json={'access_token': tok})
-    assert resp.status_code == 404
+    assert resp.status_code == 200

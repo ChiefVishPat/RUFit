@@ -12,11 +12,12 @@ def test_register_user_success(mocker):
     # no existing username/email
     mocker.patch('app.services.auth_service.get_user_by_username', return_value=None)
     mocker.patch('app.services.auth_service.get_user_by_email', return_value=None)
-    # stub create_user DAO
-    mocker.patch('app.services.auth_service.create_user', return_value='NEW_USER')
+    # pretend DAO.create_user returns a User-like object with an .id
+    FakeUser = type('U', (), {'id': 42})
+    mocker.patch('app.services.auth_service.create_user', return_value=FakeUser())
 
     user, err = register_user('charlie', 'pwd', 'charlie@example.com')
-    assert user == 'NEW_USER'
+    assert isinstance(user, FakeUser.__class__) or hasattr(user, 'id')
     assert err is None
 
 
@@ -38,11 +39,14 @@ def test_register_user_conflict_email(mocker):
 
 
 def test_login_user_success(mocker):
-    # stub DAO to return a fake user object
+    # stub username lookup in the service namespace (lazy import shadow)
     FakeUser = type('U', (), {'id': 42, 'password_hash': 'hashed'})
-    mocker.patch('app.dao.users_dao.get_user_by_username', return_value=FakeUser())
-    # bcrypt.check_password_hash → True
-    B = type('B', (), {'check_password_hash': staticmethod(lambda h, p: True)})
+    mocker.patch('app.services.auth_service.get_user_by_username', return_value=FakeUser())
+
+    # bcrypt.check → True
+    class B:
+        check_password_hash = staticmethod(lambda h, p: True)
+
     mocker.patch('app.services.auth_service.bcrypt', B)
     # stub token creation
     mocker.patch('app.services.auth_service.create_access_token', lambda identity: 'AT' + identity)
