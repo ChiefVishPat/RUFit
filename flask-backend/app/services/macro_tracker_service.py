@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -30,7 +30,7 @@ def _fetch_barcode_macros(barcode: str):
 
 
 def create_or_update_entry(user_id: int, payload: dict):
-    today = datetime.datetime.utcnow().date()
+    today = datetime.now(timezone.utc).date()
     food_name = payload.get('food_name')
     macros = {k: payload.get(k) for k in ('calories', 'protein', 'unsat_fat', 'sat_fat', 'fiber', 'carbs')}
 
@@ -71,9 +71,15 @@ def patch_entry(user_id: int, record_id: int, updates: dict):
     rec = get_tracker_by_id(user_id, record_id)
     if not rec:
         raise LookupError('Not found')
-    for field in ('food_name', 'barcode', 'calories', 'protein', 'carbs', 'fiber', 'unsat_fat', 'sat_fat'):
-        if field in updates:
-            setattr(rec, field, updates[field])
+    numeric = {'calories', 'protein', 'carbs', 'fiber', 'unsat_fat', 'sat_fat'}
+    for field, value in updates.items():
+        if field in numeric:
+            # add the incoming delta
+            setattr(rec, field, getattr(rec, field) + (value or 0))
+        elif field in {'food_name', 'barcode'}:
+            # replace text fields
+            setattr(rec, field, value)
+
     commit_changes()
     return rec
 
