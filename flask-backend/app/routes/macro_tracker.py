@@ -1,5 +1,3 @@
-import datetime
-
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required, unset_jwt_cookies
 
@@ -78,6 +76,7 @@ def update_tracker(record_id):
 
     try:
         patched = patch_entry(user_id, record_id, updates)
+        logger.info(f'Here is the patched data: {patched}')
         logger.info(f'[TRACKER] Updated entry {record_id} for user {user_id}')
         return jsonify({'message': 'Tracker entry updated successfully'}), 200
 
