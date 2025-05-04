@@ -11,6 +11,10 @@ def get_user_by_username(username: str) -> User | None:
         raise
 
 
+def get_user_by_id(user_id: int) -> User | None:
+    return db.session.get(User, user_id)
+
+
 def get_user_by_email(email: str) -> User | None:
     try:
         return User.query.filter_by(email=email).first()
