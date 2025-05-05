@@ -19,14 +19,14 @@ export default function ScanMacroScreen() {
   useFocusEffect(
     React.useCallback(() => {
       setScanned(false);
-      console.log("📸 ScanMacroScreen focused — scanner active");
+      console.log("ScanMacroScreen focused — scanner active");
     }, [])
   );
 
 
-  const handleBarCodeScanned = ({ data, type }) => {
+ /* const handleBarCodeScanned = ({ data, type }) => {
     if (scanned) return; // prevent double scans
-    console.log('✅ Scanned:', { type, data });
+    console.log(' Scanned:', { type, data });
 
     setScanned(true);
 
@@ -39,23 +39,20 @@ export default function ScanMacroScreen() {
       },
     ]);
   };
+*/
 
-  // ✅ Handle permission/loading UI
+  // Handle permission/loading UI
   if (!permission) return <Text>Requesting camera permissions...</Text>;
   if (!permission.granted) return <Text>No access to camera. Please enable it in settings.</Text>;
 
   return (
     <View style={styles.container}>
       <CameraView
-        style={styles.camera}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-        barcodeScannerSettings={{
-          barCodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'qr'], // ← Add 'qr' for testing
-        }}
+        //style={styles.camera}
+        onBarcodeScanned={({data}) => {navigation.navigate('Save Macro', { barcode: data }); }}
+      
       />
-      {scanned && (
-        <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />
-      )}
+   
     </View>
   );
 }
