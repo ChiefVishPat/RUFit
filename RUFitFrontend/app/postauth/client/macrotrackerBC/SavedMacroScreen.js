@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
 
+//the screen that handles showing the user the list of macro logs
 export default function SavedMacroScreen() {
   const navigation = useNavigation();
   const [logs, setLogs] = useState([]);
