@@ -14,11 +14,16 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
 import { useEffect } from 'react';
 
+
 export default function SaveMacroScreen() {
+  //usenavigation is used to navigate between screens with 
   const navigation = useNavigation();
   const route = useRoute();
+    // If this screen is opened to edit an existing macro log
+
   const existingMacro = route.params?.macro;
 
+  // Form state holds all input values (populated if editing an existing entry)
   const [form, setForm] = useState({
     food_name: existingMacro?.food_name || '',
     barcode: existingMacro?.barcode || '',
@@ -31,20 +36,23 @@ export default function SaveMacroScreen() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
-  if (route.params?.scannedBarcode) {
-    setForm((prev) => ({ ...prev, barcode: route.params.scannedBarcode }));
-  }
-}, [route.params?.scannedBarcode]); 
+    if (route.params?.barcode) {
+      setForm((prev) => ({ ...prev, barcode: route.params.barcode }));
+    }
+  }, [route.params?.barcode]);
 
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
+
+  // Submit the data entered by users into the backend api for saving/storage
   const handleSubmit = async () => {
+    // Ensure at least one identifier is provided
     if (!form.food_name && !form.barcode) {
       return Alert.alert('Validation Error', 'Food name or barcode is required.');
     }
-    setIsLoading(true);
+    setIsLoading(true); //just to show user that loading is happening
     try {
       const payload = {
         ...form,
@@ -56,10 +64,13 @@ export default function SaveMacroScreen() {
         unsat_fat: parseFloat(form.unsat_fat) || 0,
       };
       console.log("Submitting macro payload:", payload);
+
+    // Send the macro data to the backend, and alerts when sucessful
       await APIClient.post('/tracker', payload, {sendAccess: true});
       Alert.alert('Success', 'Macro log saved.');
       navigation.goBack();
-    } catch (err) {
+      
+    } catch (err) {// Show error details in console and alert the user
       console.error("Error saving macro:", err.response?.data || err.message);
       Alert.alert('Error', 'Could not save macro log.');
     } finally {
@@ -67,6 +78,7 @@ export default function SaveMacroScreen() {
     }
   };
 
+  // Helper to render labeled input fields
   const renderField = (label, key, keyboardType = 'default') => (
     <View style={styles.inputGroup}>
       <Text style={styles.label}>{label}</Text>
@@ -82,6 +94,7 @@ export default function SaveMacroScreen() {
   );
 
   return (
+    //makes the fields a scrollable view for user
     <ScrollView contentContainerStyle={styles.container}>
       {renderField('Food Name', 'food_name')}
       {renderField('Barcode (optional)', 'barcode')}
@@ -152,5 +165,3 @@ const styles = StyleSheet.create({
   cancelButton: { marginTop: 10 },
   cancelButtonText: { color: '#FF5E5E', textAlign: 'center', fontWeight: 'bold' },
 });
-
-
