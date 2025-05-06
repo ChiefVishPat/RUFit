@@ -8,6 +8,8 @@ from flask_jwt_extended import (
 from app.extensions import db
 from app.logging_config import logger
 from app.models.users import User
+
+# Auth service layer methods
 from app.services.auth_service import (
     check_token_expired,
     delete_account,
@@ -16,12 +18,16 @@ from app.services.auth_service import (
     register_user,
 )
 
+# Define auth blueprint with base URL prefix /auth
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
+
+# User Registration Endpoint
 @auth_bp.route('/register', methods=['POST'])
 def register():
     try:
+        #get user info
         data = request.get_json() or {}
         logger.debug(f'[REGISTER] Payload received: {data}')
 
@@ -29,10 +35,12 @@ def register():
         password = data.get('password')
         email = data.get('email')
 
+        # Basic validation
         if not username or not password:
             logger.warning('[REGISTER] Missing username or password')
             return jsonify(message='Username and password are required'), 400
 
+        # Attempt to register via service
         user, err = register_user(username, password, email)
         if err:
             logger.warning(f'[REGISTER] Registration failed: {err}')
@@ -47,12 +55,15 @@ def register():
         return jsonify(message='Internal Server Error'), 500
 
 
+
+# User Login Endpoint
 @auth_bp.route('/login', methods=['POST'])
 def login():
     try:
         data = request.get_json() or {}
         logger.debug(f'[LOGIN] Payload received: {data}')
 
+        # Authenticate user via service
         tokens, err = login_user(data.get('username'), data.get('password'))
         if err:
             logger.warning(f'[LOGIN] Login failed: {err}')
@@ -66,6 +77,8 @@ def login():
         return jsonify(message='Internal Server Error'), 500
 
 
+
+# Delete Account Endpoint
 @auth_bp.route('/account', methods=['DELETE'])
 @jwt_required()
 def delete_user():
@@ -77,6 +90,7 @@ def delete_user():
             logger.warning(f'[DELETE_ACCOUNT] No user found with id={uid}')
             return jsonify(message='User not found'), 404
 
+        # Clear cookies on successful deletion
         resp = jsonify(message='Account deleted successfully')
         unset_jwt_cookies(resp)
         logger.info(f'[DELETE_ACCOUNT] User id={uid} account deleted')
@@ -88,6 +102,8 @@ def delete_user():
         return jsonify(message='Internal Server Error'), 500
 
 
+
+# Token Refresh Endpoint
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
@@ -108,6 +124,8 @@ def refresh():
         return jsonify(message='Internal Server Error'), 500
 
 
+
+# Token Expiry Check Endpoint
 @auth_bp.route('/is-token-expired', methods=['POST'])
 def is_token_expired():
     try:
@@ -127,11 +145,11 @@ def is_token_expired():
         return jsonify(message='Internal Server Error'), 500
 
 
-# Custom error handlers for JWT
+
+# Custom JWT Error Handlers
 from flask_jwt_extended import JWTManager
 
 jwt = JWTManager()
-
 
 @jwt.invalid_token_loader
 @jwt.expired_token_loader

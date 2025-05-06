@@ -1,19 +1,31 @@
 from flask_jwt_extended import create_access_token, create_refresh_token, decode_token
 
-from app.dao.users_dao import create_user, delete_user_by_id, get_user_by_email, get_user_by_id, get_user_by_username
+from app.dao.users_dao import (
+    create_user,
+    delete_user_by_id,
+    get_user_by_email,
+    get_user_by_id,
+    get_user_by_username
+)
 from app.extensions import bcrypt, db
 from app.logging_config import logger
 from app.models.users import User
 
 
 def register_user(username: str, password: str, email: str) -> tuple[User | None, str | None]:
-    # Check if user already exists
+    """
+    Tries to create a new user account.
+    Returns the new User object and None on success,
+    or (None, error message) if the username or email already exists.
+    """
     if get_user_by_username(username):
         logger.warning(f"register_user: username '{username}' already exists")
         return None, 'Username already exists'
+
     if get_user_by_email(email):
         logger.warning(f"register_user: email '{email}' already exists")
         return None, 'Email already exists'
+
     try:
         user = create_user(username, password, email)
         logger.info(f"register_user: created new user '{username}' (id={user.id})")
@@ -25,6 +37,11 @@ def register_user(username: str, password: str, email: str) -> tuple[User | None
 
 
 def login_user(username: str, password: str) -> tuple[dict | None, str | None]:
+    """
+    Authenticates a user by username and password.
+    If valid, returns a dict with access and refresh tokens.
+    Otherwise, returns (None, 'Invalid credentials').
+    """
     user = get_user_by_username(username)
     if not user or not bcrypt.check_password_hash(user.password_hash, password):
         logger.warning(f"login_user: invalid credentials for username '{username}'")
@@ -37,6 +54,10 @@ def login_user(username: str, password: str) -> tuple[dict | None, str | None]:
 
 
 def delete_account(user_id: int) -> bool:
+    """
+    Permanently deletes a user by ID.
+    Returns True if successful, or False if user wasn't found.
+    """
     result = delete_user_by_id(user_id)
     if result:
         logger.info(f'delete_account: user id={user_id} deleted successfully')
@@ -46,7 +67,10 @@ def delete_account(user_id: int) -> bool:
 
 
 def refresh_tokens_for_user(identity: str) -> tuple[dict | None, str | None]:
-    """Given a valid refresh identity (str user_id), issue new tokens."""
+    """
+    Issues a new pair of tokens (access + refresh) using a valid refresh token.
+    Expects identity to be the user_id as a string.
+    """
     user = get_user_by_id(int(identity))
     if not user:
         logger.warning(f'refresh_tokens_for_user: no user found with id={identity}')
@@ -60,9 +84,9 @@ def refresh_tokens_for_user(identity: str) -> tuple[dict | None, str | None]:
 
 def check_token_expired(access_token: str) -> tuple[bool, str | None]:
     """
-    Decode the token; return (expired_flag, reason).
-    - expired_flag=True  => token is invalid/expired
-    - expired_flag=False => token is valid
+    Decodes a JWT access token to check if it's expired or invalid.
+    Returns (True, reason) if invalid/expired,
+    or (False, None) if the token is still valid.
     """
     if not access_token:
         logger.warning('check_token_expired: no access token provided')
@@ -71,6 +95,7 @@ def check_token_expired(access_token: str) -> tuple[bool, str | None]:
     try:
         payload = decode_token(access_token)
         user_id = payload.get('sub')
+
         if not get_user_by_id(int(user_id)):
             logger.warning(f'check_token_expired: token for non-existent user id={user_id}')
             return True, 'User no longer exists'
