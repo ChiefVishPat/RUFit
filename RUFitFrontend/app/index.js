@@ -1,61 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
-import { validate } from "../components/authentication/user_auth/UserTokenValidation"
 import AppNavigator from '../AppNavigator';
-//import LoginScreen from './preauth/LoginScreen';
 import { handleAuthAccess } from '../components/authentication/user_auth/UserTokenValidation';
 import { AppRegistry } from 'react-native';
 import App from '../App'; // Import the App component
 import { name as appName } from '../app.json';
 
-// Register App.js, which contains AppNavigator, which registers all screens to navigation
+// Register the App component with the AppRegistry
 AppRegistry.registerComponent(appName, () => App);
 
 const Stack = createStackNavigator();
 
-
+/**
+ * AppWrapper is responsible for checking user authentication status
+ * and rendering AppNavigator with appropriate authentication state.
+ */
 const AppWrapper = () => {
-  
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // initially set to false, before auth check
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // initially false before token validation
 
+  // Axios instance (unused here, but retained if needed elsewhere)
   const apiClient = axios.create({
     baseURL: "http://127.0.0.1:5000",
     headers: { 'Content-Type': 'application/json' }
-  })
+  });
 
-
-  // validates existing tokens. If they do not exist or refresh has expired, user is no longer authenticated
+  // Validate tokens on component mount
   useEffect(() => {
     const checkToken = async () => {
       try {
-        //await AsyncStorage.removeItem('access_token');
-        //await AsyncStorage.removeItem('refresh_token');
         const accessToken = await AsyncStorage.getItem('access_token');
         const refreshToken = await AsyncStorage.getItem('refresh_token');
-        console.log(accessToken);
-        console.log(refreshToken);
-        if (await handleAuthAccess(accessToken, refreshToken)){
-          console.log("index.js is setting auth to true");
-          setIsAuthenticated(true); // Set the token if it exists
-        }
-        else{
+        (accessToken);
+        (refreshToken);
+
+        if (await handleAuthAccess(accessToken, refreshToken)) {
+          ("index.js is setting auth to true");
+          setIsAuthenticated(true);
+        } else {
           setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Failed to fetch token:', error);
       } finally {
-        setIsLoading(false); // Stop loading once the check is complete
+        setIsLoading(false);
       }
-      console.log(`index.js: ${isAuthenticated}`);
+
+      (`index.js: ${isAuthenticated}`);
     };
+
     checkToken();
   }, []);
 
-  // Show a loading indicator while checking the token
+  // Show loading spinner while validating token
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -64,7 +64,7 @@ const AppWrapper = () => {
     );
   }
 
-  // Render the appropriate screen based on the token
+  // Render AppNavigator with auth state
   return (
     <AppNavigator isAuthenticated={isAuthenticated} />
   );

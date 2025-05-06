@@ -78,7 +78,7 @@ function MainStackScreen({ route }) {
         </MainStack.Navigator>
     );
 
-    console.log(`main stack: ${isAuthenticated}`);
+    (`main stack: ${isAuthenticated}`);
     return isAuthenticated ? <UserProvider>{screens}</UserProvider> : screens;
 }
 

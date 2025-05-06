@@ -1,28 +1,31 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import ScreenHeader from "../ScreenHeader";
 
-
 import ClientProfileScreen from "./ClientProfileScreen";
 import MyBodyDataScreen from "./MyBodyData";
 import AccountSettingsScreen from "./AccountSettings";
 import ProfileSettingsScreen from "./ProfileSettings";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native"; // useNavigation removed (unused)
 
+// Stack navigator for profile-related screens
 export default function ProfileNavigator() {
     const Stack = createStackNavigator();
     const route = useRoute();
 
     const userData = route.params?.userData;
-    console.log(userData);
+    (userData);
 
     return (
-        <Stack.Navigator initialRouteName="ClientProfileScreen"
-            screenOptions={({ route }) => ({
+        <Stack.Navigator
+            initialRouteName="ClientProfileScreen"
+            screenOptions={{
                 gestureEnabled: false,
-            })}>
+            }}
+        >
+            {/* Main profile screen */}
             <Stack.Screen
                 name="ClientProfileScreen"
-                initialParams={{ userData: userData }}
+                initialParams={{ userData }}
                 component={ClientProfileScreen}
                 options={{
                     title: 'Profile',
@@ -30,6 +33,7 @@ export default function ProfileNavigator() {
                     gestureEnabled: false,
                 }}
             />
+            {/* Subscreens */}
             <Stack.Screen
                 name="MyBodyData"
                 component={MyBodyDataScreen}

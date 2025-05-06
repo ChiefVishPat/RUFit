@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -10,94 +10,83 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute, CommonActions } from '@react-navigation/native';
-import { useRef } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
 
 export default function SaveWorkoutScreen() {
     const navigation = useNavigation();
     const route = useRoute();
-    // When editing, an existing session is passed as "session"
+
+    // Params: existing workout session and flags
     const existingSession = route.params?.session;
     const newWorkout = route.params?.newWorkout || false;
-
-    // Detects whether screen is being presented as a modal (for navigation logic)
     const isModal = route.params?.isModal || false;
-
-    // If param "autoFocusName" is passed as true, user is prompted to edit workout name first
-    const nameInputRef = useRef(null);
     const autoFocusName = route.params?.autoFocusName ?? false;
 
-    useEffect(() => {
-        if (autoFocusName && nameInputRef.current) {
-            const timeout = setTimeout(() => {
-                nameInputRef.current.focus();
+    const nameInputRef = useRef(null);
 
-                // Optional: Move cursor to end if editing existing name
-                if (workoutName) {
-                    nameInputRef.current.setNativeProps({
-                        selection: {
-                            start: workoutName.length,
-                            end: workoutName.length,
-                        },
-                    });
-                }
-            }, 300); // small delay to wait for UI to render
-
-            return () => clearTimeout(timeout);
-        }
-    }, [autoFocusName]);
-
+    // UI state
     const [workoutName, setWorkoutName] = useState('');
     const [exercises, setExercises] = useState([
         { name: '', sets: '', reps: '', weight: '' },
     ]);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Focus the name input on mount if autoFocus is enabled
+    useEffect(() => {
+        if (autoFocusName && nameInputRef.current) {
+            const timeout = setTimeout(() => {
+                nameInputRef.current.focus();
+                if (workoutName) {
+                    nameInputRef.current.setNativeProps({
+                        selection: { start: workoutName.length, end: workoutName.length },
+                    });
+                }
+            }, 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [autoFocusName]);
+
+    // Load workout data if editing
     useEffect(() => {
         if (existingSession) {
             setWorkoutName(existingSession.workout_name);
-            // Convert backend "exercise" key to "name" for the form
             const loadedExercises = existingSession.exercises.map((ex) => ({
                 name: ex?.exercise ?? '',
                 sets: ex?.sets != null ? String(ex.sets) : '',
                 reps: ex?.reps != null ? String(ex.reps) : '',
                 weight: ex?.weight != null ? String(ex.weight) : '',
             }));
-
             setExercises(loadedExercises);
         }
     }, [existingSession]);
 
+    // Add new empty exercise input
     const handleAddExercise = () => {
-        setExercises([
-            ...exercises,
-            { name: '', sets: '', reps: '', weight: '' },
-        ]);
+        setExercises([...exercises, { name: '', sets: '', reps: '', weight: '' }]);
     };
 
+    // Handle changes to an individual exercise field
     const handleExerciseChange = (index, field, value) => {
-        const updatedExercises = [...exercises];
-        updatedExercises[index][field] = value;
-        setExercises(updatedExercises);
+        const updated = [...exercises];
+        updated[index][field] = value;
+        setExercises(updated);
     };
 
+    // Remove an exercise entry
     const handleRemoveExercise = (index) => {
-        const updatedExercises = exercises.filter((_, i) => i !== index);
-        setExercises(updatedExercises);
+        setExercises(exercises.filter((_, i) => i !== index));
     };
 
+    // Save the workout to backend
     const handleSaveWorkout = async () => {
         if (!workoutName.trim()) {
-            Alert.alert(
-                'Validation Error',
-                'Workout session name is required.'
-            );
+            Alert.alert('Validation Error', 'Workout session name is required.');
             return;
         }
 
-        // Updated validation: allow weight of 0 by checking if weight is not an empty string
-        const validExercises = (exercises || []).filter(
+        // Filter out invalid exercises (name, sets, reps, and weight required)
+        const validExercises = exercises.filter(
             (ex) =>
                 ex.name.trim() &&
                 ex.sets &&
@@ -108,10 +97,7 @@ export default function SaveWorkoutScreen() {
         );
 
         if (validExercises.length === 0) {
-            Alert.alert(
-                'Validation Error',
-                'At least one valid exercise is required.'
-            );
+            Alert.alert('Validation Error', 'At least one valid exercise is required.');
             return;
         }
 
@@ -121,25 +107,25 @@ export default function SaveWorkoutScreen() {
                 workout_name: workoutName,
                 exercises: validExercises,
             };
+
             let response;
             if (existingSession && !newWorkout) {
-                // Update the existing session using PUT with the session_id
+                // Update session
                 response = await APIClient.put(`/workout/${existingSession.session_id}`, payload, { sendAccess: true });
             } else {
-                // Create a new workout session
-                console.log("session id does not exist");
+                // Create new session
+                ("session id does not exist");
                 response = await APIClient.post('/workout', payload, { sendAccess: true });
             }
-            console.log(response.data);
+
+            (response.data);
             Alert.alert('Success', 'Workout session saved successfully!');
 
+            // Close modal or go back
             if (isModal) {
-                navigation.pop(2); // closes SaveWorkoutModal
-                return;
-            }
-            else {
+                navigation.pop(2);
+            } else {
                 navigation.goBack();
-                return;
             }
 
         } catch (error) {
@@ -152,10 +138,6 @@ export default function SaveWorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            {/* <TopHeader
-                title={existingSession ? 'Edit Workout' : 'Save Workout'}
-                showBackButton={true}
-            /> */}
             <ScrollView contentContainerStyle={styles.formContainer}>
                 <Text style={styles.label}>Workout Session Name</Text>
                 <TextInput
@@ -166,8 +148,11 @@ export default function SaveWorkoutScreen() {
                     value={workoutName}
                     onChangeText={setWorkoutName}
                 />
+
                 <View style={styles.divider} />
                 <Text style={styles.sectionTitle}>Exercises</Text>
+
+                {/* Exercise Input Fields */}
                 {exercises.map((exercise, index) => (
                     <View key={index} style={styles.exerciseContainer}>
                         <View style={styles.exerciseRow}>
@@ -180,13 +165,8 @@ export default function SaveWorkoutScreen() {
                                     handleExerciseChange(index, 'name', value)
                                 }
                             />
-                            <TouchableOpacity
-                                onPress={() => handleRemoveExercise(index)}>
-                                <Ionicons
-                                    name="trash"
-                                    size={24}
-                                    color="#FF5E5E"
-                                />
+                            <TouchableOpacity onPress={() => handleRemoveExercise(index)}>
+                                <Ionicons name="trash" size={24} color="#FF5E5E" />
                             </TouchableOpacity>
                         </View>
                         <TextInput
@@ -221,36 +201,42 @@ export default function SaveWorkoutScreen() {
                         />
                     </View>
                 ))}
+
+                {/* Add Exercise Button */}
                 <TouchableOpacity
                     style={styles.addExerciseButton}
-                    onPress={handleAddExercise}>
+                    onPress={handleAddExercise}
+                >
                     <Ionicons name="add-circle" size={24} color="white" />
-                    <Text style={styles.addExerciseButtonText}>
-                        Add Exercise
-                    </Text>
+                    <Text style={styles.addExerciseButtonText}>Add Exercise</Text>
                 </TouchableOpacity>
+
+                {/* Save / Loading */}
                 {isLoading ? (
                     <ActivityIndicator size="large" color="#2DC5F4" />
                 ) : (
                     <TouchableOpacity
                         style={styles.saveWorkoutButton}
-                        onPress={handleSaveWorkout}>
+                        onPress={handleSaveWorkout}
+                    >
                         <Text style={styles.saveWorkoutButtonText}>
-                            {existingSession
-                                ? 'Save Workout'
-                                : 'Add New Workout'}
+                            {existingSession ? 'Save Workout' : 'Add New Workout'}
                         </Text>
                     </TouchableOpacity>
                 )}
+
+                {/* Cancel Button */}
                 <TouchableOpacity
                     style={styles.cancelButton}
-                    onPress={() => navigation.goBack()}>
+                    onPress={() => navigation.goBack()}
+                >
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {

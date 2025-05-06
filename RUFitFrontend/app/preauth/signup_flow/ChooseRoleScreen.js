@@ -1,26 +1,26 @@
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
-import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
-import DropDownPicker from "react-native-dropdown-picker";
-import HorizontalToggleChoice from "../../../components/ui/HorizontalToggleChoice";
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { ScaledSheet } from 'react-native-size-matters';
 import { useState, useEffect } from "react";
-import { global_styles, GradientScreen } from "../../GlobalStyles";
+import { GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
 import VerticalToggleChoice from "../../../components/ui/buttons/VerticalToggleChoice";
-
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-
+/**
+ * ChooseRoleScreen allows the user to select between "Coach" and "Client" roles.
+ * Role is passed forward in navigation params for conditional signup flow.
+ */
 const ChooseRoleScreen = ({ navigation, route }) => {
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
-    
+
     const [chosenRole, setChosenRole] = useState("Client");
 
     const handleRoleChange = (role) => {
@@ -28,8 +28,8 @@ const ChooseRoleScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        console.log("Chosen role: %s", chosenRole);
-      }, [chosenRole]); // Dependency array - effect runs when these values change
+        ("Chosen role: %s", chosenRole);
+    }, [chosenRole]);
 
     if (!fontsLoaded) {
         return (
@@ -57,30 +57,32 @@ const ChooseRoleScreen = ({ navigation, route }) => {
                         <VerticalToggleChoice
                             onValueChange={handleRoleChange}
                             labels={['Coach', 'Client']}
-                            selectedIndex={1} // Option 2 will be selected initially
+                            selectedIndex={1}
                         />
                     </View>
-                    
                 </View>
             </KeyboardAvoidingView>
-            <View style={styles.navigationBtnContainer}>
 
+            <View style={styles.navigationBtnContainer}>
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={true} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
+                    <BasicPressable
+                        disabled={true}
+                        btnText="Back"
+                        onPress={() => navigation.goBack()}
+                    />
                 </View>
 
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Next" onPress={() => {
-                        // at some point, we will change this so that choosing "Coach" will direct you to another signup flow
-                        // right now, all signups go to Client flow
-                        navigation.navigate('BodyData', {
-                            ...route.params,
-                            userRole: chosenRole
-                        })
-                    }}>
-                    </ScarletPressable>
+                    <ScarletPressable
+                        btnText="Next"
+                        onPress={() => {
+                            navigation.navigate('BodyData', {
+                                ...route.params,
+                                userRole: chosenRole
+                            });
+                        }}
+                    />
                 </View>
-
             </View>
         </GradientScreen>
     );
@@ -94,88 +96,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     container: {
-        //flex: 1,
-        //flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 50,
         backgroundColor: 'transparent',
-        //borderColor: 'pink',
-        //borderWidth: 2,
     },
     screenTitleContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         padding: 10,
         marginBottom: 20,
-        //borderColor: 'blue',
-        //borderWidth: 2,
     },
     subTextContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
-        //borderColor: 'blue',
-        //borderWidth: 2,
     },
     toggleContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
         marginTop: 80,
-        //borderColor: 'blue',
-        //borderWidth: 2,
-    },
-    forms: {
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignSelf: 'center',
-        width: Dimensions.get('screen').width * 0.9,
-        margin: 30,
-        marginTop: 20,
-        //borderColor: 'blue',
-        //borderWidth: 2,
-    },
-    dropdown: {
-        width: Dimensions.get('screen').width * 0.45,
-        height: 130,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        borderRadius: 8,
-    },
-    dropdownText: {
-        fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
-    },
-    placeholderText: {
-        fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: 'gray', // Text color
-    },
-    inputFieldContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 'fit-content',
-        width: 'fit-content',
-        marginBottom: 15,
-        alignSelf: "flex-start",
-        padding: 10,
-    },
-    textInputField: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        width: Dimensions.get('screen').width * 0.45,
-        height: 55,
-        padding: 12,
-        fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
-        marginRight: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        elevation: 3,
     },
     navigationBtnContainer: {
         flexDirection: 'row',
@@ -201,14 +142,12 @@ const styles = StyleSheet.create({
 
 const fontStyles = ScaledSheet.create({
     screenTitleText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.32 }],
         fontSize: '35@s',
         fontFamily: 'Kanit_400Regular',
         color: 'white',
         alignSelf: 'flex-start',
     },
     subText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.3 }],
         alignSelf: 'flex-start',
         marginTop: 20,
         fontSize: '25@ms',

@@ -46,7 +46,7 @@ export default function ExercisesListScreen() {
                 setExercises(response.data);
             } catch (error) {
                 if (error.response && error.response.status === 401) {
-                    console.log('Error fetching exercises');
+                    ('Error fetching exercises');
                     setExercises([]);
                 } else {
                     console.error(error);
@@ -67,7 +67,7 @@ export default function ExercisesListScreen() {
                 setMuscleGroups(response.data);
             } catch (error) {
                 if (error.response && error.response.status === 401) {
-                    console.log('Error fetching muscle groups');
+                    ('Error fetching muscle groups');
                     setExercises([]);
                 } else {
                     console.error(error);

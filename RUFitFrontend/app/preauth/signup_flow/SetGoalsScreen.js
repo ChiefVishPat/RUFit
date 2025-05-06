@@ -1,97 +1,84 @@
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform } from "react-native"
-import { ScaledSheet, } from 'react-native-size-matters';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
+import { ScaledSheet } from 'react-native-size-matters';
 import { useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { global_styles, GradientScreen } from "../../GlobalStyles";
+import { GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
 import VerticalToggleChoice from "../../../components/ui/buttons/VerticalToggleChoice";
 import { setGoalsPrompts, getValueByLabel } from "../../../components/ui/text_prompts/text_prompts";
-import ModalAlert from '../../../components/ui/alerts/ModalAlert'
+import ModalAlert from '../../../components/ui/alerts/ModalAlert';
 import * as status_constants from '../../../constants/StatusConstants';
 
 import {
     useFonts,
-    BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { user_login, set_user_pref } from "../../../components/authentication/user_auth/UserAuthActions";
 import { useUser } from "../../../components/user_data/UserContext";
 
+// SetGoalsScreen allows user to choose a dietary goal and finalizes onboarding
 const SetGoalsScreen = ({ navigation, route }) => {
-
     const { refreshUser } = useUser();
+
+    // Load fonts
     const [fontsLoaded] = useFonts({
-        BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [registrationError, setRegistrationError] = useState(false);
-
     const { username, password, ...filteredUserData } = route.params;
-
     const [chosenGoal, setChosenGoal] = useState('DEFICIT');
 
+    // Updates selected goal
     const handleGoalChange = (goal) => {
         setChosenGoal(goal.toUpperCase());
     };
 
+    // Handles final submit: login -> set prefs -> refresh -> navigate
     const handlePress = async () => {
         const user_data = {
             ...filteredUserData,
             goal: chosenGoal
         };
-        console.log(`user_data in set goals screen: ${user_data}`);
-        console.log("🧠 user_data:", JSON.stringify(user_data, null, 2));
+        (`user_data in set goals screen: ${user_data}`);
+        ("🧠 user_data:", JSON.stringify(user_data, null, 2));
 
         try {
             const loginResult = await user_login({ username, password });
 
             if (loginResult === status_constants.API_REQUEST_SUCCESS) {
-                console.log("✅ User login successful");
+                ("✅ User login successful");
 
-                // Now safely set user preferences
                 const prefResult = await set_user_pref({ user_data });
                 if (prefResult === status_constants.API_REQUEST_SUCCESS) {
-                    console.log("✅ User preferences saved to DB");
+                    ("✅ User preferences saved to DB");
 
-                    // All done — navigate now
                     await refreshUser();
                     navigation.reset({
                         index: 0,
                         routes: [{ name: "ClientIndex" }]
                     });
-                }
-                else {
+                } else {
                     console.error("❌ Failed to save user preferences:", prefResult);
                     return;
                 }
-            }
-            else {
+            } else {
                 console.error("❌ Login failed:", loginResult);
-                return; // Exit early — don’t proceed to set prefs or navigate
+                return;
             }
-        }
-        catch (error) {
+        } catch (error) {
             setIsAlertVisible(true);
 
             const errorMessage =
-                error?.response?.data?.message || // backend custom error
-                error?.message ||                 // JS error message
+                error?.response?.data?.message ||
+                error?.message ||
                 "Something went wrong. Please try again.";
 
             setRegistrationError(errorMessage);
-            console.log("SetGoals Error:", error);
+            ("SetGoals Error:", error);
         }
-
-
-
-        // ^ needs to be sent to a frontend func that handles userpref set
-
-        // before navigating, log in User. user login should handle access and refresh token setting
-        //navigation.navigate('AuthenticatedClientHomeScreen',);
-    }
+    };
 
     if (!fontsLoaded) {
         return (
@@ -101,10 +88,8 @@ const SetGoalsScreen = ({ navigation, route }) => {
         );
     }
 
-
     return (
         <GradientScreen>
-
             <ModalAlert
                 isVisible={isAlertVisible}
                 title="Issue registering"
@@ -130,25 +115,19 @@ const SetGoalsScreen = ({ navigation, route }) => {
                             selectedIndex={1}>
                         </VerticalToggleChoice>
                     </View>
-
                     <View style={styles.subTextContainer}>
                         <Text style={fontStyles.subText}>({getValueByLabel(setGoalsPrompts, chosenGoal)})</Text>
                     </View>
-
                 </View>
             </KeyboardAvoidingView>
 
             <View style={styles.navigationBtnContainer}>
-
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
+                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }} />
                 </View>
-
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Finish" onPress={handlePress}>
-                    </ScarletPressable>
+                    <ScarletPressable btnText="Finish" onPress={handlePress} />
                 </View>
-
             </View>
         </GradientScreen>
     );
@@ -162,14 +141,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     container: {
-        //flex: 1,
-        //flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        //margin: 40,
         backgroundColor: 'transparent',
-        //borderColor: 'pink',
-        //borderWidth: 2,
     },
     screenTitleContainer: {
         width: Dimensions.get('screen').width * 0.9,
@@ -177,14 +151,12 @@ const styles = StyleSheet.create({
         padding: 10,
         marginTop: 100,
         borderColor: 'blue',
-        //borderWidth: 2,
     },
     subTextContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
         borderColor: 'blue',
-        //borderWidth: 2,
     },
     forms: {
         flexDirection: 'column',
@@ -194,7 +166,6 @@ const styles = StyleSheet.create({
         margin: -20,
         marginTop: 10,
         borderColor: 'blue',
-        //borderWidth: 2,
     },
     navigationBtnContainer: {
         flexDirection: 'row',
@@ -220,14 +191,12 @@ const styles = StyleSheet.create({
 
 const fontStyles = ScaledSheet.create({
     screenTitleText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.32 }],
         fontSize: '35@s',
         fontFamily: 'Kanit_400Regular',
         color: 'white',
         alignSelf: 'flex-start',
     },
     subText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.3 }],
         alignSelf: 'flex-start',
         marginTop: 20,
         fontSize: '25@ms',

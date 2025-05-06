@@ -28,10 +28,10 @@ APIClient.interceptors.request.use(
 
             if (sendAccess) {
                 const auth_response = await checkAuthentication();
-                console.log(`api client: ${auth_response}`);
+                (`api client: ${auth_response}`);
                 if (auth_response === AUTHENTICATED) {
 
-                    console.log("access is being sent");
+                    ("access is being sent");
                     const accessToken = await AsyncStorage.getItem('access_token');
 
                     if (accessToken) {
@@ -61,7 +61,7 @@ APIClient.interceptors.request.use(
                 }
             }
 
-            console.log('Sending request:', config.url, config.data);
+            ('Sending request:', config.url, config.data);
             return config;
         } catch (error) {
             console.error('Token retrieval failed:', error);

@@ -1,42 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
+// Screen that allows the user to scan a barcode to auto-fill macro info
 export default function ScanMacroScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation();
 
-  //ensures that the user has given permission to access camera
+  // Request camera permission if not already granted
   useEffect(() => {
     if (!permission?.granted) {
       requestPermission();
     }
   }, [permission]);
 
-
-  //ensures that camera is mounted
+  // Reset scanned state when screen is focused
   useFocusEffect(
     React.useCallback(() => {
       setScanned(false);
-      console.log("ScanMacroScreen mounted — scanner active");
+      ("ScanMacroScreen mounted — scanner active");
     }, [])
   );
-
 
   // Handle permission/loading UI
   if (!permission) return <Text>Requesting camera permissions...</Text>;
   if (!permission.granted) return <Text>No access to camera. Please enable it in settings.</Text>;
 
   return (
-    //displays camera
     <View style={styles.container}>
+      {/* Barcode scanner camera view */}
       <CameraView
-      //should navigate to the tracker log page with the data in the barcode section
-        onBarcodeScanned={({data}) => {navigation.navigate('Save Macro', { barcode: data }); }} 
+        onBarcodeScanned={({ data }) => {
+          if (!scanned) {
+            setScanned(true);
+            navigation.navigate('Save Macro', { barcode: data });
+          }
+        }}
+        style={styles.camera}
       />
-   
     </View>
   );
 }

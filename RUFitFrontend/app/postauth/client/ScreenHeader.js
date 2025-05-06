@@ -1,13 +1,14 @@
-
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { background_color } from "../../GlobalStyles";
-import { LinearGradient } from 'expo-linear-gradient'; // or 'react-native-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient';
 
-
+/**
+ * ScreenHeader component with a gradient background, centered title, and optional back button.
+ */
 export default function ScreenHeader({ title, backButton }) {
     const navigation = useNavigation();
+
     return (
         <LinearGradient
             colors={['#CC0033', 'darkred']}

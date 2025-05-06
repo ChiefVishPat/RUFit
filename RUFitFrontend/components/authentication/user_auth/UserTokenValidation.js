@@ -25,7 +25,7 @@ const checkAuthentication = async () => {
           - If refreshToken is also exp (or some error occurs), isValid becomes false
       */
       const isValid = await handleAuthAccess(accessToken, refreshToken);
-      console.log(`checkAuthentication: ${isValid}`);
+      (`checkAuthentication: ${isValid}`);
       if (!isValid) {
           return NOT_AUTHENTICATED;
       }
@@ -43,8 +43,8 @@ const checkAuthentication = async () => {
     by fetching new access / refresh tokens
 */
 export const handleAuthAccess = async (accessToken, refreshToken ) => {
-  //console.log(`UserTokenValidation: ${accessToken}`);
-  //console.log(`UserTokenValidation: ${refreshToken}`);
+  //(`UserTokenValidation: ${accessToken}`);
+  //(`UserTokenValidation: ${refreshToken}`);
   if (!accessToken || !refreshToken) {
     console.warn('Tokens missing - forcing logout');
     //await clearTokens();
@@ -74,7 +74,7 @@ export const handleAuthAccess = async (accessToken, refreshToken ) => {
     Fetches new tokens
 */
 const refreshTokens = async () => {
-  console.log("REFRESHING TOKENS");
+  ("REFRESHING TOKENS");
   try {
     const response = await APIClient.post('/auth/refresh', {}, {sendRefresh: true});
 

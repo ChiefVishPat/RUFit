@@ -1,21 +1,22 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import ChoiceAlertModal from "../../../../components/ui/alerts/ChoiceAlertModal";
 import { user_logout } from "../../../../components/authentication/user_auth/UserAuthActions";
 import { API_REQUEST_SUCCESS } from "../../../../constants/StatusConstants";
-import { background_color, GradientScreen } from "../../../GlobalStyles";
+import { background_color } from "../../../GlobalStyles";
 import { useUser } from "../../../../components/user_data/UserContext";
 
+// Screen for showing client profile options and handling logout
 export default function ClientProfileScreen() {
     const route = useRoute();
     const userData = useUser().userData;
-    // console.log(userData);
     const navigation = useNavigation();
 
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
+    // Triggers logout confirmation modal
     const handleLogOut = async () => {
         try {
             setShowLogoutAlert(true);
@@ -24,7 +25,8 @@ export default function ClientProfileScreen() {
         }
     };
 
-    const handleLogoutConfirmation = async(confirmed) => {
+    // Handles actual logout and redirect
+    const handleLogoutConfirmation = async (confirmed) => {
         setShowLogoutAlert(false);
         if (confirmed) {
             const logoutResponse = await user_logout();
@@ -39,7 +41,7 @@ export default function ClientProfileScreen() {
 
     return (
         <View style={styles.container}>
-
+            {/* Logout confirmation modal */}
             {showLogoutAlert && (
                 <ChoiceAlertModal
                     isVisible={true}
@@ -50,42 +52,51 @@ export default function ClientProfileScreen() {
                 />
             )}
 
+            {/* Welcome banner */}
             <LinearGradient
-                colors={['#CC0033', 'darkred']} // Adjust colors as needed
+                colors={['#CC0033', 'darkred']}
                 style={styles.welcomeBanner}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
                 <Text style={styles.greeting}>Welcome back,</Text>
                 <Text style={styles.username}>{userData.username}</Text>
-
             </LinearGradient>
 
+            {/* Navigation options */}
             <View style={styles.optionsGrid}>
-
-                <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('MyBodyData', { navigation })}>
+                <TouchableOpacity
+                    style={styles.optionCard}
+                    onPress={() => navigation.navigate('MyBodyData', { navigation })}
+                >
                     <Text style={styles.cardText}>My Body Data</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('ProfileSettings', { navigation })}>
+                <TouchableOpacity
+                    style={styles.optionCard}
+                    onPress={() => navigation.navigate('ProfileSettings', { navigation })}
+                >
                     <Text style={styles.cardText}>Profile Settings</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.optionCard}
-                    onPress={() => navigation.navigate('AccountSettings', { navigation })}>
+                <TouchableOpacity
+                    style={styles.optionCard}
+                    onPress={() => navigation.navigate('AccountSettings', { navigation })}
+                >
                     <Text style={styles.cardText}>Account Settings</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={[styles.optionCard, styles.logoutCard]}
-                onPress={handleLogOut}>
+
+            {/* Logout button */}
+            <TouchableOpacity
+                style={[styles.optionCard, styles.logoutCard]}
+                onPress={handleLogOut}
+            >
                 <Text style={[styles.cardText, styles.logoutText]}>Log Out</Text>
             </TouchableOpacity>
         </View>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -96,15 +107,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         paddingHorizontal: 20,
         width: '100%',
-        justifyContent: 'space-between'
-        // borderColor: 'white',
-        // borderWidth: 2,
-    },
-    topSection: {
-        width: '100%',
-        flexDirection: 'row',
-        borderColor: 'white',
-        borderWidth: 2,
+        justifyContent: 'space-between',
     },
     welcomeBanner: {
         width: '100%',
@@ -119,8 +122,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5,
-        // borderColor: 'white',
-        // borderWidth: 2,
     },
     greeting: {
         fontSize: 20,

@@ -2,6 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
+/**
+ * Screen component to display the details of a specific workout session.
+ * Expects a `session` object from route params that includes workout name,
+ * date, and a list of exercises.
+ */
 export default function WorkoutDetailScreen() {
     const route = useRoute();
     const session = route.params?.session;
@@ -9,8 +14,7 @@ export default function WorkoutDetailScreen() {
     if (!session) {
         return (
             <View style={styles.container}>
-                {/* <TopHeader title="Workout Details" showBackButton={true} /> */}
-                
+                {/* Show error if no session data is available */}
                 <Text style={styles.error}>No workout details available.</Text>
             </View>
         );
@@ -18,8 +22,6 @@ export default function WorkoutDetailScreen() {
 
     return (
         <View style={styles.container}>
-            {/* <TopHeader title="Workout Details" showBackButton={true} /> */}
-            
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <Text style={styles.workoutName}>{session.workout_name}</Text>
                 <Text style={styles.date}>{session.date}</Text>

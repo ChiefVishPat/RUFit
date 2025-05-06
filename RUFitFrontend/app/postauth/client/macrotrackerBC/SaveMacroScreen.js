@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
-import { useEffect } from 'react';
-
 
 export default function SaveMacroScreen() {
   //usenavigation is used to navigate between screens with 
@@ -43,6 +41,7 @@ export default function SaveMacroScreen() {
     }
   }, [route.params?.barcode]);
 
+  // Handle field value changes
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
 
@@ -104,7 +103,8 @@ export default function SaveMacroScreen() {
       {renderField('Fiber (g)', 'fiber', 'numeric')}
       {renderField('Saturated Fats (g)', 'sat_fat', 'numeric')}
       {renderField('Unsaturated Fats (g)', 'unsat_fat', 'numeric')}
-     
+
+      {/* Scan barcode button */}
       <TouchableOpacity
         style={styles.scanButton}
         onPress={() => navigation.navigate('Scan Macro')}
@@ -113,16 +113,16 @@ export default function SaveMacroScreen() {
         <Text style={styles.scanButtonText}>Scan Barcode</Text>
       </TouchableOpacity>
 
+      {/* Submit or loading indicator */}
       {isLoading ? (
         <ActivityIndicator size="large" color="#2DC5F4" />
       ) : (
-        
         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
           <Text style={styles.saveButtonText}>Save Macro</Text>
         </TouchableOpacity>
       )}
 
-
+      {/* Cancel button */}
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={styles.cancelButtonText}>Cancel</Text>
       </TouchableOpacity>

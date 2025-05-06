@@ -1,8 +1,8 @@
-import { StyleSheet, Text, Dimensions, TouchableOpacity, View, ActivityIndicator, Animated } from "react-native";
-import React, { useEffect, useState } from "react";
+import { StyleSheet, Dimensions, View } from "react-native";
+import React from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 
-// style={global_styles.screenContainer}
+// Global colors for consistent usage across components
 export const background_color = '#1a1717';
 export const scarlet_red = "#CC0033";
 
@@ -11,15 +11,12 @@ export const scarlet_red = "#CC0033";
 -    Global StyleSheet:                                                                    -
 -    Feel free to add any styles that will be used repeatedly throughout the project       -
 --------------------------------------------------------------------------------------------
-*/ 
-
+*/
 export const global_styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         flexDirection: "column",
-        backgroundColor: '#1a1717', // Gray background
-        //backgroundColor: '#282424', // Gray background
-        //backgroundColor: '#84888C', // Gray background
+        backgroundColor: '#1a1717',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -43,7 +40,7 @@ export const global_styles = StyleSheet.create({
         padding: 12,
         fontSize: 16,
         fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
+        color: '#000',
         margin: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -52,15 +49,18 @@ export const global_styles = StyleSheet.create({
     },
 });
 
-export const GradientScreen = ({ children }) => {    
+/**
+ * GradientScreen component wraps children with a linear gradient background.
+ */
+export const GradientScreen = ({ children }) => {
     return (
         <LinearGradient
-                colors={[background_color, 'darkred']} // Adjust colors as needed
-                style={global_styles.screenContainer}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-            >
-                {children}
+            colors={[background_color, 'darkred']}
+            style={global_styles.screenContainer}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+        >
+            {children}
         </LinearGradient>
     );
-}
+};

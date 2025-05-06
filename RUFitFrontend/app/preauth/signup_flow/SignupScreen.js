@@ -6,6 +6,7 @@ import {
     Image,
     ActivityIndicator,
     TextInput,
+    Dimensions,
 } from 'react-native';
 import { global_styles, GradientScreen } from '../../GlobalStyles';
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
@@ -15,55 +16,50 @@ import {
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { useState } from 'react';
-import { Dimensions } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
 import { user_registration } from '../../../components/authentication/user_auth/UserAuthActions';
-import { user_login } from '../../../components/authentication/user_auth/UserAuthActions';
-import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../../components/authentication/AuthenticatedScreens';
-import * as status_constants from '../../../constants/StatusConstants'
-import LoginScreen from '../LoginScreen';
-import { UserProfileSetup } from './UserProfileSetup';
+import * as status_constants from '../../../constants/StatusConstants';
 
 export default function SignupScreen() {
-    // Ensure fonts load before display
+    // Load custom fonts before rendering screen
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
+    // App branding and sizing
     const RutgersLogo = require('../../../assets/images/rufit_logo.png');
     const screenWidth = Dimensions.get('window').width;
     const logoWidth = screenWidth * 0.8;
     const logoHeight = (910 / 2503) * logoWidth;
 
+    // State variables
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    
     const [signUpError, setSignUpError] = useState('');
 
     const navigation = useNavigation();
 
-    const initiateUserRegistration = async() => {
-        if (username && password){
-            const signUpResponse = await user_registration({ username:username, password:password, email:email});
-            if (signUpResponse == status_constants.API_REQUEST_SUCCESS){
+    // Handles user registration and navigates to profile setup
+    const initiateUserRegistration = async () => {
+        if (username && password) {
+            const signUpResponse = await user_registration({ username, password, email });
+            if (signUpResponse === status_constants.API_REQUEST_SUCCESS) {
                 navigation.navigate('UserProfileSetup', {
-                    username: username,
-                    password: password,
-                    email: email
+                    username,
+                    password,
+                    email,
                 });
+            } else {
+                setSignUpError(signUpResponse); // Set backend-provided error
             }
-            else{
-                setSignUpError(signUpResponse); // will be appropriate error message
-            }
-        }
-        else{
+        } else {
             setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
         }
-    }
+    };
 
+    // Show loader until fonts are loaded
     if (!fontsLoaded) {
         return (
             <View style={global_styles.centeredContainer}>
@@ -78,10 +74,7 @@ export default function SignupScreen() {
             <View style={styles.logoContainer}>
                 <Image
                     source={RutgersLogo}
-                    style={[
-                        styles.logo,
-                        { width: logoWidth, height: logoHeight },
-                    ]}
+                    style={[styles.logo, { width: logoWidth, height: logoHeight }]}
                     resizeMode="contain"
                 />
                 <Text style={styles.appName}>RUFit</Text>
@@ -89,54 +82,44 @@ export default function SignupScreen() {
 
             {/* Input Fields */}
             <View style={styles.inputFieldsContainer}>
-                {/* Email Input */}
                 <TextInput
-                        style={styles.inputField}
-                        placeholder="Email"
-                        placeholderTextColor="#aaa"
-                        value={email}
-                        onChangeText={setEmail}
-                        require={false}
-                    />
-                    {/* Username Input */}
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Username"
-                        placeholderTextColor="#aaa"
-                        value={username}
-                        onChangeText={setUsername}
-                    />
-
-                    {/* Password Input */}
-                    <TextInput
-                        style={styles.inputField}
-                        placeholder="Password"
-                        placeholderTextColor="#aaa"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
+                    style={styles.inputField}
+                    placeholder="Email"
+                    placeholderTextColor="#aaa"
+                    value={email}
+                    onChangeText={setEmail}
+                />
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Username"
+                    placeholderTextColor="#aaa"
+                    value={username}
+                    onChangeText={setUsername}
+                />
+                <TextInput
+                    style={styles.inputField}
+                    placeholder="Password"
+                    placeholderTextColor="#aaa"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
             </View>
 
+            {/* Error Message */}
             <View style={styles.errorMessageContainer}>
-                <Text style={styles.errorMessage} >
-                    { signUpError }
-                </Text>
+                <Text style={styles.errorMessage}>{signUpError}</Text>
             </View>
 
             {/* Buttons */}
-
             <View style={styles.buttonsContainer}>
                 <ScarletPressable
                     btnText="Sign Up"
-                    // we need to fix this: once signed up, we should hit the Login endpoint
-                    // and authenticate the user, then routing to home screen
-                    onPress={initiateUserRegistration}>
-                </ScarletPressable>
+                    onPress={initiateUserRegistration}
+                />
                 <TouchableOpacity
                     style={styles.regRedirectButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate(LoginScreen); }}>
+                    onPress={() => navigation.navigate('LoginScreen')}>
                     <Text style={styles.regDirectBtnText}>Already have an account? Login here</Text>
                 </TouchableOpacity>
             </View>
@@ -148,7 +131,7 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#84888C', // Gray background
+        backgroundColor: '#84888C',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -160,11 +143,11 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.7,
         height: 'fit-content',
         paddingLeft: 12,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     errorMessage: {
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
+        fontFamily: 'Kanit_400Regular',
         color: 'white',
     },
     logo: {
@@ -181,19 +164,17 @@ const styles = StyleSheet.create({
     inputFieldsContainer: {
         width: Dimensions.get('window').width * 0.7,
         marginBottom: 10,
-        //borderColor: "white",
-        // borderWidth: 2,
     },
     inputField: {
         backgroundColor: '#fff',
         borderRadius: 8,
         width: Dimensions.get('window').width * 0.7,
         height: 55,
-        alignSelf: "center",
+        alignSelf: 'center',
         padding: 12,
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
+        fontFamily: 'Kanit_400Regular',
+        color: '#000',
         margin: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -205,7 +186,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     signUpButton: {
-        backgroundColor: '#CC0033', // Scarlet red
+        backgroundColor: '#CC0033',
         paddingVertical: 15,
         borderRadius: 8,
         marginBottom: 10,
@@ -216,7 +197,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     regRedirectButton: {
-        backgroundColor: 'white', // Scarlet red
+        backgroundColor: 'white',
         opacity: 0.3,
         paddingVertical: 15,
         borderRadius: 8,

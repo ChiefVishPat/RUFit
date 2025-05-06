@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import Animated, {
@@ -17,12 +17,17 @@ const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
+/**
+ * Animated circular progress component to show weekly streak.
+ * Animates progress from 0 to given `progress` relative to a `goal`.
+ */
 export default function WeeklyStreakProgress({ progress, goal }) {
     const [displayedProgress, setDisplayedProgress] = useState(0);
     const animatedProgress = useSharedValue(0);
 
     const progressPercent = goal > 0 ? Math.min(Math.max(progress, 0), goal) / goal : 0;
 
+    // Animate progress bar when the screen is focused
     useFocusEffect(
         React.useCallback(() => {
             animatedProgress.value = 0;
@@ -33,6 +38,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
         }, [progressPercent])
     );
 
+    // React to animation updates and update displayed text
     useAnimatedReaction(
         () => animatedProgress.value,
         (value) => {
@@ -41,6 +47,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
         [goal]
     );
 
+    // Animated stroke offset for circular progress
     const animatedProps = useAnimatedProps(() => ({
         strokeDashoffset: CIRCUMFERENCE * (1 - animatedProgress.value),
     }));
@@ -55,6 +62,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
                     </LinearGradient>
                 </Defs>
 
+                {/* Base circle */}
                 <Circle
                     stroke="#e0e0e0"
                     fill="none"
@@ -64,6 +72,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
                     strokeWidth={STROKE_WIDTH}
                 />
 
+                {/* Animated progress circle */}
                 {goal > 0 && (
                     <AnimatedCircle
                         stroke="url(#grad)"
@@ -80,6 +89,7 @@ export default function WeeklyStreakProgress({ progress, goal }) {
                 )}
             </Svg>
 
+            {/* Text label in center of circle */}
             <View style={styles.labelContainer}>
                 <Text style={styles.progressText}>{displayedProgress}</Text>
                 <Text style={styles.label}>{displayedProgress === 1 ? 'Day' : 'Days'}</Text>

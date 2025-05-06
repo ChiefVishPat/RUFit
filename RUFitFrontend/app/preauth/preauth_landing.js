@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native'; // Use React Navigation
-import { global_styles, GradientScreen } from '../GlobalStyles';
+import { useNavigation } from '@react-navigation/native'; // For navigating between screens
+import { GradientScreen } from '../GlobalStyles'; // Custom gradient wrapper
 import {
     StyleSheet,
     Text,
@@ -7,28 +7,33 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
+    Dimensions,
 } from 'react-native';
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
-import { Dimensions } from 'react-native';
 
 export default function PreAuthLandingPage() {
-    // Ensure fonts load before display
+    // Load custom fonts
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const navigation = useNavigation(); // React Navigation for navigating screens
+    const navigation = useNavigation(); // Navigation hook
     const RutgersLogo = require('../../assets/images/rufit_logo.png');
+
+    // Get device dimensions
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
+
+    // Maintain logo aspect ratio
     const logoWidth = screenWidth * 0.8;
     const logoHeight = (910 / 2503) * logoWidth;
 
+    // Show loading spinner while fonts load
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -39,7 +44,7 @@ export default function PreAuthLandingPage() {
 
     return (
         <GradientScreen>
-            {/* Logo & App Name */}
+            {/* Logo & App Name Section */}
             <View style={styles.logoContainer}>
                 <Image
                     source={RutgersLogo}
@@ -52,7 +57,7 @@ export default function PreAuthLandingPage() {
                 <Text style={styles.appName}>RUFit</Text>
             </View>
 
-            {/* Buttons (Positioned in Bottom Third) */}
+            {/* Login and Sign Up Buttons */}
             <View
                 style={[
                     styles.buttonContainer,
@@ -70,25 +75,19 @@ export default function PreAuthLandingPage() {
                 </TouchableOpacity>
             </View>
         </GradientScreen>
-
-        /*
-        <View style={global_styles.screenContainer}>
-            
-        </View>
-        */
     );
 }
 
-// Styles
+// Component styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#84888C', // Gray background
+        backgroundColor: '#84888C',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     logoContainer: {
-        flexGrow: 1, // Pushes buttons downward
+        flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -106,11 +105,11 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: '80%',
         alignItems: 'center',
-        justifyContent: 'center', // Keeps buttons vertically centered in the bottom third
-        marginBottom: '5%', // Slight spacing from bottom
+        justifyContent: 'center',
+        marginBottom: '5%',
     },
     button: {
-        backgroundColor: '#CC0033', // Scarlet red
+        backgroundColor: '#CC0033',
         paddingVertical: 15,
         borderRadius: 8,
         marginBottom: 15,

@@ -53,7 +53,7 @@ export default function ProfileSettingsScreen() {
                     streak_goal: Number(editedValues.streak_goal),
                 }
             };
-            console.log('PROFILE UPDATE PAYLOAD:', payload.user_data);
+            ('PROFILE UPDATE PAYLOAD:', payload.user_data);
             await APIClient.post('/userinfo', payload, { sendAccess: true });
 
             const updated = await refreshUser();

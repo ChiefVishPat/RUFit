@@ -4,12 +4,12 @@ import Modal from 'react-native-modal';
 import { BlurView } from '@react-native-community/blur';
 
 const ModalAlert = ({ isVisible, title, message, onClose }) => {
-  console.log("\n");
-  console.log(isVisible);
-  console.log(title);
-  console.log(message);
-  console.log(message);
-  console.log("\n");
+  ("\n");
+  (isVisible);
+  (title);
+  (message);
+  (message);
+  ("\n");
   return (
     <Modal
       isVisible={isVisible}

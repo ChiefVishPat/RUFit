@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import {
   AuthenticatedClientHomeScreen,
@@ -16,9 +15,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const Tab = createBottomTabNavigator();
 
+/**
+ * Root tab navigator for authenticated clients.
+ * Displays tabs for Home, Workouts, Exercises, Macros, and Profile.
+ */
 export default function ClientIndex() {
-  const navigation = useNavigation();
-  const [showAlert, setShowAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     title: '',
     message: '',

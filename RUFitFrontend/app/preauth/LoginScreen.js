@@ -1,69 +1,67 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, TextInput, Dimensions } from "react-native";
 import { useFonts, BigShouldersDisplay_700Bold } from "@expo-google-fonts/big-shoulders-display";
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 import { useState } from 'react';
-import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AuthenticatedClientHomeScreen, AuthenticatedHomeScreen } from '../../components/authentication/AuthenticatedScreens';
+
 import { user_login } from '../../components/authentication/user_auth/UserAuthActions';
 import * as status_constants from '../../constants/StatusConstants';
-import SignupScreen from './signup_flow/SignupScreen';
 import { global_styles, GradientScreen } from '../GlobalStyles';
 import { useUser } from '../../components/user_data/UserContext';
 
 export default function LoginScreen() {
-    
     const { refreshUser } = useUser();
-    // Ensure fonts load before display
+
+    // Load custom fonts
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
         Kanit_400Regular,
     });
 
-    const navigation = useNavigation(); // React Navigation for navigating screens
+    const navigation = useNavigation();
+
+    // Logo sizing
     const RutgersLogo = require("../../assets/images/rufit_logo.png");
     const screenWidth = Dimensions.get("window").width;
-    const logoWidth = screenWidth * 0.8
-    const logoHeight = (910 / 2503) * logoWidth
+    const logoWidth = screenWidth * 0.8;
+    const logoHeight = (910 / 2503) * logoWidth;
 
+    // Form state
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
     const [signUpError, setSignUpError] = useState('');
 
+    // Handle login submission
     const handleLogin = async () => {
         setIsLoading(true);
+
         if (username && password) {
             try {
-                const loginResponse = await user_login({ username, password })
-                if (loginResponse == status_constants.API_REQUEST_SUCCESS) {
+                const loginResponse = await user_login({ username, password });
+
+                if (loginResponse === status_constants.API_REQUEST_SUCCESS) {
                     await refreshUser();
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'ClientIndex' }]
-                      });
-                }
-                else {
-                    if (loginResponse.status === 401){
-                        setSignUpError("Invalid credentials")
+                        routes: [{ name: 'ClientIndex' }],
+                    });
+                } else {
+                    if (loginResponse.status === 401) {
+                        setSignUpError("Invalid credentials");
                     }
-                    // ; // will be appropriate error message
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(error);
-            }
-            finally {
+            } finally {
                 setIsLoading(false);
             }
-        }
-        else {
+        } else {
             setSignUpError(status_constants.EMPTY_FIELDS_ERROR);
         }
-    }
+    };
 
+    // Show loader if fonts are not yet ready
     if (!fontsLoaded) {
         return (
             <View style={styles.centeredContainer}>
@@ -78,10 +76,7 @@ export default function LoginScreen() {
             <View style={styles.logoContainer}>
                 <Image
                     source={RutgersLogo}
-                    style={[
-                        styles.logo,
-                        { width: logoWidth, height: logoHeight },
-                    ]}
+                    style={[styles.logo, { width: logoWidth, height: logoHeight }]}
                     resizeMode="contain"
                 />
                 <Text style={styles.appName}>RUFit</Text>
@@ -89,7 +84,6 @@ export default function LoginScreen() {
 
             {/* Input Fields */}
             <View style={styles.inputFieldsContainer}>
-                {/* Username Input */}
                 <TextInput
                     style={styles.inputField}
                     placeholder="Username"
@@ -107,26 +101,25 @@ export default function LoginScreen() {
                 />
             </View>
 
+            {/* Error Message */}
             <View style={styles.errorMessageContainer}>
-                <Text style={styles.errorMessage} >
-                    {signUpError}
-                </Text>
+                <Text style={styles.errorMessage}>{signUpError}</Text>
             </View>
 
             {/* Buttons */}
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity
                     style={styles.loginButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
                     onPress={handleLogin}
-                    disabled={isLoading}>
+                    disabled={isLoading}
+                >
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.regRedirectButton}
-                    // Temporarily navigates to HomeScreen. Will need to ensure proper authentication
-                    onPress={() => { navigation.navigate("SignupScreen"); }}>
+                    onPress={() => navigation.navigate("SignupScreen")}
+                >
                     <Text style={styles.regDirectBtnText}>Don't have an account? Sign up here</Text>
                 </TouchableOpacity>
             </View>
@@ -135,11 +128,10 @@ export default function LoginScreen() {
 }
 
 // Styles
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#84888C', // Gray background
+        backgroundColor: '#84888C',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -155,7 +147,7 @@ const styles = StyleSheet.create({
     },
     errorMessage: {
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
+        fontFamily: 'Kanit_400Regular',
         color: 'white',
     },
     logo: {
@@ -172,8 +164,6 @@ const styles = StyleSheet.create({
     inputFieldsContainer: {
         width: Dimensions.get('window').width * 0.7,
         marginBottom: 10,
-        //borderColor: "white",
-        //borderWidth: 2,
     },
     inputField: {
         backgroundColor: '#fff',
@@ -183,8 +173,8 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         padding: 12,
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
+        fontFamily: 'Kanit_400Regular',
+        color: '#000',
         margin: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -194,11 +184,9 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         width: Dimensions.get('window').width * 0.7,
         marginTop: 20,
-        //borderColor: "white",
-        //borderWidth: 2,
     },
     loginButton: {
-        backgroundColor: '#CC0033', // Scarlet red
+        backgroundColor: '#CC0033',
         paddingVertical: 15,
         borderRadius: 8,
         marginBottom: 10,
@@ -209,7 +197,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     regRedirectButton: {
-        backgroundColor: 'white', // Scarlet red
+        backgroundColor: 'white',
         opacity: 0.3,
         paddingVertical: 15,
         borderRadius: 8,

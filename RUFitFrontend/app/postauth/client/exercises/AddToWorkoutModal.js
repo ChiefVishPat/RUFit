@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function AddToWorkoutModal({ visible, onClose, exercise }) {
 
-    console.log(visible);
+    (visible);
     const navigation = useNavigation();
-    // console.log(bottomModalVisible);
+    // (bottomModalVisible);
 
     const screenHeight = Dimensions.get('window').height;
     const modalHeight = screenHeight * 0.22; // Change this to customize modal height
