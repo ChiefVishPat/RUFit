@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
-import { useEffect } from 'react';
 
+// Screen for logging a new macro entry or editing an existing one
 export default function SaveMacroScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const existingMacro = route.params?.macro;
 
+  // Form state for macro input fields
   const [form, setForm] = useState({
     food_name: existingMacro?.food_name || '',
     barcode: existingMacro?.barcode || '',
@@ -32,14 +33,17 @@ export default function SaveMacroScreen() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // Update barcode in form when coming back from scan screen
   useEffect(() => {
-  if (route.params?.scannedBarcode) {
-    setForm((prev) => ({ ...prev, barcode: route.params.scannedBarcode }));
-  }
-}, [route.params?.scannedBarcode]); 
+    if (route.params?.scannedBarcode) {
+      setForm((prev) => ({ ...prev, barcode: route.params.scannedBarcode }));
+    }
+  }, [route.params?.scannedBarcode]);
 
+  // Handle field value changes
   const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
+  // Submit macro form to API
   const handleSubmit = async () => {
     if (!form.food_name && !form.barcode) {
       return Alert.alert('Validation Error', 'Food name or barcode is required.');
@@ -55,8 +59,8 @@ export default function SaveMacroScreen() {
         sat_fat: parseFloat(form.sat_fat) || 0,
         unsat_fat: parseFloat(form.unsat_fat) || 0,
       };
-      console.log("Submitting macro payload:", payload);
-      await APIClient.post('/tracker', payload, {sendAccess: true});
+      ("Submitting macro payload:", payload);
+      await APIClient.post('/tracker', payload, { sendAccess: true });
       Alert.alert('Success', 'Macro log saved.');
       navigation.goBack();
     } catch (err) {
@@ -67,6 +71,7 @@ export default function SaveMacroScreen() {
     }
   };
 
+  // Render a single input field
   const renderField = (label, key, keyboardType = 'default') => (
     <View style={styles.inputGroup}>
       <Text style={styles.label}>{label}</Text>
@@ -91,7 +96,8 @@ export default function SaveMacroScreen() {
       {renderField('Fiber (g)', 'fiber', 'numeric')}
       {renderField('Saturated Fats (g)', 'sat_fat', 'numeric')}
       {renderField('Unsaturated Fats (g)', 'unsat_fat', 'numeric')}
-     
+
+      {/* Scan barcode button */}
       <TouchableOpacity
         style={styles.scanButton}
         onPress={() => navigation.navigate('Scan Macro')}
@@ -100,16 +106,16 @@ export default function SaveMacroScreen() {
         <Text style={styles.scanButtonText}>Scan Barcode</Text>
       </TouchableOpacity>
 
+      {/* Submit or loading indicator */}
       {isLoading ? (
         <ActivityIndicator size="large" color="#2DC5F4" />
       ) : (
-        
         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
           <Text style={styles.saveButtonText}>Save Macro</Text>
         </TouchableOpacity>
       )}
 
-
+      {/* Cancel button */}
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
         <Text style={styles.cancelButtonText}>Cancel</Text>
       </TouchableOpacity>
@@ -152,5 +158,3 @@ const styles = StyleSheet.create({
   cancelButton: { marginTop: 10 },
   cancelButtonText: { color: '#FF5E5E', textAlign: 'center', fontWeight: 'bold' },
 });
-
-

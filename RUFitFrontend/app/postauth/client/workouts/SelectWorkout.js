@@ -1,6 +1,5 @@
-
-// used by ExerciseDescriptionScreen.js (more specifically, AddToWorkoutModal.js component)
-// so user can select a workout from all workouts to add exercise to
+// Used by ExerciseDescriptionScreen.js (specifically, AddToWorkoutModal.js)
+// Allows user to select a workout from saved workouts to add an exercise to
 
 import React, { useState, useCallback } from 'react';
 import {
@@ -13,11 +12,8 @@ import {
     SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../../components/TopHeader';
 import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
 export default function SelectWorkout() {
     const navigation = useNavigation();
@@ -25,14 +21,14 @@ export default function SelectWorkout() {
     const [sessions, setSessions] = useState([]);
     const sessionAppend = route.params?.sessionAppend;
 
+    // Fetch saved workouts from the backend
     const fetchWorkouts = async () => {
         try {
-            const response = await APIClient.get('/workout', {sendAccess: true});
-            // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
+            const response = await APIClient.get('/workout', { sendAccess: true });
             setSessions(response.data);
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                console.log('User not authorized, setting sessions to empty');
+                ('User not authorized, setting sessions to empty');
                 setSessions([]);
             } else {
                 console.error(error);
@@ -48,6 +44,7 @@ export default function SelectWorkout() {
         }, [])
     );
 
+    // Render a single workout card
     const renderWorkout = ({ item }) => (
         <TouchableOpacity
             style={styles.workoutCard}
@@ -57,48 +54,22 @@ export default function SelectWorkout() {
                         ...item,
                         exercises: [...item.exercises, ...sessionAppend.exercises],
                     },
-                    isModal: true
+                    isModal: true,
                 });
             }}
-
-
         >
             <View>
                 <Text style={styles.workoutName}>{item.workout_name}</Text>
                 <Text style={styles.workoutDetails}>
-                    {item.exercises ? item.exercises.length : 0} exercises •{' '}
-                    {item.date}
+                    {item.exercises ? item.exercises.length : 0} exercises • {item.date}
                 </Text>
             </View>
-            {/*
-            <View style={styles.cardActions}>
-                <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate('SaveWorkout', {
-
-                        })
-                    }>
-                    <Ionicons name="create" size={24} color="#2DC5F4" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDelete(item.session_id)}>
-                    <Ionicons
-                        name="trash"
-                        size={24}
-                        color="#FF5E5E"
-                        style={{ marginLeft: 10 }}
-                    />
-                </TouchableOpacity>
-            </View>
-            */}
-
         </TouchableOpacity>
     );
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                {/* <TopHeader title="Saved Workouts" showBackButton={true} /> */}
-
                 <FlatList
                     data={sessions}
                     keyExtractor={(item, index) =>
@@ -115,7 +86,8 @@ export default function SelectWorkout() {
             </View>
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName: true })}>
+                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName: true })}
+            >
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add New Workout</Text>
             </TouchableOpacity>
@@ -134,7 +106,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         padding: 20,
-        paddingBottom: 100, // Extra space for the add button
+        paddingBottom: 100,
     },
     workoutCard: {
         backgroundColor: '#333',
@@ -169,11 +141,11 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 8,
 
-        shadowColor: 'black', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 1, // IOS
-        shadowRadius: 3, //IOS
-        elevation: 2, // Android
+        shadowColor: 'black',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 2,
     },
     addButtonText: {
         color: 'white',

@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { APIClient } from '../../api/APIClient';
 import * as status_constants from '../../../constants/StatusConstants';
-import { useNavigation } from '@react-navigation/native';
 async function setAccessToken(a){ AsyncStorage.setItem('access_token', a); }
 async function setRefreshToken(r){ AsyncStorage.setItem('refresh_token', r); }
 
-// registers user with [ email, username, password ] 
+// This file provides functions for user authentication, communicating with backend
 
 const user_registration = async ({ username, password, email }) => {
     // Required fields
@@ -22,21 +21,21 @@ const user_registration = async ({ username, password, email }) => {
         });
         return status_constants.API_REQUEST_SUCCESS;
     } catch (error) {
-        console.log(error.response.data.message);
+        (error.response.data.message);
         return error.response.data.message;
     }
 };
 
 // sets user profile preferences
 const set_user_pref = async ({user_data}) => {
-    // console.log(user_data);
+    // (user_data);
     try{
-        console.log("setting user pref...");
+        ("setting user pref...");
         const response = await APIClient.post('/userinfo', {user_data}, {sendAccess:true});
         return status_constants.API_REQUEST_SUCCESS;
     }
     catch(error){
-        console.log("error occured during set_user_pref");
+        ("error occured during set_user_pref");
         if (error.response.data.message){
             return error.response.data.message;
         }
@@ -49,15 +48,15 @@ const set_user_pref = async ({user_data}) => {
 
 const user_login = async ({username, password}) => {
     
-    console.log("userauthactions login... ");
+    ("userauthactions login... ");
     if (!username || !password) {
         return status_constants.EMPTY_FIELDS_ERROR
     }
 
     try {
         const response = await APIClient.post('/auth/login', { username, password });
-        console.log(response.data?.access_token);
-        console.log(response.data?.refresh_token);
+        (response.data?.access_token);
+        (response.data?.refresh_token);
         await setAccessToken(response.data?.access_token);
         await setRefreshToken(response.data?.refresh_token);
         return status_constants.API_REQUEST_SUCCESS;

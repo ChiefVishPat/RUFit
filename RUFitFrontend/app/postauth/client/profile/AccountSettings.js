@@ -4,10 +4,12 @@ import { styles } from "./styles";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { APIClient } from "../../../../components/api/APIClient";
 
+// Screen displaying account settings options like deleting the user account
 export default function AccountSettingsScreen() {
     const route = useRoute();
     const navigation = useNavigation();
 
+    // Deletes user account and resets navigation stack
     const handleDeleteAccount = async () => {
         try {
             await APIClient.delete('auth/account', { sendAccess: true });
@@ -24,7 +26,6 @@ export default function AccountSettingsScreen() {
                     }
                 ]
             );
-
         } catch (error) {
             console.error(error);
             Alert.alert("Error", "Failed to delete account. Please try again.");
@@ -33,6 +34,7 @@ export default function AccountSettingsScreen() {
 
     return (
         <View style={styles.container}>
+            {/* Gradient header */}
             <LinearGradient
                 colors={['#CC0033', 'darkred']}
                 start={{ x: 0, y: 0 }}
@@ -42,6 +44,7 @@ export default function AccountSettingsScreen() {
                 <Text style={styles.headerText}>Account Options</Text>
             </LinearGradient>
 
+            {/* Scrollable content with delete option */}
             <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={{ width: '100%' }}>
                 <TouchableOpacity style={styles.bodyDataContainer} onPress={handleDeleteAccount}>
                     <View style={styles.row}>

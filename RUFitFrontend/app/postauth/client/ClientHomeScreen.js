@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, Text, View, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { user_logout } from '../../../components/authentication/user_auth/UserAuthActions';
 import { API_REQUEST_SUCCESS } from '../../../constants/StatusConstants';
@@ -16,33 +15,38 @@ import RecommendationDetailModal from '../../../components/recommendations/Recom
 import WeeklyStreakProgress from './WeeklyStreakProgress';
 import { useUser } from '../../../components/user_data/UserContext';
 
-
-// currently fetching UserData inside if not passed directly
+// Client home screen that shows user greeting, workout streak, and recommendations
 export default function ClientHomeScreen({ route }) {
-
   const navigation = useNavigation();
-
-  // User workout streak data
-  const [streak, setStreak] = useState(null);
-  const [loading, setLoading] = useState(null);
   const { userData, refreshUser } = useUser();
 
+  const [streak, setStreak] = useState(null);
+  const [loading, setLoading] = useState(null); // used for streak loading
+  const [internalUserData, setInternalUserData] = useState(null);
+  const [isLoadingUserData, setIsLoadingUserData] = useState(true);
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
+  const [recommendations, setRecommendations] = useState(null);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+  const [recommendationsError, setRecommendationsError] = useState(null);
+  const [isRecModalVisible, setIsRecModalVisible] = useState(false);
+
+  // Refresh user data on mount
   useEffect(() => {
-    async() => {await refreshUser();}
-  }), [];
+    (async () => { await refreshUser(); })();
+  }, []);
 
+  // Navigate to streak goal settings
   const handleStreakChange = () => {
     navigation.navigate('Profile');
-
     requestAnimationFrame(() => {
       navigation.navigate('Profile', {
         screen: 'ProfileSettings',
       });
     });
-  }
+  };
 
-  // reloads and fetches user workout streak every time screen is in focus
+  // Fetch user's current streak when screen is focused
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
@@ -61,17 +65,15 @@ export default function ClientHomeScreen({ route }) {
               Alert.alert(
                 'Logged out',
                 "You've been logged out. Please sign in again.",
-                [
-                  {
-                    text: 'OK',
-                    onPress: () => {
-                      navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'PreAuthLanding' }],
-                      });
-                    },
+                [{
+                  text: 'OK',
+                  onPress: () => {
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'PreAuthLanding' }],
+                    });
                   },
-                ]
+                }]
               );
             }
           } else {
@@ -82,60 +84,34 @@ export default function ClientHomeScreen({ route }) {
 
       fetchStreak();
 
-      // cleanup to avoid setting state on unmounted screen
-      return () => {
-        isActive = false;
-      };
+      return () => { isActive = false; };
     }, [])
   );
 
-
-  // State for user data
-  const [internalUserData, setInternalUserData] = useState(null);
-  const [isLoadingUserData, setIsLoadingUserData] = useState(true);
-
-  // Logout Alert State
-  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-
-  // Recommendations State
-  const [recommendations, setRecommendations] = useState(null);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
-  const [recommendationsError, setRecommendationsError] = useState(null);
-  const [isRecModalVisible, setIsRecModalVisible] = useState(false);
-
-  // --- Fetch User Data (runs once) ---
+  // Simulate fetching internal user info (replace with real API call if needed)
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoadingUserData(true);
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate fetch
-      setInternalUserData({ username: 'Test User' }); // Placeholder
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setInternalUserData({ username: 'Test User' }); // Placeholder user
       setIsLoadingUserData(false);
     };
     fetchInitialData();
   }, []);
 
-
-  // --- Fetch Recommendations using useFocusEffect ---
+  // Fetch recommendations on focus when user data is available
   useFocusEffect(
-    // useCallback ensures the function identity is stable across renders
-    // preventing unnecessary effect runs if dependencies are the same.
     useCallback(() => {
       const fetchRecommendations = async () => {
-        // Only fetch if user data is loaded
         if (internalUserData) {
-          console.log("HomeScreen focused, fetching recommendations..."); // Log focus/fetch
           setRecommendationsLoading(true);
           setRecommendationsError(null);
-          // Don't reset recommendations here if you want to show stale data while loading
-          // setRecommendations(null);
           try {
             const response = await APIClient.get('/recommendations', { sendAccess: true });
-            console.log("Recommendations Response:", response.data);
             if (response.data && Object.keys(response.data).length > 0) {
               setRecommendations(response.data);
             } else {
               setRecommendations(null);
-              console.log("No recommendations data received.");
             }
           } catch (err) {
             console.error("Error fetching recommendations:", err);
@@ -146,13 +122,11 @@ export default function ClientHomeScreen({ route }) {
             } else {
               setRecommendationsError("Failed to load recommendations.");
             }
-            setRecommendations(null); // Ensure recommendations are null on error
+            setRecommendations(null);
           } finally {
             setRecommendationsLoading(false);
           }
         } else {
-          console.log("HomeScreen focused, but no user data yet.");
-          // Ensure state is clear if no user data
           setRecommendations(null);
           setRecommendationsError(null);
           setRecommendationsLoading(false);
@@ -160,18 +134,10 @@ export default function ClientHomeScreen({ route }) {
       };
 
       fetchRecommendations();
-
-      // Optional: Cleanup function if needed when screen loses focus
-      // return () => {
-      //   console.log("HomeScreen unfocused");
-      //   // e.g., cancel fetches, clear timers
-      // };
-    }, [internalUserData]) // Dependency: re-run if internalUserData changes while screen is focused
+    }, [internalUserData])
   );
-  // --- End useFocusEffect ---
 
-
-  // --- Logout Handlers (Unchanged) ---
+  // Logout alert handler
   const handleLogOut = async () => {
     setShowLogoutAlert(true);
   };
@@ -192,7 +158,7 @@ export default function ClientHomeScreen({ route }) {
     }
   };
 
-  // --- Loading State ---
+  // Show loading spinner while user data loads
   if (isLoadingUserData) {
     return (
       <View style={[styles.container, styles.centered]}>
@@ -201,69 +167,67 @@ export default function ClientHomeScreen({ route }) {
     );
   }
 
-  // --- Render ---
+  // --- Main UI ---
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContentContainer}>
-
-      {/* --- Logout Modal --- */}
+      {/* Logout Alert Modal */}
       {showLogoutAlert &&
         <ChoiceAlertModal
           isVisible={true}
           title={"Logout warning"}
           message={"Are you sure you want to logout?"}
           onConfirm={() => handleLogoutConfirmation(true)}
-          onCancel={() => handleLogoutConfirmation(false)} />
+          onCancel={() => handleLogoutConfirmation(false)}
+        />
       }
 
-
-      {/* --- Performance Section --- */}
+      {/* Greeting and Streak */}
       <View style={styles.welcomeBanner}>
         <Text style={styles.greeting}>Welcome back, {userData.username}!</Text>
       </View>
-
-      <Text style={styles.sub}>You're on a <Text style={styles.streakCount}>{streak}</Text> day streak!</Text>
+      <Text style={styles.sub}>
+        You're on a <Text style={styles.streakCount}>{streak}</Text> day streak!
+      </Text>
       <View style={styles.progressContainer}>
         <WeeklyStreakProgress progress={streak} goal={userData.streak_goal} />
       </View>
-
-
-      <Text style={styles.sub}>Your goal is {userData.streak_goal} days - let's go!🔥</Text>
+      <Text style={styles.sub}>
+        Your goal is {userData.streak_goal} days - let's go!🔥
+      </Text>
 
       <View style={styles.btnContainer}>
-        <ScarletPressable btnText="Change streak goal" style={styles.editStreakButton} onPress={handleStreakChange}></ScarletPressable>
+        <ScarletPressable
+          btnText="Change streak goal"
+          style={styles.editStreakButton}
+          onPress={handleStreakChange}
+        />
       </View>
 
-      {/* --- Recommendations Section --- */}
+      {/* Recommendations Section */}
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recommendations</Text>
         <RecommendationSummary
           recommendations={recommendations}
-          // Pass loading/error state directly to the summary component
           isLoading={recommendationsLoading}
           error={recommendationsError}
           onPress={() => {
-            // Check for actual recommendation data before opening modal
             if (recommendations && Object.keys(recommendations).length > 0) {
-              setIsRecModalVisible(true)
+              setIsRecModalVisible(true);
             }
           }}
         />
-
-
-        {/* --- Render Recommendation Modal --- */}
         <RecommendationDetailModal
           isVisible={isRecModalVisible}
           onClose={() => setIsRecModalVisible(false)}
           recommendations={recommendations}
         />
       </View>
-
-
     </ScrollView>
   );
 }
 
-// --- Styles (Keep existing styles from previous step) ---
+
+// --- Styles ---
 const styles = StyleSheet.create({
   scrollContentContainer: {
     paddingBottom: 40,
@@ -275,8 +239,6 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: 'center',
     justifyContent: 'center',
-    // borderWidth: 2,
-    // borderColor: 'white'
   },
   centered: {
     flex: 1,
@@ -288,12 +250,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     alignSelf: 'flex-start',
-    // marginLeft: 20,
     marginTop: 5,
     marginBottom: 5,
     color: 'white',
-    // borderWidth: 2,
-    // borderColor: 'white'
   },
   performanceGrid: {
     flexDirection: 'row',
@@ -301,7 +260,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     marginTop: 10,
-    // Removed marginBottom: 10
   },
   card: {
     width: '44%',
@@ -355,17 +313,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // justifyContent: 'flex-start',
-    // alignItems: 'center',
     backgroundColor: background_color,
-    // borderColor: "white",
-    // borderWidth: 2,
   },
   welcomeBanner: {
     justifyContent: 'center',
     alignItems: 'center',
-    // borderColor: "white",
-    // borderWidth: 2,
     marginTop: 10,
   },
   greeting: {
@@ -386,11 +338,8 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     alignItems: 'center',
-    // marginTop: 10,
     width: 250,
     height: 250,
-    // borderColor: "white",
-    // borderWidth: 2,
   },
   sub: {
     marginTop: 10,

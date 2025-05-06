@@ -5,6 +5,8 @@ import ModalAlert from '../ui/alerts/ModalAlert';
 import { NOT_AUTHENTICATED } from "../../constants/StatusConstants"
 import { checkAuthentication } from './user_auth/UserTokenValidation';
 
+
+// Wrap protected routes in a authentication checker that ensures user is allowed to access the screen
 const AuthenticationWrapper = ({ children }) => {
     const navigation = useNavigation();
     const [isAuthenticated, setIsAuthenticated] = useState(null); // Start as null for initial loading
@@ -34,7 +36,7 @@ const AuthenticationWrapper = ({ children }) => {
     };
 
     useEffect(() => {
-        const checkAuth = async() => {
+        const checkAuth = async () => {
             try {
                 const auth_response = await checkAuthentication();
                 if (auth_response == NOT_AUTHENTICATED) {
@@ -43,14 +45,14 @@ const AuthenticationWrapper = ({ children }) => {
                         alertMessage: 'Please sign in to continue.'
                     });
                 }
-                else{
+                else {
                     setIsAuthenticated(true);
                 }
             }
-            catch(error){
+            catch (error) {
                 console.error(error);
                 await handleLogout({
-                    alertTitle: 'Error', 
+                    alertTitle: 'Error',
                     alertMessage: 'Failed to verify your session. Please log in again.'
                 });
             }

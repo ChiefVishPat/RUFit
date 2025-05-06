@@ -9,26 +9,23 @@ import {
     SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TopHeader from '../../../../components/TopHeader';
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AuthenticatedSavedWorkoutsScreen, AuthenticatedSaveWorkoutScreen } from '../../../../components/authentication/AuthenticatedScreens';
 
+// Screen to display list of saved workout sessions
 export default function SavedWorkoutsScreen() {
     const navigation = useNavigation();
-    const route = useRoute();
     const [sessions, setSessions] = useState([]);
 
+    // Fetch saved workout sessions from backend
     const fetchWorkouts = async () => {
         try {
-            const response = await APIClient.get('/workout', {sendAccess: true});
-            // Assume backend returns grouped sessions with session_id, workout_name, date, exercises
-            console.log(response.data);
+            const response = await APIClient.get('/workout', { sendAccess: true });
+            (response.data);
             setSessions(response.data);
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                console.log('User not authorized, setting sessions to empty');
+                ('User not authorized, setting sessions to empty');
                 setSessions([]);
             } else {
                 console.error(error);
@@ -37,13 +34,14 @@ export default function SavedWorkoutsScreen() {
         }
     };
 
-    // Refresh data when the screen gains focus
+    // Refetch when screen gains focus
     useFocusEffect(
         useCallback(() => {
             fetchWorkouts();
         }, [])
     );
 
+    // Delete a workout session by ID
     const handleDelete = async (session_id) => {
         Alert.alert(
             'Delete Workout',
@@ -54,12 +52,9 @@ export default function SavedWorkoutsScreen() {
                     text: 'Delete',
                     onPress: async () => {
                         try {
-                            await APIClient.delete(`/workout/${session_id}`, {sendAccess: true});
+                            await APIClient.delete(`/workout/${session_id}`, { sendAccess: true });
                             setSessions(
-                                sessions.filter(
-                                    (session) =>
-                                        session.session_id !== session_id
-                                )
+                                sessions.filter(session => session.session_id !== session_id)
                             );
                         } catch (error) {
                             console.error(error);
@@ -72,37 +67,27 @@ export default function SavedWorkoutsScreen() {
         );
     };
 
+    // Render a workout card
     const renderWorkout = ({ item }) => (
         <TouchableOpacity
             style={styles.workoutCard}
-            onPress={() =>
-                navigation.navigate('ViewWorkout', {
-                    session: item,
-                })  
-            }>
+            onPress={() => navigation.navigate('ViewWorkout', { session: item })}
+        >
             <View>
                 <Text style={styles.workoutName}>{item.workout_name}</Text>
                 <Text style={styles.workoutDetails}>
-                    {item.exercises ? item.exercises.length : 0} exercises •{' '}
-                    {item.date}
+                    {item.exercises ? item.exercises.length : 0} exercises • {item.date}
                 </Text>
             </View>
             <View style={styles.cardActions}>
                 <TouchableOpacity
                     onPress={() =>
-                        navigation.navigate('SaveWorkout', {
-                            session: item,
-                        })
+                        navigation.navigate('SaveWorkout', { session: item })
                     }>
                     <Ionicons name="create" size={24} color="#2DC5F4" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleDelete(item.session_id)}>
-                    <Ionicons
-                        name="trash"
-                        size={24}
-                        color="#FF5E5E"
-                        style={{ marginLeft: 10 }}
-                    />
+                    <Ionicons name="trash" size={24} color="#FF5E5E" style={{ marginLeft: 10 }} />
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>
@@ -111,25 +96,22 @@ export default function SavedWorkoutsScreen() {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                {/* <TopHeader title="Saved Workouts" showBackButton={true} /> */}
-                
                 <FlatList
                     data={sessions}
-                    keyExtractor={(item, index) =>
-                        item.session_id || index.toString()
-                    }
+                    keyExtractor={(item, index) => item.session_id || index.toString()}
                     renderItem={renderWorkout}
                     contentContainerStyle={styles.listContainer}
                     ListEmptyComponent={
-                        <Text style={styles.emptyMessage}>
-                            No saved workouts found.
-                        </Text>
+                        <Text style={styles.emptyMessage}>No saved workouts found.</Text>
                     }
                 />
             </View>
+
+            {/* Add new workout button */}
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName:true })}>
+                onPress={() => navigation.navigate('SaveWorkout', { autoFocusName: true })}
+            >
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add New Workout</Text>
             </TouchableOpacity>
@@ -149,7 +131,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         padding: 20,
-        paddingBottom: 100, // Extra space for the add button
+        paddingBottom: 100,
     },
     workoutCard: {
         backgroundColor: '#333',
@@ -184,12 +166,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#CC0033',
         padding: 20,
         borderRadius: 8,
-
-        shadowColor: 'black', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 1, // IOS
-        shadowRadius: 3, //IOS
-        elevation: 2, // Android
+        shadowColor: 'black',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 2,
     },
     addButtonText: {
         color: 'white',

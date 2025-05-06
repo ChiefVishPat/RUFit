@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { APIClient } from '../../../../components/api/APIClient';
 import { useUser } from '../../../../components/user_data/UserContext';
 
+// Screen allowing users to view and edit their height, weight, goal, and training intensity
 export default function MyBodyDataScreen() {
     const { userData, refreshUser } = useUser();
 
@@ -32,7 +33,7 @@ export default function MyBodyDataScreen() {
     const [hasEdits, setHasEdits] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    // Utility to parse numbers safely
+    // Utility to safely parse number inputs
     const safeParseInt = value => {
         const parsed = parseInt(value, 10);
         return isNaN(parsed) ? 0 : parsed;
@@ -42,7 +43,7 @@ export default function MyBodyDataScreen() {
         return isNaN(parsed) ? 0 : parsed;
     };
 
-    // Seed edited values when userData changes
+    // Initialize edited values from userData
     useEffect(() => {
         if (!userData) return;
         setEditedValues({
@@ -62,6 +63,7 @@ export default function MyBodyDataScreen() {
         setHasEdits(true);
     };
 
+    // Save updated body data to API
     const handleSave = async () => {
         setSaving(true);
         try {
@@ -103,6 +105,7 @@ export default function MyBodyDataScreen() {
 
     return (
         <View style={styles.container}>
+            {/* Gradient Header */}
             <LinearGradient
                 colors={['#CC0033', 'darkred']}
                 start={{ x: 0, y: 0 }}
@@ -112,6 +115,7 @@ export default function MyBodyDataScreen() {
                 <Text style={styles.headerText}>My Body Data</Text>
             </LinearGradient>
 
+            {/* Editable fields */}
             <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={{ width: '100%' }}>
                 {fieldsToShow.map(({ key, label }) => {
                     let displayValue = '';
@@ -132,13 +136,17 @@ export default function MyBodyDataScreen() {
                             <View style={styles.row}>
                                 <Text style={styles.dataLabel}>{label}</Text>
                                 <View style={styles.rightGroup}>
+                                    {/* Active editing */}
                                     {editingField === key ? (
                                         key === 'height' ? (
+                                            // Height fields
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                {/* Feet selector */}
+                                                {/* Feet controls */}
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}>
                                                     <TouchableOpacity
-                                                        onPress={() => handleChange('height_ft', (safeParseInt(editedValues.height_ft) + 1).toString())}
+                                                        onPress={() =>
+                                                            handleChange('height_ft', (safeParseInt(editedValues.height_ft) + 1).toString())
+                                                        }
                                                     >
                                                         <Ionicons name="chevron-up" size={20} color="#fff" />
                                                     </TouchableOpacity>
@@ -146,13 +154,16 @@ export default function MyBodyDataScreen() {
                                                         {editedValues.height_ft}
                                                     </Text>
                                                     <TouchableOpacity
-                                                        onPress={() => handleChange('height_ft', Math.max(safeParseInt(editedValues.height_ft) - 1, 0).toString())}
+                                                        onPress={() =>
+                                                            handleChange('height_ft', Math.max(safeParseInt(editedValues.height_ft) - 1, 0).toString())
+                                                        }
                                                     >
                                                         <Ionicons name="chevron-down" size={20} color="#fff" />
                                                     </TouchableOpacity>
                                                     <Text style={[styles.dataLabel, styles.dataValue, { marginLeft: 4 }]}>ft</Text>
                                                 </View>
-                                                {/* Inches selector */}
+
+                                                {/* Inches controls */}
                                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                     <TouchableOpacity
                                                         onPress={() => {
@@ -184,6 +195,7 @@ export default function MyBodyDataScreen() {
                                                 </View>
                                             </View>
                                         ) : key === 'goal' ? (
+                                            // Goal picker
                                             <Picker
                                                 selectedValue={editedValues.goal}
                                                 onValueChange={(val) => handleChange('goal', val)}
@@ -194,6 +206,7 @@ export default function MyBodyDataScreen() {
                                                 ))}
                                             </Picker>
                                         ) : key === 'training_intensity' ? (
+                                            // Intensity picker
                                             <Picker
                                                 selectedValue={editedValues.training_intensity}
                                                 onValueChange={(val) => handleChange('training_intensity', val)}
@@ -204,6 +217,7 @@ export default function MyBodyDataScreen() {
                                                 ))}
                                             </Picker>
                                         ) : (
+                                            // Weight input
                                             <TextInput
                                                 style={[styles.dataLabel, styles.dataValueInput]}
                                                 value={editedValues.weight}
@@ -214,6 +228,7 @@ export default function MyBodyDataScreen() {
                                             />
                                         )
                                     ) : (
+                                        // Read-only view
                                         <Text style={[styles.dataLabel, styles.dataValue]}>
                                             {displayValue}
                                         </Text>
@@ -228,6 +243,7 @@ export default function MyBodyDataScreen() {
                 })}
             </ScrollView>
 
+            {/* Save Button */}
             {hasEdits && (
                 <TouchableOpacity
                     style={styles.addButton}

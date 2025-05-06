@@ -5,39 +5,44 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import AddToWorkoutModal from "./AddToWorkoutModal";
 
+// Screen that displays an exercise's details and allows adding it to a workout
 export default function ExerciseDescriptionScreen() {
     const route = useRoute();
     const exercise = route.params?.exercise;
     const [bottomModalVisible, setBottomModalVisible] = useState(false);
 
-    console.log(exercise);
-    console.log(exercise.exercise_name);
+    (exercise);
+    (exercise.exercise_name);
 
     return (
         <View style={styles.container}>
+            {/* Bottom modal for workout selection */}
+            <AddToWorkoutModal
+                visible={bottomModalVisible}
+                onClose={() => setBottomModalVisible(false)}
+                exercise={exercise}
+            />
 
-            <AddToWorkoutModal visible={bottomModalVisible} onClose={() => setBottomModalVisible(false)} exercise={exercise} />
-
-
+            {/* Exercise name */}
             <Text style={styles.exerciseTitle}>{exercise.exercise_name}</Text>
 
+            {/* Display muscle groups */}
             <View style={styles.muscleGroupContainer}>
                 {exercise.muscle_groups.map((muscle_group, index) => (
-
                     <Text key={index} style={styles.muscleGroup}>
                         {muscle_group}
                     </Text>
                 ))}
             </View>
 
+            {/* Exercise instructions */}
             <Text style={styles.exerciseDescription}>{exercise.instructions}</Text>
 
+            {/* Tips section (if available) */}
             {exercise.tips?.length > 0 && (
                 <>
                     <Text style={styles.subheader}>Tips:</Text>
-
                     <View style={styles.divider}></View>
-
                     {exercise.tips.map((tip, index) => (
                         <Text key={index} style={styles.tip}>
                             ▹ {tip}
@@ -46,17 +51,16 @@ export default function ExerciseDescriptionScreen() {
                 </>
             )}
 
+            {/* Button to add to workout */}
             <TouchableOpacity
                 style={styles.addButton}
-                onPress={() =>
-                    setBottomModalVisible(true)
-                }>
+                onPress={() => setBottomModalVisible(true)}
+            >
                 <Ionicons name="add-circle" size={24} color="white" />
                 <Text style={styles.addButtonText}>Add to workout</Text>
             </TouchableOpacity>
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
@@ -74,7 +78,6 @@ const styles = StyleSheet.create({
     exerciseDescription: {
         color: 'white',
         fontSize: 25,
-        // fontWeight: 'bold',
         marginHorizontal: 20,
         marginBottom: 1,
     },
@@ -87,10 +90,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     divider: {
-        borderColor: 'white', borderWidth: 0.6,
+        borderColor: 'white',
+        borderWidth: 0.6,
         width: "90%",
         alignSelf: 'center',
-        // marginHorizontal: 20,
         margin: 5,
     },
     tip: {
@@ -99,11 +102,6 @@ const styles = StyleSheet.create({
         marginLeft: 30,
         marginTop: 4,
         lineHeight: 26,
-    },
-    groupContainer: {
-        flexDirection: 'row',
-        width: 'fit-content',
-        borderColor: 'white', borderWidth: 1,
     },
     muscleGroupContainer: {
         flexDirection: 'row',
@@ -121,7 +119,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         fontSize: 14,
         fontWeight: 'bold',
-        // color: 'white',
         color: "#333",
         marginRight: 6,
         marginBottom: 6,
@@ -137,12 +134,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#CC0033',
         padding: 20,
         borderRadius: 8,
-
-        shadowColor: 'black', // IOS
-        shadowOffset: { height: 1, width: 1 }, // IOS
-        shadowOpacity: 1, // IOS
-        shadowRadius: 3, //IOS
-        elevation: 2, // Android
+        shadowColor: 'black',
+        shadowOffset: { height: 1, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 2,
     },
     addButtonText: {
         color: 'white',

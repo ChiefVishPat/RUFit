@@ -1,19 +1,21 @@
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native"
-import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TextInput, Keyboard, KeyboardAvoidingView, Platform } from "react-native";
+import { ScaledSheet } from 'react-native-size-matters';
 import DropDownPicker from "react-native-dropdown-picker";
 import HorizontalToggleChoice from "../../../components/ui/HorizontalToggleChoice";
-import { useState, useEffect } from "react";
-import { global_styles, GradientScreen } from "../../GlobalStyles";
+import { useState } from "react";
+import { GradientScreen } from "../../GlobalStyles";
 import ScarletPressable from '../../../components/ui/buttons/ScarletPressable';
 import BasicPressable from '../../../components/ui/buttons/BasicPressable';
-
 import {
     useFonts,
     BigShouldersDisplay_700Bold,
 } from '@expo-google-fonts/big-shoulders-display';
 import { Kanit_400Regular } from '@expo-google-fonts/kanit';
 
-
+/**
+ * BodyDataScreen collects user body metrics (gender, weight, height)
+ * to personalize fitness experience.
+ */
 const BodyDataScreen = ({ navigation, route }) => {
     const [fontsLoaded] = useFonts({
         BigShouldersDisplay_700Bold,
@@ -54,10 +56,13 @@ const BodyDataScreen = ({ navigation, route }) => {
                         <Text style={fontStyles.screenTitleText}>Body Data</Text>
                     </View>
                     <View style={styles.subTextContainer}>
-                        <Text style={fontStyles.subText}>In order to help personalize your fitness experience with us, we'll need to gather some information first:</Text>
+                        <Text style={fontStyles.subText}>
+                            In order to help personalize your fitness experience with us, we'll need to gather some information first:
+                        </Text>
                     </View>
 
                     <View style={styles.forms}>
+                        {/* Gender Picker */}
                         <View style={styles.inputFieldContainer}>
                             <DropDownPicker
                                 open={open}
@@ -75,96 +80,90 @@ const BodyDataScreen = ({ navigation, route }) => {
                             />
                         </View>
 
+                        {/* Weight Input and Unit Toggle */}
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.textInputField}
+                            <TextInput
+                                style={styles.textInputField}
                                 placeholder="Body Weight"
                                 placeholderTextColor="gray"
                                 keyboardType="numeric"
                                 inputMode="numeric"
                                 value={weightValue}
-                                // prevents non-numeric values from being entered:
                                 onChangeText={(text) => setWeightValue(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
+                                returnKeyType="done"
+                                onSubmitEditing={() => Keyboard.dismiss()}
+                            />
                             <HorizontalToggleChoice
                                 leftButtonLabel="lb"
                                 rightButtonLabel="kg"
                                 onPress={(button) => {
-                                    if (button == "left") {
-                                        setWeightUnit("LB");
-                                    }
-                                    else {
-                                        setWeightUnit("KG");
-                                    }
+                                    setWeightUnit(button === "left" ? "LB" : "KG");
                                 }}
                             />
                         </View>
 
+                        {/* Height Inputs and Unit Toggle */}
                         <View style={styles.inputFieldContainer}>
-
-                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
-                                placeholder={heightUnit == "US" ? "ft" : "m"}
+                            <TextInput
+                                style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
+                                placeholder={heightUnit === "US" ? "ft" : "m"}
                                 placeholderTextColor="gray"
                                 keyboardType="numeric"
                                 inputMode="numeric"
                                 value={heightValue1}
-                                // prevents non-numeric values from being entered:
                                 onChangeText={(text) => setHeightValue1(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
-                            <TextInput style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
-                                placeholder={heightUnit == "US" ? "in" : "cm"}
+                                returnKeyType="done"
+                                onSubmitEditing={() => Keyboard.dismiss()}
+                            />
+                            <TextInput
+                                style={[styles.textInputField, { width: Dimensions.get('screen').width * 0.213 }]}
+                                placeholder={heightUnit === "US" ? "in" : "cm"}
                                 placeholderTextColor="gray"
                                 keyboardType="numeric"
                                 inputMode="numeric"
                                 value={heightValue2}
-                                // prevents non-numeric values from being entered:
                                 onChangeText={(text) => setHeightValue2(text.replace(/[^0-9]/g, ""))}
-                                returnKeyType="done" // Adds a "Done" button to the keyboard
-                                onSubmitEditing={() => Keyboard.dismiss()} // Dismisses the keyboard when "Done" is pressed
-                            >
-                            </TextInput>
+                                returnKeyType="done"
+                                onSubmitEditing={() => Keyboard.dismiss()}
+                            />
                             <HorizontalToggleChoice
                                 leftButtonLabel="US"
                                 rightButtonLabel="SI"
                                 onPress={(button) => {
-                                    if (button == "left") {
-                                        setHeightUnit("US");
-                                    }
-                                    else {
-                                        setHeightUnit("SI");
-                                    }
+                                    setHeightUnit(button === "left" ? "US" : "SI");
                                 }}
                             />
                         </View>
                     </View>
                 </View>
             </KeyboardAvoidingView>
-            <View style={styles.navigationBtnContainer}>
 
+            {/* Navigation Buttons */}
+            <View style={styles.navigationBtnContainer}>
                 <View style={styles.backBtnContainer}>
-                    <BasicPressable disabled={false} btnText="Back" onPress={() => { navigation.goBack() }}></BasicPressable>
+                    <BasicPressable
+                        disabled={false}
+                        btnText="Back"
+                        onPress={() => navigation.goBack()}
+                    />
                 </View>
 
                 <View style={styles.nextBtnContainer}>
-                    <ScarletPressable btnText="Next" onPress={() => {
-                        navigation.navigate('IntensityLevel', {
-                            ...route.params,
-                            gender: genderSelection,
-                            weight: weightValue,
-                            weightUnit: weightUnit,
-                            heightValue1: heightValue1,
-                            heightValue2: heightValue2,
-                            heightUnit: heightUnit,
-                        });
-                    }}>
-                    </ScarletPressable>
+                    <ScarletPressable
+                        btnText="Next"
+                        onPress={() => {
+                            navigation.navigate('IntensityLevel', {
+                                ...route.params,
+                                gender: genderSelection,
+                                weight: weightValue,
+                                weightUnit: weightUnit,
+                                heightValue1: heightValue1,
+                                heightValue2: heightValue2,
+                                heightUnit: heightUnit,
+                            });
+                        }}
+                    />
                 </View>
-
             </View>
         </GradientScreen>
     );
@@ -178,29 +177,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     container: {
-        //flex: 1,
-        //flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 50,
         backgroundColor: 'transparent',
-        //borderColor: 'pink',
-        //borderWidth: 2,
     },
     screenTitleContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         padding: 10,
         marginBottom: 20,
-        //borderColor: 'blue',
-        //borderWidth: 2,
     },
     subTextContainer: {
         width: Dimensions.get('screen').width * 0.9,
         height: 'fit-content',
         paddingHorizontal: 10,
-        //borderColor: 'blue',
-        //borderWidth: 2,
     },
     forms: {
         flexDirection: 'column',
@@ -209,8 +200,6 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width * 0.9,
         margin: 30,
         marginTop: 20,
-        //borderColor: 'blue',
-        //borderWidth: 2,
     },
     dropdown: {
         width: Dimensions.get('screen').width * 0.45,
@@ -221,13 +210,13 @@ const styles = StyleSheet.create({
     },
     dropdownText: {
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
+        fontFamily: 'Kanit_400Regular',
+        color: '#000',
     },
     placeholderText: {
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: 'gray', // Text color
+        fontFamily: 'Kanit_400Regular',
+        color: 'gray',
     },
     inputFieldContainer: {
         flexDirection: 'row',
@@ -245,8 +234,8 @@ const styles = StyleSheet.create({
         height: 55,
         padding: 12,
         fontSize: 16,
-        fontFamily: 'Kanit_400Regular', // Ensure correct font is used
-        color: '#000', // Text color
+        fontFamily: 'Kanit_400Regular',
+        color: '#000',
         marginRight: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -277,14 +266,12 @@ const styles = StyleSheet.create({
 
 const fontStyles = ScaledSheet.create({
     screenTitleText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.32 }],
         fontSize: '35@s',
         fontFamily: 'Kanit_400Regular',
         color: 'white',
         alignSelf: 'flex-start',
     },
     subText: {
-        //transform: [{ translateY: Dimensions.get('screen').height * -0.3 }],
         alignSelf: 'flex-start',
         marginTop: 20,
         fontSize: '25@ms',

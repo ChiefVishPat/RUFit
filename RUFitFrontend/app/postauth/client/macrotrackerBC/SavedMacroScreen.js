@@ -12,10 +12,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { APIClient } from '../../../../components/api/APIClient';
 
+// Screen to display and manage saved macro entries (view, edit, delete)
 export default function SavedMacroScreen() {
   const navigation = useNavigation();
   const [logs, setLogs] = useState([]);
 
+  // Fetch macro logs from backend
   const fetchLogs = async () => {
     try {
       const response = await APIClient.get('/tracker', { sendAccess: true });
@@ -26,12 +28,14 @@ export default function SavedMacroScreen() {
     }
   };
 
+  // Refresh logs on screen focus
   useFocusEffect(
     useCallback(() => {
       fetchLogs();
     }, [])
   );
 
+  // Delete log entry with confirmation
   const handleDelete = async (id) => {
     Alert.alert('Delete Entry', 'Are you sure?', [
       { text: 'Cancel', style: 'cancel' },
@@ -51,10 +55,12 @@ export default function SavedMacroScreen() {
     ]);
   };
 
+  // Render a single macro log card
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('Save Macro', { macro: item })}>
+      onPress={() => navigation.navigate('Save Macro', { macro: item })}
+    >
       <View>
         <Text style={styles.foodName}>{item.food_name}</Text>
         <Text style={styles.details}>
@@ -69,9 +75,6 @@ export default function SavedMacroScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-
-      </View>
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id.toString()}
@@ -81,7 +84,8 @@ export default function SavedMacroScreen() {
       />
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate('Save Macro', { autoFocusName: true })}>
+        onPress={() => navigation.navigate('Save Macro', { autoFocusName: true })}
+      >
         <Ionicons name="add-circle" size={24} color="white" />
         <Text style={styles.addButtonText}>Add Macro Entry</Text>
       </TouchableOpacity>
@@ -90,9 +94,6 @@ export default function SavedMacroScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 10,
-  },
   safeArea: { flex: 1, backgroundColor: '#1F1F1F' },
   listContainer: { padding: 20, paddingBottom: 100 },
   card: {
