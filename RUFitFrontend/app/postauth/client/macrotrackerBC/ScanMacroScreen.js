@@ -8,7 +8,7 @@ export default function ScanMacroScreen() {
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation();
 
-  
+  //ensures that the user has given permission to access camera
   useEffect(() => {
     if (!permission?.granted) {
       requestPermission();
@@ -16,46 +16,27 @@ export default function ScanMacroScreen() {
   }, [permission]);
 
 
+  //ensures that camera is mounted
   useFocusEffect(
     React.useCallback(() => {
       setScanned(false);
-      console.log("📸 ScanMacroScreen focused — scanner active");
+      console.log("ScanMacroScreen mounted — scanner active");
     }, [])
   );
 
 
-  const handleBarCodeScanned = ({ data, type }) => {
-    if (scanned) return; // prevent double scans
-    console.log('✅ Scanned:', { type, data });
-
-    setScanned(true);
-
-    Alert.alert('Scanned!', `Type: ${type}\nData: ${data}`, [
-      {
-        text: 'OK',
-        onPress: () => {
-          navigation.navigate('Save Macro', { scannedBarcode: data });
-        },
-      },
-    ]);
-  };
-
-  // ✅ Handle permission/loading UI
+  // Handle permission/loading UI
   if (!permission) return <Text>Requesting camera permissions...</Text>;
   if (!permission.granted) return <Text>No access to camera. Please enable it in settings.</Text>;
 
   return (
+    //displays camera
     <View style={styles.container}>
       <CameraView
-        style={styles.camera}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-        barcodeScannerSettings={{
-          barCodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'qr'], // ← Add 'qr' for testing
-        }}
+      //should navigate to the tracker log page with the data in the barcode section
+        onBarcodeScanned={({data}) => {navigation.navigate('Save Macro', { barcode: data }); }} 
       />
-      {scanned && (
-        <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />
-      )}
+   
     </View>
   );
 }
