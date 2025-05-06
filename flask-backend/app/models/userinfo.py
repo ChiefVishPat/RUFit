@@ -2,7 +2,7 @@ from app.extensions import db
 
 from ..tools.enums.userinfoEnums import GenderChoices, HeightUnits, TrainingGoals, TrainingIntensityLevels, WeightUnits
 
-
+#model for userinfo data, links back to the user model
 class Userinfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)

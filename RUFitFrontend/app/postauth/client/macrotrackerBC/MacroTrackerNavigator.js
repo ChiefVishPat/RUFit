@@ -1,12 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import SaveMacroScreen from './SaveMacroScreen';       
-import SavedMacroScreen from './SavedMacroScreen';  
+import SaveMacroScreen from './SaveMacroScreen';    // Screen for creating or editing a macro log, adding the macros   
+import SavedMacroScreen from './SavedMacroScreen';   
 import ScanMacroScreen from './ScanMacroScreen';       
 import ScreenHeader from '../ScreenHeader';
 
+
+//initializes the stack navigator which enables the compilation of these screens
 const Stack = createStackNavigator();
 
+//the component that handles all macro tracking related screens through the the use of stacknavigator
 export default function MacroTrackerNavigator() {
   return (
     <Stack.Navigator initialRouteName="Macro Logs">

@@ -1,6 +1,7 @@
 from app.extensions import bcrypt, db
 
 
+#database model for user credentials
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -9,5 +10,5 @@ class User(db.Model):
 
     def __init__(self, username, password, email):
         self.username = username
-        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8') #encryption for passwords
         self.email = email

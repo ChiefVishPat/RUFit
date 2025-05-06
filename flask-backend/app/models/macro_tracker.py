@@ -1,7 +1,8 @@
 from app.extensions import db
 
-
+#the database model for macro tracker, includes all macros in food items
 class Tracker(db.Model):
+    #
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
 

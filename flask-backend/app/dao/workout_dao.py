@@ -19,14 +19,14 @@ def get_workouts_by_session(user_id: str, session_id: str):
         raise
     
 def get_workouts_by_user_and_exercise(user_id: str, exercise_name: str, limit: int = None):
-    """
-    Fetches workout history for a specific user and exercise, ordered by date descending.
+    
+    #Fetches workout history for a specific user and exercise, ordered by date descending.
 
-    :param user_id: The user's ID.
-    :param exercise_name: The name of the exercise.
-    :param limit: Optional limit on the number of sessions to retrieve.
+    #:param user_id: The user's ID.
+    #:param exercise_name: The name of the exercise.
+    #:param limit: Optional limit on the number of sessions to retrieve.
     :return: A list of Workout objects.
-    """
+    
     try:
         query = Workout.query.filter_by(user_id=user_id, exercise=exercise_name).order_by(desc(Workout.date))
         if limit:
@@ -64,18 +64,9 @@ def create_workout(workout_data: dict):
 
 
 def update_workout(session_id: str, user_id: str, workout_name: str, exercises: list):
-    """
-    Updates a workout session by removing all existing records for the session and inserting the new ones.
 
-    :param session_id: Unique identifier for the workout session.
-    :param user_id: The user's ID.
-    :param workout_name: The name for the workout session (applied to all records).
-    :param exercises: A list of dictionaries. Each should have:
-                      - "name": the exercise name,
-                      - "sets": the number of sets,
-                      - "reps": the number of reps,
-                      - "weight": the weight (optional, defaults to 0 if not provided).
-    """
+#Updates a workout session by removing all existing records for the session and inserting the new ones.
+
     try:
         # Delete existing workouts for the session.
         existing_workouts = Workout.query.filter_by(user_id=user_id, session_id=session_id).all()
